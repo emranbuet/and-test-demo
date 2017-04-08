@@ -1,8 +1,8 @@
 package com.androidapp.chowdhury.emran.arclcricketscorer;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -15,10 +15,6 @@ public class MainActivity extends AppCompatActivity {
     private String strTeam1, strTeam2;
     private int totalOvers = 16;
 
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-
-public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
