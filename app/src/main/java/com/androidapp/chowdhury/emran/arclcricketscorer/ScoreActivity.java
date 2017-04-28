@@ -1,15 +1,19 @@
 package com.androidapp.chowdhury.emran.arclcricketscorer;
 
 import android.app.ListActivity;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.JsonReader;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -32,6 +36,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -40,11 +45,10 @@ import javax.xml.transform.Result;
 import static android.provider.AlarmClock.EXTRA_MESSAGE;
 
 public class ScoreActivity extends AppCompatActivity {
-
-
     public static String TEAM_NAME_1 = "TEAM_NAME_1";
     public static String TEAM_NAME_2 = "TEAM_NAME_2";
     public static String TOTAL_OVER = "TOTAL_OVER";
+    public static String PLAYER_LIST_FULL = "PLAYER_LIST_FULL";
     public static String PLAYER_LIST_STATUS = "PLAYER_STATUS";
 
     private String strTeam1, strTeam2, strContent, strDetail, preStrDetail, preStrContent;
@@ -69,8 +73,13 @@ public class ScoreActivity extends AppCompatActivity {
     public static String apiURL = "http://arclweb.azurewebsites.net/api/";
     public static String PLAYER_LIST_FIRST = "PlayerListOne";
     public static String PLAYER_LIST_SECOND = "PlayerListTwo";
+    public static String PLAYER_ID_BATSMAN_1 = "Batsman1";
+    public static String PLAYER_ID_BATSMAN_2 = "Batsman2";
+    public static String PLAYER_ID_BOWLER = "Bowler";
     protected ArrayList<Player> playersListTeam1, playersListTeam2;
+    protected HashMap<Integer, Player> playersMap;
     ArrayAdapter<String> adapter, adapter2;
+    public int playerIdBt1, playerIdBt2, playerIdBl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,27 +135,58 @@ public class ScoreActivity extends AppCompatActivity {
 
         Intent intent = new Intent(getApplicationContext(), MatchDetail.class);
         //intent.putExtra(PLAYER_LIST_STATUS, result);
+        if(strTeam1 != null && Character.isLowerCase(strTeam1.charAt(0))){
+            String firstChar = strTeam1.substring(0, 1);
+            String lastPart = strTeam1.substring(1);
+            strTeam1 = firstChar.toUpperCase() + lastPart;
+        }
+        if(strTeam2 != null && Character.isLowerCase(strTeam2.charAt(0))){
+            String firstChar = strTeam2.substring(0, 1);
+            String lastPart = strTeam2.substring(1);
+            strTeam2 = firstChar.toUpperCase() + lastPart;
+        }
         intent.putExtra(TEAM_NAME_1, strTeam1);
         intent.putExtra(TEAM_NAME_2, strTeam2);
         intent.putExtra(TOTAL_OVER, String.valueOf(totOver));
 
-        Player p1= null, p2 = null;
-        if(playersListTeam1 == null || playersListTeam1.isEmpty()){
-            if(playersListTeam1 == null)
-                playersListTeam1 = new ArrayList<>();
-            p1 = new Player("TestPlayer1", -1);
-            playersListTeam1.add(p1);
-        }
-        intent.putExtra(PLAYER_LIST_FIRST, playersListTeam1);
+        Player p1= null, p2 = null, player = null;
+        playersMap = new HashMap<>();
 
-        if(playersListTeam2 == null || playersListTeam2.isEmpty()) {
-            if(playersListTeam2 == null)
-                playersListTeam2 = new ArrayList<>();
-            p2 = new Player("TestPlayer2", -2);
-            playersListTeam2.add(p2);
+        if(playersListTeam1 == null || playersListTeam1.isEmpty()){
+            Log.d("Error", "Player list of first team is empty");
         }
+        else{
+            for(Player p : playersListTeam1){
+                playersMap.put(p.getPlayerId(), p);
+            }
+        }
+        if(playersListTeam2 == null || playersListTeam2.isEmpty()) {
+            Log.d("Error", "Player list of second team is empty");
+        }
+        else{
+            for(Player p : playersListTeam2){
+                playersMap.put(p.getPlayerId(), p);
+            }
+        }
+
+        intent.putExtra(PLAYER_LIST_FIRST, playersListTeam1);
         intent.putExtra(PLAYER_LIST_SECOND, playersListTeam2);
-        //Log.d("post execute of second", p2.getPlayerName());
+        intent.putExtra(PLAYER_LIST_FULL, playersMap);
+
+        playerIdBt1 = playersListTeam1.get(spinnerBt1.getSelectedItemPosition()).getPlayerId();
+        playerIdBt2 = playersListTeam1.get(spinnerBt2.getSelectedItemPosition()).getPlayerId();
+        playerIdBl = playersListTeam2.get(spinnerBl.getSelectedItemPosition()).getPlayerId();
+
+        Log.d("Batsman 1", playersListTeam1.get(spinnerBt1.getSelectedItemPosition()).getPlayerName() + " -> " + String.valueOf(playerIdBl));
+        Log.d("Batsman 2", playersListTeam1.get(spinnerBt2.getSelectedItemPosition()).getPlayerName() + " -> " + String.valueOf(playerIdBt2));
+        Log.d("Bowler", playersListTeam2.get(spinnerBl.getSelectedItemPosition()).getPlayerName() + " -> " + String.valueOf(playerIdBl));
+
+
+
+        intent.putExtra(PLAYER_ID_BATSMAN_1, String.valueOf(playerIdBt1));
+        intent.putExtra(PLAYER_ID_BATSMAN_2, String.valueOf(playerIdBt2));
+        intent.putExtra(PLAYER_ID_BOWLER, String.valueOf(playerIdBl));
+
         startActivity(intent);
 
     }
@@ -173,22 +213,54 @@ public class ScoreActivity extends AppCompatActivity {
             if(result == null) {
                 result = "THERE WAS AN ERROR";
             }
-            ArrayList<String> playerNames1 = new ArrayList<>();
+            final ArrayList<String> playerNames1 = new ArrayList<>();
             for(Player p : playersListTeam1){
                 playerNames1.add(p.getPlayerName());
             }
-            adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, playerNames1);
+            adapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_item, playerNames1){
+                @Override
+                public View getDropDownView(int position, View convertView, ViewGroup parent){
+                    View v = convertView;
+                    if (v == null) {
+                        Context mContext = this.getContext();
+                        LayoutInflater vi = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                        v = vi.inflate(R.layout.row, null);
+                    }
+
+                    TextView tv = (TextView) v.findViewById(R.id.spinnerTarget);
+                    tv.setText(playerNames1.get(position));
+                    tv.setTextColor(Color.BLACK);
+                    tv.setTextSize(11);
+                    return v;
+                }
+            };
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             if(adapter != null) {
                 spinnerBt1.setAdapter(adapter);
                 spinnerBt2.setAdapter(adapter);
             }
 
-            ArrayList<String> playerNames2 = new ArrayList<>();
+            final ArrayList<String> playerNames2 = new ArrayList<>();
             for(Player p : playersListTeam2){
                 playerNames2.add(p.getPlayerName());
             }
-            adapter2 = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, playerNames2);
+            adapter2 = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_item, playerNames2){
+                @Override
+                public View getDropDownView(int position, View convertView, ViewGroup parent){
+                    View v = convertView;
+                    if (v == null) {
+                        Context mContext = this.getContext();
+                        LayoutInflater vi = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                        v = vi.inflate(R.layout.row, null);
+                    }
+
+                    TextView tv = (TextView) v.findViewById(R.id.spinnerTarget);
+                    tv.setText(playerNames2.get(position));
+                    tv.setTextColor(Color.BLACK);
+                    tv.setTextSize(11);
+                    return v;
+                }
+            };
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             if(adapter2 != null) {
                 spinnerBl.setAdapter(adapter2);

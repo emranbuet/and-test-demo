@@ -40,10 +40,11 @@
 
         <Spinner
             android:id="@+id/spBt1"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:visibility="visible"
+
             app:spinnerMode="dropdown" />
 
 
@@ -66,7 +67,7 @@
 
         <Spinner
             android:id="@+id/spBt2"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1" />
 
@@ -88,7 +89,7 @@
 
         <Spinner
             android:id="@+id/spBl"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1" />
 

@@ -37,7 +37,7 @@
             android:id="@+id/tvTeamName"
             android:layout_width="110dp"
             android:layout_height="wrap_content"
-            android:text="Team Name:"/>
+            android:text="Batting Team:"/>
 
         <EditText
             android:id="@+id/etTeamName"
@@ -57,7 +57,7 @@
             android:id="@+id/tvTeamName2"
             android:layout_width="110dp"
             android:layout_height="wrap_content"
-            android:text="Team Name 2:"/>
+            android:text="Bowling Team:"/>
 
         <EditText
             android:id="@+id/etTeamName2"
