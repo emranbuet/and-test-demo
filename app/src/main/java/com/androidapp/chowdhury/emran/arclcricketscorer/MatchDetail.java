@@ -1,7 +1,6 @@
 package com.androidapp.chowdhury.emran.arclcricketscorer;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -18,13 +17,11 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static com.androidapp.chowdhury.emran.arclcricketscorer.R.id.btnContent;
-import static com.androidapp.chowdhury.emran.arclcricketscorer.R.id.llFirst;
-
 public class MatchDetail extends AppCompatActivity {
 
     public static String PLAYER_LIST_FIRST = "PlayerListOne";
     public static String PLAYER_LIST_SECOND = "PlayerListTwo";
+    public static String PLAYER_LIST_BOWLERS = "PlayerListAvailableBowlers";
 
     public static String TEAM_NAME_1 = "TEAM_NAME_1";
     public static String TEAM_NAME_2 = "TEAM_NAME_2";
@@ -36,14 +33,21 @@ public class MatchDetail extends AppCompatActivity {
     public static String PLAYER_ID_BATSMAN_2 = "Batsman2";
     public static String PLAYER_ID_BOWLER = "Bowler";
 
-    public static int NAME_LEN = 12;
+    public static int NAME_LEN = 15;
 
     private ArrayList<Player> playersListTeam1, playersListTeam2;
     private HashMap<Integer, Player> playerHashMap;
     private String playerListAll = null;
     private String strTeam1, strTeam2, strTotOver, strContent, strDetail, preStrDetail, preStrContent;
     private int playerIdBt1, playerIdBt2, playerIdBowler;
+    private boolean overCompleted = false;
     //private int totOver;
+
+    // Batsmen, bowler statistics and UI mapping of batsmen, strikers
+    HashMap<Integer, BattingStatistics> preBatsmenStatsMap, batsmenStatsMap;
+    HashMap<Integer, BowlingStatistics> preBowlingStatsMap, bowlingStatsMap;
+    CurrentBatsmanInfo[] preActiveBatsmen, activeBatsmen;
+    BowlingStatistics currentBowlerStat;
 
     // Related to scoring
     private int runA, runR, preRunA, preRunR;
@@ -55,9 +59,10 @@ public class MatchDetail extends AppCompatActivity {
     private TextView tvTeam1, tvRunA, tvWickA, tvOverA, tvRunR, tvOverR, tvRunDetail, tvStatus;
     private TextView tvNameBt1,  tvRunBt1, tvBallBt1, tvFourBt1, tvSixBt1;
     private TextView tvNameBt2, tvRunBt2, tvBallBt2, tvFourBt2, tvSixBt2;
-    private TextView tvNameBl, tvOverBl, tvRunBl, tvWicketBl, tvWideBl, tvNoBl;
+    private TextView tvNameBowler, tvOverBowler, tvRunBowler, tvWicketBowler, tvWideBowler, tvNoBowler;
     private TextView tvTextBy, tvTextIn, tvTextOver;
     private LinearLayout llFirst, llRequired;
+    private LinearLayout llBt1, llBt2, llBowler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +76,7 @@ public class MatchDetail extends AppCompatActivity {
         tvTeam1 = (TextView)findViewById(R.id.tVNameTeam);
         tvNameBt1 = (TextView)findViewById(R.id.tVNameBt1);
         tvNameBt2 = (TextView)findViewById(R.id.tVNameBt2);
-        tvNameBl = (TextView)findViewById(R.id.tVNameBl);
+        tvNameBowler = (TextView)findViewById(R.id.tVNameBl);
 
         llFirst = (LinearLayout)findViewById(R.id.llFirst);
         llRequired = (LinearLayout)findViewById(R.id.llRequired);
@@ -89,15 +94,18 @@ public class MatchDetail extends AppCompatActivity {
         tvSixBt2 = (TextView)findViewById(R.id.tVSixBt2);
         tvRunDetail = (TextView)findViewById(R.id.tVRunDetail);
         btnContent = (Button) findViewById(R.id.btnContent);
-        tvOverBl = (TextView)findViewById(R.id.tVOverBl);
-        tvRunBl = (TextView)findViewById(R.id.tVRunBl);
-        tvWicketBl = (TextView)findViewById(R.id.tVWicketBl);
-        tvWideBl = (TextView)findViewById(R.id.tVWideBl);
-        tvNoBl = (TextView)findViewById(R.id.tVNoBl);
+        tvOverBowler = (TextView)findViewById(R.id.tVOverBl);
+        tvRunBowler = (TextView)findViewById(R.id.tVRunBl);
+        tvWicketBowler = (TextView)findViewById(R.id.tVWicketBl);
+        tvWideBowler = (TextView)findViewById(R.id.tVWideBl);
+        tvNoBowler = (TextView)findViewById(R.id.tVNoBl);
 
         tvTextBy = (TextView)findViewById(R.id.tVTextBy);
         tvTextIn = (TextView)findViewById(R.id.tVTextIn);
         tvTextOver = (TextView)findViewById(R.id.tVTextOver);
+        llBt1 = (LinearLayout) findViewById(R.id.llBt1);
+        llBt2 = (LinearLayout) findViewById(R.id.llBt2);
+        llBowler = (LinearLayout) findViewById(R.id.llBl);
 //        tvTextBy2 = (TextView)findViewById(R.id.tVTextBy2);
 //        tvTextIn2 = (TextView)findViewById(R.id.tVTextIn2);
 //        tvTextOver2 = (TextView)findViewById(R.id.tVTextOver2);
@@ -123,26 +131,26 @@ public class MatchDetail extends AppCompatActivity {
         }
 
         // Testing
-        if(playerHashMap != null){
-            for(int id: playerHashMap.keySet()) {
-                Player player = playerHashMap.get(id);
-                Log.d("MatchDetail: " + LogType.TEST, player.getPlayerName() + " with id: " + player.getPlayerId());
-            }
-        }
-        else{
-            Log.d("MatchDetail: " + LogType.ERROR, "Player HashMap is null");
-        }
+//        if(playerHashMap != null){
+//            for(int id: playerHashMap.keySet()) {
+//                Player player = playerHashMap.get(id);
+//                //Log.d("MatchDetail: " + LogType.TEST, player.getPlayerName() + " with id: " + player.getPlayerId());
+//            }
+//        }
+//        else{
+//            Log.d("MatchDetail: " + LogType.ERROR, "Player HashMap is null");
+//        }
 
-        Log.d("MatchDetail: " + LogType.TEST, "Id " + playerIdBt1 + " -> " + playerHashMap.get(playerIdBt1).getPlayerName());
-        Log.d("MatchDetail: " + LogType.TEST, "Id " + playerIdBt2 + " -> " + playerHashMap.get(playerIdBt2).getPlayerName());
-        Log.d("MatchDetail: " + LogType.TEST, "Id " + playerIdBowler + " -> " + playerHashMap.get(playerIdBowler).getPlayerName());
+        //Log.d("MatchDetail: " + LogType.TEST, "Id " + playerIdBt1 + " -> " + playerHashMap.get(playerIdBt1).getPlayerName());
+        //Log.d("MatchDetail: " + LogType.TEST, "Id " + playerIdBt2 + " -> " + playerHashMap.get(playerIdBt2).getPlayerName());
+        //Log.d("MatchDetail: " + LogType.TEST, "Id " + playerIdBowler + " -> " + playerHashMap.get(playerIdBowler).getPlayerName());
 
         //Toast.makeText(getApplicationContext(), "Player Map: " + playerHashMap.get(99) , Toast.LENGTH_SHORT).show();
 
         // Batting statistics and bowling statistics for players
-        HashMap<Integer, BattingStatistics> batsmenStatsMap = new HashMap<>();
-        HashMap<Integer, BowlingStatistics> bowlingStatsMap = new HashMap<>();
-        CurrentBatsmanInfo[] activeBatsmen = new CurrentBatsmanInfo[2];
+        batsmenStatsMap = new HashMap<>();
+        bowlingStatsMap = new HashMap<>();
+        activeBatsmen = new CurrentBatsmanInfo[2];
 
         // Set the initial team and batsman, bowler name in UI
         String strPlayerNameBt1, strPlayerNameBt2, strPlayerNameBowler;
@@ -180,8 +188,11 @@ public class MatchDetail extends AppCompatActivity {
             }
             CurrentBatsmanInfo btInfo1 = new CurrentBatsmanInfo(playerIdBt1, true, true);
             activeBatsmen[0] = btInfo1;
+            // Set the first batsman info in UI with green color
             tvNameBt1.setText(strBatsmanPartial1);
-            tvNameBt1.setTextColor(Color.GREEN);
+            tvNameBt1.setTextColor(Color.BLACK);
+            tvNameBt1.setTypeface(null, Typeface.BOLD);
+            llBt1.setBackgroundColor(Color.parseColor("#00cccc"));
         }
         else{
             Log.d("MatchDetail: " + LogType.ERROR, "First Batsman name is null");
@@ -195,7 +206,11 @@ public class MatchDetail extends AppCompatActivity {
             }
             CurrentBatsmanInfo btInfo2 = new CurrentBatsmanInfo(playerIdBt2, false, false);
             activeBatsmen[1] = btInfo2;
+            // Set the second batsman info in UI
             tvNameBt2.setText(strBatsmanPartial2);
+            tvNameBt2.setTextColor(Color.BLACK);
+            tvNameBt2.setTypeface(null, Typeface.NORMAL);
+            llBt2.setBackgroundColor(Color.parseColor("#e5e5e5"));
         }
         else{
             Log.d("MatchDetail: " + LogType.ERROR, "Second Batsman name is null");
@@ -207,8 +222,12 @@ public class MatchDetail extends AppCompatActivity {
                 BowlingStatistics bowlerStat = new BowlingStatistics(playerIdBowler);
                 bowlingStatsMap.put(playerIdBowler, bowlerStat);
             }
-            tvNameBl.setText(strBowlerPartial);
-            tvNameBl.setTextColor(Color.GREEN);
+            currentBowlerStat = bowlingStatsMap.get(playerIdBowler);
+            // Set the bowler info in UI with green color
+            tvNameBowler.setText(strBowlerPartial);
+            tvNameBowler.setTextColor(Color.BLACK);
+            tvNameBowler.setTypeface(null, Typeface.BOLD);
+            llBowler.setBackgroundColor(Color.parseColor("#00cccc"));
         }
         else{
             Log.d("MatchDetail: " + LogType.ERROR, "Bowler name is null");
@@ -273,11 +292,10 @@ public class MatchDetail extends AppCompatActivity {
         myTextView3.append(" overs match");*/
     }
     private void setInitial(){
-
+        btnContent.setText("");
         strContent = btnContent.getText().toString();
         tvTeam1.setTypeface(null, Typeface.BOLD);
         tvTeam1.setTextColor(Color.parseColor("#ff3e54ff"));
-
         tvRunA.setTextColor(Color.parseColor("#ff000000"));
         tvTextBy.setTextColor(Color.parseColor("#ff000000"));
         tvWickA.setTextColor(Color.parseColor("#ff000000"));
@@ -311,39 +329,172 @@ public class MatchDetail extends AppCompatActivity {
 //
 //        tvRunR.setText(Integer.toString(runR));
 //        tvOverR.setText(Double.toString(overR));
+        overCompleted = false;
     }
+    // Check the activeBatsmen info to return the first UI label of batsman's index in activeBatsmen Array
+    private int getFirstUILabelBatsmanIndexInArray(){
+        return ((activeBatsmen[0].isDisplayedFirst())? 0 : 1);
+    }
+    // Check the activeBatsmen info to return the striker's index in activeBatsmen Array
+    private int getStrikerBatsmanIndexInArray(){
+        return ((activeBatsmen[0].isStriker())? 0 : 1);
+    }
+    private void swapBatsmen(){
+        int strikerIndex = getStrikerBatsmanIndexInArray();
+        activeBatsmen[strikerIndex].setStriker(false);
+        activeBatsmen[1 - strikerIndex].setStriker(true);
+        if(activeBatsmen[strikerIndex].isDisplayedFirst()){
+            tvNameBt1.setTypeface(null, Typeface.NORMAL);
+            llBt1.setBackgroundColor(Color.parseColor("#e5e5e5"));
+            tvNameBt2.setTypeface(null, Typeface.BOLD);
+            llBt2.setBackgroundColor(Color.parseColor("#00cccc"));
+        }
+        else{
+            tvNameBt2.setTypeface(null, Typeface.NORMAL);
+            llBt2.setBackgroundColor(Color.parseColor("#e5e5e5"));
+            tvNameBt1.setTypeface(null, Typeface.BOLD);
+            llBt1.setBackgroundColor(Color.parseColor("#00cccc"));
+        }
+    }
+    // Following function is for swapping batsmen from UI if something is wrong after runout
+    public void swapBatsmenByButton(View v){
+        int strikerIndex = getStrikerBatsmanIndexInArray();
+        activeBatsmen[strikerIndex].setStriker(false);
+        activeBatsmen[1 - strikerIndex].setStriker(true);
+        if(activeBatsmen[strikerIndex].isDisplayedFirst()){
+            tvNameBt1.setTypeface(null, Typeface.NORMAL);
+            llBt1.setBackgroundColor(Color.parseColor("#e5e5e5"));
+            tvNameBt2.setTypeface(null, Typeface.BOLD);
+            llBt2.setBackgroundColor(Color.parseColor("#00cccc"));
+        }
+        else{
+            tvNameBt2.setTypeface(null, Typeface.NORMAL);
+            llBt2.setBackgroundColor(Color.parseColor("#e5e5e5"));
+            tvNameBt1.setTypeface(null, Typeface.BOLD);
+            llBt1.setBackgroundColor(Color.parseColor("#00cccc"));
+        }
+    }
+    private int updateRunsInBatting(int currentTeamRun, int run){
+        int strikerIndex = getStrikerBatsmanIndexInArray();
+        int strikerPlayerId = activeBatsmen[strikerIndex].getBatsmanPlayerId();
+        // update striker batsmen information
+        BattingStatistics strikerStat = batsmenStatsMap.get(strikerPlayerId);
+        strikerStat.setBallsFaced(strikerStat.getBallsFaced() + 1);
+        strikerStat.setRunsScored(strikerStat.getRunsScored() + run);
+        if(run == 4 || run == 6){
+            if(run == 4){
+                strikerStat.setNumOf4s(strikerStat.getNumOf4s() + 1);
+            }
+            else if(run == 6){
+                strikerStat.setNumOf6s(strikerStat.getNumOf6s() + 1);
+            }
+        }
+        batsmenStatsMap.put(strikerPlayerId, strikerStat);
+        return (currentTeamRun + run);
+    }
+    private void updateBowlingStat(int runConcededByBowler, int numOfWicket, boolean isWide, boolean isNo, int runConcededByTeam){
+        double oversBowledByBowler = currentBowlerStat.getOversBowled();
+        int overAndBallCountDecimal = (int)(oversBowledByBowler * 10);
+        int ballOnlyBowler = overAndBallCountDecimal%10;
+        int overOnlyBowler = overAndBallCountDecimal/10;
+        if(!isWide && !isNo){
+            ballOnlyBowler++;
+        }
+        currentBowlerStat.setRunsConceded(currentBowlerStat.getRunsConceded() + runConcededByBowler);
+        currentBowlerStat.setNumberOfWickets(currentBowlerStat.getNumberOfWickets() + numOfWicket);
+        if(isWide){
+            currentBowlerStat.setWidesCount(currentBowlerStat.getWidesCount() + 1);
+        }
+        if(isNo){
+            currentBowlerStat.setNoBallCount(currentBowlerStat.getNoBallCount() + 1);
+        }
+        if(ballOnlyBowler == 6){
+            overOnlyBowler++;
+            ballOnlyBowler = 0;
+        }
+        double currentOversForBowler = overOnlyBowler + (ballOnlyBowler/10.0);
+        currentBowlerStat.setOversBowled(currentOversForBowler);
+    }
+    // Change after each over
+    private void changeCurrentBowler(){
+        bowlingStatsMap.put(currentBowlerStat.getBowlerPlayerId(), currentBowlerStat);
+        // Get the new bowler id from UI dialog
+        Log.d("NewBowler: " + LogType.TEST, "Calling a new bowler activity");
+        Intent newBowlerIntent = new Intent(getApplicationContext(), NewBowlerActivity.class);
+        ArrayList<Player> bowlerListAvailable = new ArrayList<Player>();
+        for(Player p: playersListTeam2){
+            if(p.getPlayerId() != currentBowlerStat.getBowlerPlayerId()){
+                if(bowlingStatsMap.containsKey(p.getPlayerId())) {
+                    int oversBowled = (int) bowlingStatsMap.get(p.getPlayerId()).getOversBowled();
+                    if (oversBowled == 4) {
+                        continue;
+                    }
+                }
+                bowlerListAvailable.add(p);
+            }
+        }
+        newBowlerIntent.putExtra(PLAYER_LIST_BOWLERS, bowlerListAvailable);
+        startActivityForResult(newBowlerIntent, 1);
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 1) {
+            if(resultCode == Activity.RESULT_OK){
+                String bowlerIdStr = data.getStringExtra("newBowlerId");
+                int newBowlerPlayerId = Integer.parseInt(bowlerIdStr);
+                BowlingStatistics newBowlerStat = null;
+                if(!bowlingStatsMap.containsKey(newBowlerPlayerId)) {
+                    newBowlerStat = new BowlingStatistics(newBowlerPlayerId);
+                    bowlingStatsMap.put(newBowlerPlayerId, newBowlerStat);
+                }
+                currentBowlerStat = bowlingStatsMap.get(newBowlerPlayerId);
+                Log.d("NewBowler: " + LogType.TEST, "Current Bowler name:" + playerHashMap.get(currentBowlerStat.getBowlerPlayerId()).getPlayerName());
+                String bowlerFullName = playerHashMap.get(currentBowlerStat.getBowlerPlayerId()).getPlayerName();
+                String strBowlerNamePartial = (bowlerFullName.length() > NAME_LEN) ? bowlerFullName.substring(0, NAME_LEN) : bowlerFullName;
+                tvNameBowler.setText(strBowlerNamePartial);
+                tvOverBowler.setText(Double.toString(currentBowlerStat.getOversBowled()));
+                tvRunBowler.setText(Integer.toString(currentBowlerStat.getRunsConceded()));
+                tvWicketBowler.setText(Integer.toString(currentBowlerStat.getNumberOfWickets()));
+                tvWideBowler.setText(Integer.toString(currentBowlerStat.getWidesCount()));
+                tvNoBowler.setText(Integer.toString(currentBowlerStat.getNoBallCount()));
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+                Toast.makeText(getApplicationContext(), "You need to select next bowler to continue", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+    // Change after batsman got out
+    private void changeBatsman(){
 
-    public void hitOK(View v){  //write the code after each ball, update total runs, wicket, overs
-        strContent = btnContent.getText().toString();
+    }
+    public void hitOK(View v){  //write the code after each ball, update total r
         strDetail = tvRunDetail.getText().toString();
-
         if(strContent.length() > 0) {
             preStrContent = strContent;
             preStrDetail = strDetail;
             preRunA = runA;
-            //preRunB = runB;
             preRunR = runR;
             preOverA = overA;
-            //preOverB = overB;
             preOverR = overR;
             preWickA = wickA;
-            //preWickB = wickB;
-
+            preBatsmenStatsMap = batsmenStatsMap;
+            preBowlingStatsMap = bowlingStatsMap;
+            preActiveBatsmen = activeBatsmen;
             int run = 0;
-            int fullOver10 = (int)totOver;
-//            if (firstBatting) {
-//                fullOver10 = (int) (overA * 10);
-//            } else {
-//                //fullOver10 = (int) (overB * 10);
-//                //TODO: Check fullOver10 value here
-//                fullOver10 = (int) (overA * 10);
-//            } 
+            // Since only batting team overs are calculated, we should get the over information from overA irrespective to batting first/second
+            int fullOver10 = (int) (overA * 10);
             int overOnly = fullOver10 / 10;
             int ball = fullOver10 % 10;
-
+            // Run scored: 0, 1, 2, 3, 4, 6 -> strike need to be changed for 1 & 3 runs
             if (strContent.length() == 1) {
                 if (TextUtils.isDigitsOnly(strContent)) {
                     run = Integer.parseInt(strContent);
+                    // Update the batsmen runs
+                    runA = updateRunsInBatting(runA, run);
+                    if(run == 1 || run == 3){
+                        swapBatsmen();
+                    }
+                    updateBowlingStat(run, 0, false, false, 0);
                     if (ball <= 4) {
                         ball++;
                         strDetail += "  ";
@@ -352,18 +503,19 @@ public class MatchDetail extends AppCompatActivity {
                         ball = 0;
                         overOnly++;
                         strDetail = "";
-                        Toast.makeText(getApplicationContext(), "Over Completed!", Toast.LENGTH_SHORT).show();
+                        overCompleted = true;
                     }
                 }
             } else {
                 char ch = strContent.charAt(0);
                 run = 0;
                 switch (ch) {
-                    case 'n':
+                    case 'n':   // For no-ball calculation: nb+d
                         if (strContent.length() > 3) {
                             String strRunCon = strContent.substring(3);
                             if(TextUtils.isDigitsOnly(strRunCon)){
-                                run = Integer.parseInt(strRunCon);
+                                run = Integer.parseInt(strRunCon);// batsman scored runs in no-ball
+                                runA = updateRunsInBatting(runA, run);
                             }
                             else {
                                 Toast.makeText(getApplicationContext(), "Extra combination is not allowed. Press Clear to update it.", Toast.LENGTH_SHORT).show();
@@ -373,6 +525,8 @@ public class MatchDetail extends AppCompatActivity {
                         else
                             strContent = strContent.substring(0, 2);
                         run++;
+                        runA++;
+                        updateBowlingStat(run, 0, false, true, 0);
                         strDetail += "  ";
                         strDetail += strContent;
                         break;
@@ -380,7 +534,10 @@ public class MatchDetail extends AppCompatActivity {
                         if (strContent.length() > 3){
                             String strRunCon = strContent.substring(3);
                             if(TextUtils.isDigitsOnly(strRunCon)){
-                                run = Integer.parseInt(strRunCon);
+                                run = Integer.parseInt(strRunCon);//batsmen ran but these are wide runs, strike might change here
+                                if(run == 1 || run == 3){
+                                    swapBatsmen();
+                                }
                             }
                             else {
                                 Toast.makeText(getApplicationContext(), "Extra combination is not allowed. Press Clear to update it.", Toast.LENGTH_SHORT).show();
@@ -390,6 +547,8 @@ public class MatchDetail extends AppCompatActivity {
                         else
                             strContent = strContent.substring(0, 2);
                         run++;
+                        runA+=run;
+                        updateBowlingStat(run, 0, true, false, 0);
                         strDetail += "  ";
                         strDetail += strContent;
                         break;
@@ -397,7 +556,12 @@ public class MatchDetail extends AppCompatActivity {
                         if (strContent.length() > 1){
                             String strRunCon = strContent.substring(1);
                             if(TextUtils.isDigitsOnly(strRunCon)){
-                                run = Integer.parseInt(strRunCon);
+                                run = Integer.parseInt(strRunCon); // batsmen ran but these are bye runs, strike might change here
+                                if(run == 1 || run == 3){
+                                    swapBatsmen();
+                                }
+                                updateBowlingStat(0, 0, false, false, run);
+                                runA+=run;
                             }
                             else {
                                 Toast.makeText(getApplicationContext(), "Extra combination is not allowed. Press Clear to update it.", Toast.LENGTH_SHORT).show();
@@ -408,7 +572,7 @@ public class MatchDetail extends AppCompatActivity {
                             overOnly++;
                             ball = 0;
                             strDetail = "";
-                            Toast.makeText(getApplicationContext(), "Over Completed!", Toast.LENGTH_SHORT).show();
+                            overCompleted = true;
                         } else {
                             ball++;
                             strDetail += "  ";
@@ -420,9 +584,10 @@ public class MatchDetail extends AppCompatActivity {
                             switch (strContent.charAt(2)) {
                                 case 'n':
                                     if (strContent.length() > 5){
-                                        String strRunCon = strContent.substring(5);
+                                        String strRunCon = strContent.substring(5); // batsmen can only be out by runout in no-ball
                                         if(TextUtils.isDigitsOnly(strRunCon)){
                                             run = Integer.parseInt(strRunCon);
+                                            runA = updateRunsInBatting(runA, run);
                                         }
                                         else {
                                             Toast.makeText(getApplicationContext(), "Extra combination is not allowed. Press Clear to update it.", Toast.LENGTH_SHORT).show();
@@ -432,6 +597,8 @@ public class MatchDetail extends AppCompatActivity {
                                     else
                                         strContent = strContent.substring(0, 4);
                                     run++;
+                                    runA++;
+                                    updateBowlingStat(run, 0, false, true, 0);
                                     strDetail += "  ";
                                     strDetail += strContent;
                                     break;
@@ -467,7 +634,7 @@ public class MatchDetail extends AppCompatActivity {
                                         overOnly++;
                                         ball = 0;
                                         strDetail = "";
-                                        Toast.makeText(getApplicationContext(), "Over Completed!", Toast.LENGTH_SHORT).show();
+                                        overCompleted = true;
                                     } else {
                                         ball++;
                                         strDetail += "  ";
@@ -488,7 +655,7 @@ public class MatchDetail extends AppCompatActivity {
                                         overOnly++;
                                         ball = 0;
                                         strDetail = "";
-                                        Toast.makeText(getApplicationContext(), "Over Completed!", Toast.LENGTH_SHORT).show();
+                                        overCompleted = true;
                                     } else {
                                         ball++;
                                         strDetail += "  ";
@@ -501,7 +668,7 @@ public class MatchDetail extends AppCompatActivity {
                                 overOnly++;
                                 ball = 0;
                                 strDetail = "";
-                                Toast.makeText(getApplicationContext(), "Over Completed!", Toast.LENGTH_SHORT).show();
+                                overCompleted = true;
                             } else {
                                 ball++;
                                 strDetail += "  ";
@@ -518,7 +685,38 @@ public class MatchDetail extends AppCompatActivity {
                 }
             }
             String strOver = overOnly + "." + ball;
-            if (firstBatting) {
+            // Only Batting team information are only in UI, so update those
+            // Dont update the total run here since it has to be updated along with batsmen runs
+            // TODO: Check runA actually updated in above switch code
+            //runA += run;
+            overA = overOnly + (ball / 10.0);
+            tvRunA.setText(Integer.toString(runA));
+            tvWickA.setText(Integer.toString(wickA));
+            tvOverA.setText(strOver);
+            runR = runA + 1; // runA needs to be updated above
+            tvRunR.setText(Integer.toString(runR));
+            // Update the personal batting scores based on FirstUILabelPositionBatsmanIndex
+            int index = getFirstUILabelBatsmanIndexInArray();
+            int playerIdFirst = activeBatsmen[index].getBatsmanPlayerId();
+            BattingStatistics bs1 = batsmenStatsMap.get(playerIdFirst);
+            tvRunBt1.setText(Integer.toString(bs1.getRunsScored()));
+            tvBallBt1.setText(Integer.toString(bs1.getBallsFaced()));
+            tvFourBt1.setText(Integer.toString(bs1.getNumOf4s()));
+            tvSixBt1.setText(Integer.toString(bs1.getNumOf6s()));
+
+            int playerIdSecond = activeBatsmen[1 - index].getBatsmanPlayerId();
+            BattingStatistics bs2 = batsmenStatsMap.get(playerIdSecond);
+            tvRunBt2.setText(Integer.toString(bs2.getRunsScored()));
+            tvBallBt2.setText(Integer.toString(bs2.getBallsFaced()));
+            tvFourBt2.setText(Integer.toString(bs2.getNumOf4s()));
+            tvSixBt2.setText(Integer.toString(bs2.getNumOf6s()));
+
+            tvOverBowler.setText(Double.toString(currentBowlerStat.getOversBowled()));
+            tvRunBowler.setText(Integer.toString(currentBowlerStat.getRunsConceded()));
+            tvWicketBowler.setText(Integer.toString(currentBowlerStat.getNumberOfWickets()));
+            tvWideBowler.setText(Integer.toString(currentBowlerStat.getWidesCount()));
+            tvNoBowler.setText(Integer.toString(currentBowlerStat.getNoBallCount()));
+            /*if (firstBatting) {
                 runA += run;
                 overA = overOnly + (ball / 10.0);
                 tvRunA.setText(Integer.toString(runA));
@@ -539,29 +737,29 @@ public class MatchDetail extends AppCompatActivity {
                 //TODO: tvRunB.setText(Integer.toString(runB));
                 //TODO: tvWickB.setText(Integer.toString(wickB));
                 //TODO: tvOverB.setText(strOver);
-//                if (runB > runA) {
-//                    tvRunR.setText(Integer.toString(0));
-//                    tvStatus.setText(strTeam2 + " won");
-//                    Toast.makeText(getApplicationContext(), strTeam2 + " won the match", Toast.LENGTH_LONG).show();
-//                }
+                if (runB > runA) {
+                    tvRunR.setText(Integer.toString(0));
+                    tvStatus.setText(strTeam2 + " won");
+                    Toast.makeText(getApplicationContext(), strTeam2 + " won the match", Toast.LENGTH_LONG).show();
+                }
                 else {
                     //runR =  runA - runB + 1;
                     tvRunR.setText(Integer.toString(runR));
                 }
                 if (ball == 0) {
-                    //double remOver = totOver - overB;
-                    //overR = remOver;
-                    //tvOverR.setText(Double.toString(remOver));
-//                    if(overB == totOver){
-//                        if(runA > runB){
-//                            tvStatus.setText(strTeam1 + " won");
-//                            Toast.makeText(getApplicationContext(), strTeam1 + " won the match by " + (runA - runB)+" runs", Toast.LENGTH_LONG).show();
-//                        }
-//                        else if(runA == runB){
-//                            tvStatus.setText("Match Tie");
-//                            Toast.makeText(getApplicationContext(), "Match Tie", Toast.LENGTH_LONG).show();
-//                        }
-//                    }
+                    double remOver = totOver - overB;
+                    overR = remOver;
+                    tvOverR.setText(Double.toString(remOver));
+                    if(overB == totOver){
+                        if(runA > runB){
+                            tvStatus.setText(strTeam1 + " won");
+                            Toast.makeText(getApplicationContext(), strTeam1 + " won the match by " + (runA - runB)+" runs", Toast.LENGTH_LONG).show();
+                        }
+                        else if(runA == runB){
+                            tvStatus.setText("Match Tie");
+                            Toast.makeText(getApplicationContext(), "Match Tie", Toast.LENGTH_LONG).show();
+                        }
+                    }
                 } else {
                     int remOverOnly = (int) totOver - overOnly - 1;
                     int ballOnly = 6 - ball;
@@ -569,9 +767,14 @@ public class MatchDetail extends AppCompatActivity {
                     overR = remOver;
                     tvOverR.setText(Double.toString(remOver));
                 }
-            }
+            }*/
             tvRunDetail.setText(strDetail);
             btnContent.setText("");
+            if(overCompleted){
+                Toast.makeText(getApplicationContext(), "Over Completed!", Toast.LENGTH_SHORT).show();
+                changeCurrentBowler();
+                overCompleted = false;
+            }
         }
         else{
             Toast.makeText(getApplicationContext(), "Enter 0 for dot ball", Toast.LENGTH_SHORT).show();
@@ -736,31 +939,31 @@ public class MatchDetail extends AppCompatActivity {
 
         //llSecond.setBackgroundColor(Color.parseColor("#ffe5e4e2"));
     }
-    public void matchSave(View v){
-        Toast.makeText(getApplicationContext(), "Match Can not be saved now", Toast.LENGTH_SHORT).show();
-    }
-    public void newMatch(View v){
-        confirmation();
-    }
-    public void confirmation(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Warning...");
-        builder.setMessage("Are you sure? All score will be lost!");
-        //builder.setIcon(R.drawable.ic_launcher);
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                dialog.dismiss();
-                gotoNewMatch();
-            }
-        });
-        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                dialog.dismiss();
-            }
-        });
-        AlertDialog alert = builder.create();
-        alert.show();
-    }
+//    public void matchSave(View v){
+//        Toast.makeText(getApplicationContext(), "Match Can not be saved now", Toast.LENGTH_SHORT).show();
+//    }
+//    public void newMatch(View v){
+//        confirmation();
+//    }
+//    public void confirmation(){
+//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//        builder.setTitle("Warning...");
+//        builder.setMessage("Are you sure? All score will be lost!");
+//        //builder.setIcon(R.drawable.ic_launcher);
+//        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+//            public void onClick(DialogInterface dialog, int id) {
+//                dialog.dismiss();
+//                gotoNewMatch();
+//            }
+//        });
+//        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+//            public void onClick(DialogInterface dialog, int id) {
+//                dialog.dismiss();
+//            }
+//        });
+//        AlertDialog alert = builder.create();
+//        alert.show();
+//    }
     public void gotoNewMatch(){
         //super.onBackPressed();
         //Intent i = new Intent(this, New_Match.class);

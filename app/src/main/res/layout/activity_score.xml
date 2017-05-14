@@ -28,6 +28,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_marginTop="15dp"
+        android:layout_marginLeft="15dp"
         android:layout_marginBottom="25dp">
 
 
@@ -36,7 +37,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Select Batsman 1:"
-            android:layout_marginRight="50dp"/>
+            android:layout_marginRight="25dp"/>
 
         <Spinner
             android:id="@+id/spBt1"
@@ -56,6 +57,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_marginTop="15dp"
+        android:layout_marginLeft="15dp"
         android:layout_marginBottom="25dp">
 
         <TextView
@@ -63,7 +65,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Select Batsman 2: "
-            android:layout_marginRight="50dp"/>
+            android:layout_marginRight="25dp"/>
 
         <Spinner
             android:id="@+id/spBt2"
@@ -78,6 +80,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_marginTop="15dp"
+        android:layout_marginLeft="15dp"
         android:layout_marginBottom="25dp">
 
         <TextView
@@ -85,7 +88,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Select Bowler: "
-            android:layout_marginRight="75dp"/>
+            android:layout_marginRight="50dp"/>
 
         <Spinner
             android:id="@+id/spBl"

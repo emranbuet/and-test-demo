@@ -780,7 +780,7 @@
             android:layout_weight="1"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="5dp"
-            android:onClick="swapBatsman"/>
+            android:onClick="swapBatsmenByButton"/>
 
         <!--<Button-->
             <!--android:layout_width="wrap_content"-->

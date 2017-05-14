@@ -1,48 +1,30 @@
 package com.androidapp.chowdhury.emran.arclcricketscorer;
 
-import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
-import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.JsonReader;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import org.xmlpull.v1.XmlPullParser;
+import android.widget.Toast;;
 import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlPullParserFactory;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
-
-import javax.xml.transform.Result;
-
-import static android.provider.AlarmClock.EXTRA_MESSAGE;
 
 public class ScoreActivity extends AppCompatActivity {
     public static String TEAM_NAME_1 = "TEAM_NAME_1";
@@ -133,61 +115,63 @@ public class ScoreActivity extends AppCompatActivity {
 
     public void beginScoring(View view){
 
-        Intent intent = new Intent(getApplicationContext(), MatchDetail.class);
-        //intent.putExtra(PLAYER_LIST_STATUS, result);
-        if(strTeam1 != null && Character.isLowerCase(strTeam1.charAt(0))){
-            String firstChar = strTeam1.substring(0, 1);
-            String lastPart = strTeam1.substring(1);
-            strTeam1 = firstChar.toUpperCase() + lastPart;
+        if(spinnerBt1.getSelectedItemPosition() == spinnerBt2.getSelectedItemPosition()){
+            Toast.makeText(getApplicationContext(), "Select different opening batsmen to start", Toast.LENGTH_SHORT).show();
         }
-        if(strTeam2 != null && Character.isLowerCase(strTeam2.charAt(0))){
-            String firstChar = strTeam2.substring(0, 1);
-            String lastPart = strTeam2.substring(1);
-            strTeam2 = firstChar.toUpperCase() + lastPart;
-        }
-        intent.putExtra(TEAM_NAME_1, strTeam1);
-        intent.putExtra(TEAM_NAME_2, strTeam2);
-        intent.putExtra(TOTAL_OVER, String.valueOf(totOver));
-
-        Player p1= null, p2 = null, player = null;
-        playersMap = new HashMap<>();
-
-        if(playersListTeam1 == null || playersListTeam1.isEmpty()){
-            Log.d("Error", "Player list of first team is empty");
-        }
-        else{
-            for(Player p : playersListTeam1){
-                playersMap.put(p.getPlayerId(), p);
+        else {
+            Intent intent = new Intent(getApplicationContext(), MatchDetail.class);
+            //intent.putExtra(PLAYER_LIST_STATUS, result);
+            if (strTeam1 != null && Character.isLowerCase(strTeam1.charAt(0))) {
+                String firstChar = strTeam1.substring(0, 1);
+                String lastPart = strTeam1.substring(1);
+                strTeam1 = firstChar.toUpperCase() + lastPart;
             }
-        }
-        if(playersListTeam2 == null || playersListTeam2.isEmpty()) {
-            Log.d("Error", "Player list of second team is empty");
-        }
-        else{
-            for(Player p : playersListTeam2){
-                playersMap.put(p.getPlayerId(), p);
+            if (strTeam2 != null && Character.isLowerCase(strTeam2.charAt(0))) {
+                String firstChar = strTeam2.substring(0, 1);
+                String lastPart = strTeam2.substring(1);
+                strTeam2 = firstChar.toUpperCase() + lastPart;
             }
+            intent.putExtra(TEAM_NAME_1, strTeam1);
+            intent.putExtra(TEAM_NAME_2, strTeam2);
+            intent.putExtra(TOTAL_OVER, String.valueOf(totOver));
+
+            Player p1 = null, p2 = null, player = null;
+            playersMap = new HashMap<>();
+
+            if (playersListTeam1 == null || playersListTeam1.isEmpty()) {
+                Log.d("Error", "Player list of first team is empty");
+            } else {
+                for (Player p : playersListTeam1) {
+                    playersMap.put(p.getPlayerId(), p);
+                }
+            }
+            if (playersListTeam2 == null || playersListTeam2.isEmpty()) {
+                Log.d("Error", "Player list of second team is empty");
+            } else {
+                for (Player p : playersListTeam2) {
+                    playersMap.put(p.getPlayerId(), p);
+                }
+            }
+
+            intent.putExtra(PLAYER_LIST_FIRST, playersListTeam1);
+            intent.putExtra(PLAYER_LIST_SECOND, playersListTeam2);
+            intent.putExtra(PLAYER_LIST_FULL, playersMap);
+
+            playerIdBt1 = playersListTeam1.get(spinnerBt1.getSelectedItemPosition()).getPlayerId();
+            playerIdBt2 = playersListTeam1.get(spinnerBt2.getSelectedItemPosition()).getPlayerId();
+            playerIdBl = playersListTeam2.get(spinnerBl.getSelectedItemPosition()).getPlayerId();
+
+            Log.d("Batsman 1", playersListTeam1.get(spinnerBt1.getSelectedItemPosition()).getPlayerName() + " -> " + String.valueOf(playerIdBl));
+            Log.d("Batsman 2", playersListTeam1.get(spinnerBt2.getSelectedItemPosition()).getPlayerName() + " -> " + String.valueOf(playerIdBt2));
+            Log.d("Bowler", playersListTeam2.get(spinnerBl.getSelectedItemPosition()).getPlayerName() + " -> " + String.valueOf(playerIdBl));
+
+
+            intent.putExtra(PLAYER_ID_BATSMAN_1, String.valueOf(playerIdBt1));
+            intent.putExtra(PLAYER_ID_BATSMAN_2, String.valueOf(playerIdBt2));
+            intent.putExtra(PLAYER_ID_BOWLER, String.valueOf(playerIdBl));
+
+            startActivity(intent);
         }
-
-        intent.putExtra(PLAYER_LIST_FIRST, playersListTeam1);
-        intent.putExtra(PLAYER_LIST_SECOND, playersListTeam2);
-        intent.putExtra(PLAYER_LIST_FULL, playersMap);
-
-        playerIdBt1 = playersListTeam1.get(spinnerBt1.getSelectedItemPosition()).getPlayerId();
-        playerIdBt2 = playersListTeam1.get(spinnerBt2.getSelectedItemPosition()).getPlayerId();
-        playerIdBl = playersListTeam2.get(spinnerBl.getSelectedItemPosition()).getPlayerId();
-
-        Log.d("Batsman 1", playersListTeam1.get(spinnerBt1.getSelectedItemPosition()).getPlayerName() + " -> " + String.valueOf(playerIdBl));
-        Log.d("Batsman 2", playersListTeam1.get(spinnerBt2.getSelectedItemPosition()).getPlayerName() + " -> " + String.valueOf(playerIdBt2));
-        Log.d("Bowler", playersListTeam2.get(spinnerBl.getSelectedItemPosition()).getPlayerName() + " -> " + String.valueOf(playerIdBl));
-
-
-
-        intent.putExtra(PLAYER_ID_BATSMAN_1, String.valueOf(playerIdBt1));
-        intent.putExtra(PLAYER_ID_BATSMAN_2, String.valueOf(playerIdBt2));
-        intent.putExtra(PLAYER_ID_BOWLER, String.valueOf(playerIdBl));
-
-        startActivity(intent);
 
     }
     private class CallAPI extends AsyncTask<String, String, String> {
@@ -261,7 +245,7 @@ public class ScoreActivity extends AppCompatActivity {
                     return v;
                 }
             };
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             if(adapter2 != null) {
                 spinnerBl.setAdapter(adapter2);
             }
