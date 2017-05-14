@@ -198,8 +198,13 @@ public class ScoreActivity extends AppCompatActivity {
                 result = "THERE WAS AN ERROR";
             }
             final ArrayList<String> playerNames1 = new ArrayList<>();
-            for(Player p : playersListTeam1){
-                playerNames1.add(p.getPlayerName());
+            if(playersListTeam1 == null || playersListTeam1.size() == 0){
+                Log.d("Error", "Player list of first team is empty");
+            }
+            else {
+                for (Player p : playersListTeam1) {
+                    playerNames1.add(p.getPlayerName());
+                }
             }
             adapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_item, playerNames1){
                 @Override
@@ -225,8 +230,13 @@ public class ScoreActivity extends AppCompatActivity {
             }
 
             final ArrayList<String> playerNames2 = new ArrayList<>();
-            for(Player p : playersListTeam2){
-                playerNames2.add(p.getPlayerName());
+            if(playersListTeam2 == null || playersListTeam2.size() == 0){
+                Log.d("Error", "Player list of second team is empty");
+            }
+            else {
+                for (Player p : playersListTeam2) {
+                    playerNames2.add(p.getPlayerName());
+                }
             }
             adapter2 = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_item, playerNames2){
                 @Override

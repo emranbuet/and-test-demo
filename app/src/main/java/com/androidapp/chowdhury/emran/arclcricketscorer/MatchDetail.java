@@ -33,14 +33,14 @@ public class MatchDetail extends AppCompatActivity {
     public static String PLAYER_ID_BATSMAN_2 = "Batsman2";
     public static String PLAYER_ID_BOWLER = "Bowler";
 
-    public static int NAME_LEN = 15;
+    public static int NAME_LEN = 12;
 
     private ArrayList<Player> playersListTeam1, playersListTeam2;
     private HashMap<Integer, Player> playerHashMap;
     private String playerListAll = null;
     private String strTeam1, strTeam2, strTotOver, strContent, strDetail, preStrDetail, preStrContent;
     private int playerIdBt1, playerIdBt2, playerIdBowler;
-    private boolean overCompleted = false;
+    private boolean overCompleted = false, swapMayNeed = false;
     //private int totOver;
 
     // Batsmen, bowler statistics and UI mapping of batsmen, strikers
@@ -330,6 +330,7 @@ public class MatchDetail extends AppCompatActivity {
 //        tvRunR.setText(Integer.toString(runR));
 //        tvOverR.setText(Double.toString(overR));
         overCompleted = false;
+        swapMayNeed = false;
     }
     // Check the activeBatsmen info to return the first UI label of batsman's index in activeBatsmen Array
     private int getFirstUILabelBatsmanIndexInArray(){
@@ -516,6 +517,9 @@ public class MatchDetail extends AppCompatActivity {
                             if(TextUtils.isDigitsOnly(strRunCon)){
                                 run = Integer.parseInt(strRunCon);// batsman scored runs in no-ball
                                 runA = updateRunsInBatting(runA, run);
+                                if(run == 1 || run == 3){
+                                    swapBatsmen();
+                                }
                             }
                             else {
                                 Toast.makeText(getApplicationContext(), "Extra combination is not allowed. Press Clear to update it.", Toast.LENGTH_SHORT).show();
@@ -557,6 +561,7 @@ public class MatchDetail extends AppCompatActivity {
                             String strRunCon = strContent.substring(1);
                             if(TextUtils.isDigitsOnly(strRunCon)){
                                 run = Integer.parseInt(strRunCon); // batsmen ran but these are bye runs, strike might change here
+                                runA = updateRunsInBatting(runA, 0);   //This run is not for batsman, this function is called to add dot ball for the batsman
                                 if(run == 1 || run == 3){
                                     swapBatsmen();
                                 }
@@ -588,6 +593,10 @@ public class MatchDetail extends AppCompatActivity {
                                         if(TextUtils.isDigitsOnly(strRunCon)){
                                             run = Integer.parseInt(strRunCon);
                                             runA = updateRunsInBatting(runA, run);
+                                            if(run == 1 || run == 3){
+                                                swapBatsmen();
+                                            }
+                                            swapMayNeed = true;
                                         }
                                         else {
                                             Toast.makeText(getApplicationContext(), "Extra combination is not allowed. Press Clear to update it.", Toast.LENGTH_SHORT).show();
@@ -604,9 +613,13 @@ public class MatchDetail extends AppCompatActivity {
                                     break;
                                 case 'w':
                                     if (strContent.length() > 5){
-                                        String strRunCon = strContent.substring(5);
+                                        String strRunCon = strContent.substring(5); // batsmen can only be run-out in wide ball
                                         if(TextUtils.isDigitsOnly(strRunCon)){
                                             run = Integer.parseInt(strRunCon);
+                                            if(run == 1 || run == 3){
+                                                swapBatsmen();
+                                            }
+                                            swapMayNeed = true;
                                         }
                                         else {
                                             Toast.makeText(getApplicationContext(), "Extra combination is not allowed. Press Clear to update it.", Toast.LENGTH_SHORT).show();
@@ -616,14 +629,22 @@ public class MatchDetail extends AppCompatActivity {
                                     else
                                         strContent = strContent.substring(0, 4);
                                     run++;
+                                    runA+=run;
+                                    updateBowlingStat(run, 0, true, false, 0);
                                     strDetail += "  ";
                                     strDetail += strContent;
                                     break;
                                 case 'b':
                                     if (strContent.length() > 3){
-                                        String strRunCon = strContent.substring(3);
+                                        String strRunCon = strContent.substring(3); // batsmen can only be run-out while taking run in bye
                                         if(TextUtils.isDigitsOnly(strRunCon)){
+                                            runA = updateRunsInBatting(runA, 0);   //This run is not for batsman, this function is called to add dot ball for the batsman
                                             run = Integer.parseInt(strRunCon);
+                                            if(run == 1 || run == 3){
+                                                swapBatsmen();
+                                            }
+                                            updateBowlingStat(0, 0, false, false, run);
+                                            swapMayNeed = true;
                                         }
                                         else {
                                             Toast.makeText(getApplicationContext(), "Extra combination is not allowed. Press Clear to update it.", Toast.LENGTH_SHORT).show();
@@ -645,7 +666,13 @@ public class MatchDetail extends AppCompatActivity {
                                     //run = Integer.parseInt(strContent.substring(2));
                                     String strRunCon = strContent.substring(2);
                                     if(TextUtils.isDigitsOnly(strRunCon)){
-                                        run = Integer.parseInt(strRunCon);
+                                        run = Integer.parseInt(strRunCon); //  batsmen can only be run-out while taking run in wicket ball
+                                        runA = updateRunsInBatting(runA, run);
+                                        if(run == 1 || run == 3){
+                                            swapBatsmen();
+                                        }
+                                        updateBowlingStat(run, 0, false, false, 0);
+                                        swapMayNeed = true;
                                     }
                                     else {
                                         Toast.makeText(getApplicationContext(), "Wicket and run combination is not allowed. Press Clear to update it.", Toast.LENGTH_SHORT).show();
@@ -675,12 +702,14 @@ public class MatchDetail extends AppCompatActivity {
                                 strContent = strContent.substring(0, 1); // Only Wicket fallen
                                 strDetail += strContent;
                             }
+                            updateBowlingStat(0, 1, false, false, 0);
                         }
-                        if (firstBatting)
-                            wickA++;
-                        else
-                            //wickB++;
-                            //TODO
+                        wickA++;
+//                        if (firstBatting)
+//                            wickA++;
+//                        else
+//                            //wickB++;
+//                            //TODO
                         break;
                 }
             }
@@ -770,6 +799,10 @@ public class MatchDetail extends AppCompatActivity {
             }*/
             tvRunDetail.setText(strDetail);
             btnContent.setText("");
+            if(swapMayNeed){
+                Toast.makeText(getApplicationContext(), "Click Swap Batsman if requires due to run-out", Toast.LENGTH_LONG).show();
+                swapMayNeed = false;
+            }
             if(overCompleted){
                 Toast.makeText(getApplicationContext(), "Over Completed!", Toast.LENGTH_SHORT).show();
                 changeCurrentBowler();
