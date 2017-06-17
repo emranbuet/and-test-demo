@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class MatchDetail extends AppCompatActivity {
 
@@ -149,8 +150,11 @@ public class MatchDetail extends AppCompatActivity {
 
         // Batting statistics and bowling statistics for players
         batsmenStatsMap = new HashMap<>();
+        preBatsmenStatsMap = new HashMap<>();
         bowlingStatsMap = new HashMap<>();
+        preBowlingStatsMap = new HashMap<>();
         activeBatsmen = new CurrentBatsmanInfo[2];
+        preActiveBatsmen = new CurrentBatsmanInfo[2];
 
         // Set the initial team and batsman, bowler name in UI
         String strPlayerNameBt1, strPlayerNameBt2, strPlayerNameBowler;
@@ -468,6 +472,9 @@ public class MatchDetail extends AppCompatActivity {
     private void changeBatsman(){
 
     }
+    public void viewScorecard(View v){
+
+    }
     public void hitOK(View v){  //write the code after each ball, update total r
         strDetail = tvRunDetail.getText().toString();
         if(strContent.length() > 0) {
@@ -478,9 +485,15 @@ public class MatchDetail extends AppCompatActivity {
             preOverA = overA;
             preOverR = overR;
             preWickA = wickA;
-            preBatsmenStatsMap = batsmenStatsMap;
-            preBowlingStatsMap = bowlingStatsMap;
-            preActiveBatsmen = activeBatsmen;
+            // store the current info for undo later
+            for(int i = 0; i < 2; i++){
+                int batsmanId = activeBatsmen[i].getBatsmanPlayerId();
+                preBatsmenStatsMap.put(batsmanId, batsmenStatsMap.get(batsmanId));
+            }
+            int bowlerId = currentBowlerStat.getBowlerPlayerId();
+            preBowlingStatsMap.put(bowlerId, bowlingStatsMap.get(bowlerId));
+            preActiveBatsmen[0] = activeBatsmen[0];
+            preActiveBatsmen[1] = activeBatsmen[1];
             int run = 0;
             // Since only batting team overs are calculated, we should get the over information from overA irrespective to batting first/second
             int fullOver10 = (int) (overA * 10);
@@ -918,19 +931,53 @@ public class MatchDetail extends AppCompatActivity {
         overR = preOverR;
         wickA = preWickA;
         //wickB = preWickB;
-        if(firstBatting){
-            tvRunA.setText(Integer.toString(runA));
-            tvWickA.setText(Integer.toString(wickA));
-            tvOverA.setText(Double.toString(overA));
-        }
-        else{
+//        if(firstBatting){
+//            tvRunA.setText(Integer.toString(runA));
+//            tvWickA.setText(Integer.toString(wickA));
+//            tvOverA.setText(Double.toString(overA));
+//        }
+//        else{
 //            tvRunB.setText(Integer.toString(runB));
 //            tvWickB.setText(Integer.toString(wickB));
 //            tvOverB.setText(Double.toString(overB));
-        }
+//        }
+        tvRunA.setText(Integer.toString(runA));
+        tvWickA.setText(Integer.toString(wickA));
+        tvOverA.setText(Double.toString(overA));
         tvRunR.setText(Integer.toString(runR));
         tvOverR.setText(Double.toString(overR));
         tvRunDetail.setText(strDetail);
+
+        //update personal information
+        for(int i = 0; i < 2; i++){
+            int batsmanId = activeBatsmen[i].getBatsmanPlayerId();
+            batsmenStatsMap.put(batsmanId, preBatsmenStatsMap.get(batsmanId));
+        }
+        int bowlerId = currentBowlerStat.getBowlerPlayerId();
+        bowlingStatsMap.put(bowlerId, preBowlingStatsMap.get(bowlerId));
+        activeBatsmen[0] = preActiveBatsmen[0];
+        activeBatsmen[1] = preActiveBatsmen[1];
+
+        int index = getFirstUILabelBatsmanIndexInArray();
+        int playerIdFirst = activeBatsmen[index].getBatsmanPlayerId();
+        BattingStatistics bs1 = batsmenStatsMap.get(playerIdFirst);
+        tvRunBt1.setText(Integer.toString(bs1.getRunsScored()));
+        tvBallBt1.setText(Integer.toString(bs1.getBallsFaced()));
+        tvFourBt1.setText(Integer.toString(bs1.getNumOf4s()));
+        tvSixBt1.setText(Integer.toString(bs1.getNumOf6s()));
+
+        int playerIdSecond = activeBatsmen[1 - index].getBatsmanPlayerId();
+        BattingStatistics bs2 = batsmenStatsMap.get(playerIdSecond);
+        tvRunBt2.setText(Integer.toString(bs2.getRunsScored()));
+        tvBallBt2.setText(Integer.toString(bs2.getBallsFaced()));
+        tvFourBt2.setText(Integer.toString(bs2.getNumOf4s()));
+        tvSixBt2.setText(Integer.toString(bs2.getNumOf6s()));
+
+        tvOverBowler.setText(Double.toString(currentBowlerStat.getOversBowled()));
+        tvRunBowler.setText(Integer.toString(currentBowlerStat.getRunsConceded()));
+        tvWicketBowler.setText(Integer.toString(currentBowlerStat.getNumberOfWickets()));
+        tvWideBowler.setText(Integer.toString(currentBowlerStat.getWidesCount()));
+        tvNoBowler.setText(Integer.toString(currentBowlerStat.getNoBallCount()));
     }
 
     public void inningsComplete(View v){

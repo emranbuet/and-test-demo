@@ -24,6 +24,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.StringTokenizer;
 
 
 public class ScoreActivity extends AppCompatActivity {
@@ -263,7 +264,19 @@ public class ScoreActivity extends AppCompatActivity {
 
         private String getPlayersFromArcl(String teamName, boolean isFirstTeam ) throws XmlPullParserException, IOException {
             InputStream stream = null;
-            String urlForPlayers = apiURL + "RegisteredPlayers?teamName=" + teamName;
+            StringTokenizer st = new StringTokenizer(teamName);
+            StringBuilder sb = new StringBuilder();
+            String token = st.nextToken();
+            sb.append(token);
+            while(st.hasMoreTokens()){
+                sb.append("%20");
+                token = st.nextToken();
+                sb.append(token);
+            }
+            String formattedTeamName = sb.toString();
+            //String urlForPlayers = apiURL + "RegisteredPlayers?teamName=" + teamName+"&seasonid=41";
+            String urlForPlayers = apiURL + "RegisteredPlayers?teamName=" + formattedTeamName+"&seasonid=41";
+            Log.d(LogType.INFO, "Formatted team name is: " + formattedTeamName);
             if(sb == null)
                 sb = new StringBuilder();
             sb.append(teamName);
