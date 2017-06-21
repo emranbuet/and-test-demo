@@ -1,7 +1,10 @@
 package com.androidapp.chowdhury.emran.arclcricketscorer;
 
-public class BowlingStatistics {
+import java.io.Serializable;
+
+public class BowlingStatistics implements Serializable {
     private int bowlerPlayerId;
+    private String bowlerName;
     private double oversBowled; // Number after decimal point represents the ball
     private int runsConceded;
     private int maidenOvers;
@@ -9,8 +12,9 @@ public class BowlingStatistics {
     private int noBallCount;
     private int numberOfWickets;
 
-    public BowlingStatistics(int bowlerPlayerId) {
+    public BowlingStatistics(int bowlerPlayerId, String bName) {
         this.bowlerPlayerId = bowlerPlayerId;
+        this.bowlerName = bName;
         this.oversBowled = 0.0;
         this.runsConceded = 0;
         this.maidenOvers = 0;
@@ -25,6 +29,14 @@ public class BowlingStatistics {
 
     public void setBowlerPlayerId(int bowlerPlayerId) {
         this.bowlerPlayerId = bowlerPlayerId;
+    }
+
+    public String getBowlerName() {
+        return bowlerName;
+    }
+
+    public void setBowlerName(String bowlerName) {
+        this.bowlerName = bowlerName;
     }
 
     public double getOversBowled() {

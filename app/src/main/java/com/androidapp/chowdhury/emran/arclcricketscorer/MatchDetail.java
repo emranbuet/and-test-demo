@@ -16,7 +16,6 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 public class MatchDetail extends AppCompatActivity {
 
@@ -33,6 +32,9 @@ public class MatchDetail extends AppCompatActivity {
     public static String PLAYER_ID_BATSMAN_1 = "Batsman1";
     public static String PLAYER_ID_BATSMAN_2 = "Batsman2";
     public static String PLAYER_ID_BOWLER = "Bowler";
+
+    public static String BATTING_STATISTICS = "BATTING_STATISTICS";
+    public static String BOWLING_STATISTICS = "BOWLING_STATISTICS";
 
     public static int NAME_LEN = 12;
 
@@ -187,7 +189,7 @@ public class MatchDetail extends AppCompatActivity {
             strBatsmanPartial1 = (strPlayerNameBt1.length() > NAME_LEN) ? strPlayerNameBt1.substring(0, NAME_LEN) : strPlayerNameBt1;
             // Add first batsman's initial statistics in the map
             if(!batsmenStatsMap.containsKey(playerIdBt1)){
-                BattingStatistics batStat1 = new BattingStatistics(playerIdBt1);
+                BattingStatistics batStat1 = new BattingStatistics(playerIdBt1, playerHashMap.get(playerIdBt1).getPlayerName());
                 batsmenStatsMap.put(playerIdBt1, batStat1);
             }
             CurrentBatsmanInfo btInfo1 = new CurrentBatsmanInfo(playerIdBt1, true, true);
@@ -205,7 +207,7 @@ public class MatchDetail extends AppCompatActivity {
             strBatsmanPartial2 = (strPlayerNameBt2.length() > NAME_LEN) ? strPlayerNameBt2.substring(0, NAME_LEN) : strPlayerNameBt2;
             // Add second batsman's initial statistics in the map
             if(!batsmenStatsMap.containsKey(playerIdBt2)){
-                BattingStatistics batStat2 = new BattingStatistics(playerIdBt2);
+                BattingStatistics batStat2 = new BattingStatistics(playerIdBt2, playerHashMap.get(playerIdBt2).getPlayerName());
                 batsmenStatsMap.put(playerIdBt2, batStat2);
             }
             CurrentBatsmanInfo btInfo2 = new CurrentBatsmanInfo(playerIdBt2, false, false);
@@ -223,7 +225,7 @@ public class MatchDetail extends AppCompatActivity {
             strBowlerPartial = (strPlayerNameBowler.length() > NAME_LEN) ? strPlayerNameBowler.substring(0, NAME_LEN) : strPlayerNameBowler;
             // Add the bowler's initial statistics in the map
             if(!bowlingStatsMap.containsKey(playerIdBowler)){
-                BowlingStatistics bowlerStat = new BowlingStatistics(playerIdBowler);
+                BowlingStatistics bowlerStat = new BowlingStatistics(playerIdBowler, playerHashMap.get(playerIdBowler).getPlayerName());
                 bowlingStatsMap.put(playerIdBowler, bowlerStat);
             }
             currentBowlerStat = bowlingStatsMap.get(playerIdBowler);
@@ -449,7 +451,7 @@ public class MatchDetail extends AppCompatActivity {
                 int newBowlerPlayerId = Integer.parseInt(bowlerIdStr);
                 BowlingStatistics newBowlerStat = null;
                 if(!bowlingStatsMap.containsKey(newBowlerPlayerId)) {
-                    newBowlerStat = new BowlingStatistics(newBowlerPlayerId);
+                    newBowlerStat = new BowlingStatistics(newBowlerPlayerId, playerHashMap.get(newBowlerPlayerId).getPlayerName());
                     bowlingStatsMap.put(newBowlerPlayerId, newBowlerStat);
                 }
                 currentBowlerStat = bowlingStatsMap.get(newBowlerPlayerId);
@@ -473,7 +475,11 @@ public class MatchDetail extends AppCompatActivity {
 
     }
     public void viewScorecard(View v){
+        Intent intent = new Intent(this, ScorecardActivity.class);
+        intent.putExtra(BATTING_STATISTICS, batsmenStatsMap);
+        intent.putExtra(BOWLING_STATISTICS, bowlingStatsMap);
 
+        startActivity(intent);
     }
     public void hitOK(View v){  //write the code after each ball, update total r
         strDetail = tvRunDetail.getText().toString();

@@ -1,7 +1,10 @@
 package com.androidapp.chowdhury.emran.arclcricketscorer;
 
-public class BattingStatistics {
+import java.io.Serializable;
+
+public class BattingStatistics implements Serializable {
     private int batsmanPlayerId;
+    private String batsmanName;
     private int runsScored;
     private int ballsFaced;
     private int numOf4s;
@@ -10,8 +13,9 @@ public class BattingStatistics {
     private int outByBowlerId;
     private int caughtByPlayerId;   // For runout- it represents fielder
 
-    public BattingStatistics(int batsmanPlayerId) {
+    public BattingStatistics(int batsmanPlayerId, String bName) {
         this.batsmanPlayerId = batsmanPlayerId;
+        this.batsmanName = bName;
         this.runsScored = 0;
         this.ballsFaced = 0;
         this.numOf4s = 0;
@@ -24,6 +28,14 @@ public class BattingStatistics {
 
     public void setBatsmanPlayerId(int batsmanPlayerId) {
         this.batsmanPlayerId = batsmanPlayerId;
+    }
+
+    public String getBatsmanName() {
+        return batsmanName;
+    }
+
+    public void setBatsmanName(String batsmanName) {
+        this.batsmanName = batsmanName;
     }
 
     public int getRunsScored() {
