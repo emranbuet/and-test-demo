@@ -11,7 +11,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 public class CustomizedBattingAdapter extends ArrayAdapter<BattingStatistics>{
-    public static int NAME_LEN = 12;
+    private static int BATSMAN_NAME_LEN = 12;
 
     Activity currentContext;
     ArrayList<BattingStatistics> battingStats;
@@ -37,15 +37,20 @@ public class CustomizedBattingAdapter extends ArrayAdapter<BattingStatistics>{
 
             BattingStatistics bs = battingStats.get(position);
             String batsmanFullName = bs.getBatsmanName();
-            txtBatsmanName.setText(batsmanFullName.length() > NAME_LEN ? batsmanFullName.substring(0, NAME_LEN) : batsmanFullName);
-            txtBatsmanRun.setText(String.valueOf(bs.getRunsScored()));
-            txtBatsmanBall.setText(String.valueOf(bs.getBallsFaced()));
-            txtBatsmanFour.setText(String.valueOf(bs.getNumOf4s()));
-            txtBatsmanSix.setText(String.valueOf(bs.getNumOf6s()));
+            txtBatsmanName.setText(batsmanFullName.length() > BATSMAN_NAME_LEN ? batsmanFullName.substring(0, BATSMAN_NAME_LEN) : batsmanFullName);
+            txtBatsmanRun.setText(formatInt2D(bs.getRunsScored()));
+            txtBatsmanBall.setText(formatInt2D(bs.getBallsFaced()));
+            txtBatsmanFour.setText(formatInt2D(bs.getNumOf4s()));
+            txtBatsmanSix.setText(formatInt2D(bs.getNumOf6s()));
         }
         else{
             v = convertView;
         }
         return v;
+    }
+
+    private String formatInt2D(int value){
+        String strValue = String.valueOf(value);
+        return (strValue.length() > 1) ? strValue: ("0" + strValue);
     }
 }

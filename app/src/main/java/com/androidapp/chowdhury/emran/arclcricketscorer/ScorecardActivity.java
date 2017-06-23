@@ -15,7 +15,9 @@ public class ScorecardActivity extends AppCompatActivity {
     public static String BOWLING_STATISTICS = "BOWLING_STATISTICS";
 
     ListView lvBattingStatistics;
+    ListView lvBowlingStatistics;
     CustomizedBattingAdapter battingAdapter;
+    CustomizedBowlingAdapter bowlingAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +28,7 @@ public class ScorecardActivity extends AppCompatActivity {
         HashMap<Integer, BowlingStatistics> bowlingStatsMap;
 
         lvBattingStatistics = (ListView) findViewById(R.id.lvBatsman);
+        lvBowlingStatistics = (ListView) findViewById(R.id.lvBowler);
 
         Bundle bundle = getIntent().getExtras();
         if(bundle != null){
@@ -36,6 +39,12 @@ public class ScorecardActivity extends AppCompatActivity {
             if(battingStatisticsList != null && battingStatisticsList.size() > 0){
                 battingAdapter = new CustomizedBattingAdapter(this, battingStatisticsList);
                 lvBattingStatistics.setAdapter(battingAdapter);
+            }
+
+            ArrayList<BowlingStatistics> bowlingStatisticsList = new ArrayList<BowlingStatistics> (bowlingStatsMap.values());
+            if(bowlingStatisticsList != null && bowlingStatisticsList.size() > 0){
+                bowlingAdapter = new CustomizedBowlingAdapter(this, bowlingStatisticsList);
+                lvBowlingStatistics.setAdapter(bowlingAdapter);
             }
         }
         else{
