@@ -22,7 +22,8 @@
         <activity android:name=".ScoreActivity" />
         <activity android:name=".MatchDetail" />
         <activity android:name=".NewBowlerActivity" />
-        <activity android:name=".ScorecardActivity"></activity>
+        <activity android:name=".ScorecardActivity" />
+        <activity android:name=".NewBatsmanActivity"></activity>
     </application>
 
 </manifest>

@@ -22,6 +22,7 @@ public class MatchDetail extends AppCompatActivity {
     public static String PLAYER_LIST_FIRST = "PlayerListOne";
     public static String PLAYER_LIST_SECOND = "PlayerListTwo";
     public static String PLAYER_LIST_BOWLERS = "PlayerListAvailableBowlers";
+    private static String PLAYER_LIST_BATSMEN = "PlayerListAvailableBatsmen";
 
     public static String TEAM_NAME_1 = "TEAM_NAME_1";
     public static String TEAM_NAME_2 = "TEAM_NAME_2";
@@ -469,10 +470,68 @@ public class MatchDetail extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "You need to select next bowler to continue", Toast.LENGTH_SHORT).show();
             }
         }
+        else if (requestCode == 2) {
+            if(resultCode == Activity.RESULT_OK){
+                String batsmanIdIdStr = data.getStringExtra("newBatsmanId");
+                int newBatsmanPlayerId = Integer.parseInt(batsmanIdIdStr);
+                BattingStatistics newBatsmanStat = null;
+                if(!batsmenStatsMap.containsKey(newBatsmanPlayerId)) {
+                    newBatsmanStat = new BattingStatistics(newBatsmanPlayerId, playerHashMap.get(newBatsmanPlayerId).getPlayerName());
+                    batsmenStatsMap.put(newBatsmanPlayerId, newBatsmanStat);
+                }
+                String wasRunOutStr = data.getStringExtra("wasRunOut");
+                if(wasRunOutStr.equals("true")){
+                    //TODO: Get the batsman id who was got out
+                }
+                else{
+                    // Striker was out in the previous ball
+                    int strikerIndex = getStrikerBatsmanIndexInArray();
+                    int strikerPlayerId = activeBatsmen[strikerIndex].getBatsmanPlayerId();
+                    boolean strikerDisplayedFirst = activeBatsmen[strikerIndex].isDisplayedFirst();
+                    String batsmanFullName = playerHashMap.get(newBatsmanPlayerId).getPlayerName();
+                    String strBatsmanNamePartial = (batsmanFullName.length() > NAME_LEN) ? batsmanFullName.substring(0, NAME_LEN) : batsmanFullName;
+                    if(!batsmenStatsMap.containsKey(newBatsmanPlayerId)){
+                        BattingStatistics batStatNew = new BattingStatistics(newBatsmanPlayerId, playerHashMap.get(newBatsmanPlayerId).getPlayerName());
+                        batsmenStatsMap.put(newBatsmanPlayerId, batStatNew);
+                    }
+                    CurrentBatsmanInfo btInfoNew = new CurrentBatsmanInfo(newBatsmanPlayerId, true, strikerDisplayedFirst);
+                    activeBatsmen[strikerIndex] = btInfoNew;
+                    BattingStatistics bsNew = batsmenStatsMap.get(newBatsmanPlayerId);
+                    if(activeBatsmen[strikerIndex].isDisplayedFirst()){
+                        tvNameBt1.setText(strBatsmanNamePartial);
+                        tvRunBt1.setText(Integer.toString(bsNew.getRunsScored()));
+                        tvBallBt1.setText(Integer.toString(bsNew.getBallsFaced()));
+                        tvFourBt1.setText(Integer.toString(bsNew.getNumOf4s()));
+                        tvSixBt1.setText(Integer.toString(bsNew.getNumOf6s()));
+                    }
+                    else{
+                        tvNameBt2.setText(strBatsmanNamePartial);
+                        tvRunBt2.setText(Integer.toString(bsNew.getRunsScored()));
+                        tvBallBt2.setText(Integer.toString(bsNew.getBallsFaced()));
+                        tvFourBt2.setText(Integer.toString(bsNew.getNumOf4s()));
+                        tvSixBt2.setText(Integer.toString(bsNew.getNumOf6s()));
+                    }
+                }
+                Log.d("NewBatsman: " + LogType.TEST, "Current Batsman name:" + playerHashMap.get(newBatsmanPlayerId).getPlayerName());
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+                Toast.makeText(getApplicationContext(), "You need to select next batsman to continue", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
     // Change after batsman got out
     private void changeBatsman(){
-
+        // Get the new bowler id from UI dialog
+        Log.d("NewBatsman: " + LogType.TEST, "Calling a new batsman activity");
+        Intent newBatsmanIntent = new Intent(getApplicationContext(), NewBatsmanActivity.class);
+        ArrayList<Player> battingListAvailable = new ArrayList<Player>();
+        for(Player p: playersListTeam1){
+            if((p.getPlayerId() != activeBatsmen[0].getBatsmanPlayerId()) && (p.getPlayerId() != activeBatsmen[1].getBatsmanPlayerId())){
+                battingListAvailable.add(p);
+            }
+        }
+        newBatsmanIntent.putExtra(PLAYER_LIST_BATSMEN, battingListAvailable);
+        startActivityForResult(newBatsmanIntent, 2);
     }
     public void viewScorecard(View v){
         Intent intent = new Intent(this, ScorecardActivity.class);
@@ -626,6 +685,7 @@ public class MatchDetail extends AppCompatActivity {
                                         strContent = strContent.substring(0, 4);
                                     run++;
                                     runA++;
+                                    //TODO: Add feature for getting new batsman
                                     updateBowlingStat(run, 0, false, true, 0);
                                     strDetail += "  ";
                                     strDetail += strContent;
@@ -649,6 +709,7 @@ public class MatchDetail extends AppCompatActivity {
                                         strContent = strContent.substring(0, 4);
                                     run++;
                                     runA+=run;
+                                    //TODO: Add feature for getting new batsman
                                     updateBowlingStat(run, 0, true, false, 0);
                                     strDetail += "  ";
                                     strDetail += strContent;
@@ -662,6 +723,7 @@ public class MatchDetail extends AppCompatActivity {
                                             if(run == 1 || run == 3){
                                                 swapBatsmen();
                                             }
+                                            //TODO: Add feature for getting new batsman
                                             updateBowlingStat(0, 0, false, false, run);
                                             swapMayNeed = true;
                                         }
@@ -690,6 +752,7 @@ public class MatchDetail extends AppCompatActivity {
                                         if(run == 1 || run == 3){
                                             swapBatsmen();
                                         }
+                                        //TODO: Add feature for getting new batsman
                                         updateBowlingStat(run, 0, false, false, 0);
                                         swapMayNeed = true;
                                     }
@@ -721,6 +784,8 @@ public class MatchDetail extends AppCompatActivity {
                                 strContent = strContent.substring(0, 1); // Only Wicket fallen
                                 strDetail += strContent;
                             }
+                            //TODO: Add feature for getting new batsman for only wicket fallen
+                            changeBatsman();
                             updateBowlingStat(0, 1, false, false, 0);
                         }
                         wickA++;
