@@ -36,6 +36,9 @@ public class MatchDetail extends AppCompatActivity {
 
     public static String BATTING_STATISTICS = "BATTING_STATISTICS";
     public static String BOWLING_STATISTICS = "BOWLING_STATISTICS";
+    private static String OUT_TYPE_STR = "OutTypeStr";
+    private static String NEW_BATSMAN_ID = "NewBatsmanId";
+    private static String PLAYER_ID_BATSMAN_OUT = "BatsmanRunOutId";
 
     public static int NAME_LEN = 12;
 
@@ -472,16 +475,19 @@ public class MatchDetail extends AppCompatActivity {
         }
         else if (requestCode == 2) {
             if(resultCode == Activity.RESULT_OK){
-                String batsmanIdIdStr = data.getStringExtra("newBatsmanId");
+                String batsmanIdIdStr = data.getStringExtra(NEW_BATSMAN_ID);
                 int newBatsmanPlayerId = Integer.parseInt(batsmanIdIdStr);
                 BattingStatistics newBatsmanStat = null;
                 if(!batsmenStatsMap.containsKey(newBatsmanPlayerId)) {
                     newBatsmanStat = new BattingStatistics(newBatsmanPlayerId, playerHashMap.get(newBatsmanPlayerId).getPlayerName());
                     batsmenStatsMap.put(newBatsmanPlayerId, newBatsmanStat);
                 }
-                String wasRunOutStr = data.getStringExtra("wasRunOut");
-                if(wasRunOutStr.equals("true")){
+                String outTypeStr = data.getStringExtra(OUT_TYPE_STR);
+                Log.d("OUT_TYPE: " + LogType.TEST, " Batsman was:" + outTypeStr);
+                if(outTypeStr.equals("RunOut")){
                     //TODO: Get the batsman id who was got out
+                    String batsmanIdOfOut = data.getStringExtra(PLAYER_ID_BATSMAN_OUT);
+                    Log.d("Batsman Out: " + LogType.TEST, " Batsman was run out: " + playerHashMap.get(Integer.parseInt(batsmanIdOfOut)).getPlayerName());
                 }
                 else{
                     // Striker was out in the previous ball
@@ -512,7 +518,7 @@ public class MatchDetail extends AppCompatActivity {
                         tvSixBt2.setText(Integer.toString(bsNew.getNumOf6s()));
                     }
                 }
-                Log.d("NewBatsman: " + LogType.TEST, "Current Batsman name:" + playerHashMap.get(newBatsmanPlayerId).getPlayerName());
+                Log.d("NewBatsman: " + LogType.TEST, " Current Batsman name:" + playerHashMap.get(newBatsmanPlayerId).getPlayerName());
             }
             if (resultCode == Activity.RESULT_CANCELED) {
                 Toast.makeText(getApplicationContext(), "You need to select next batsman to continue", Toast.LENGTH_SHORT).show();
@@ -521,21 +527,22 @@ public class MatchDetail extends AppCompatActivity {
     }
     // Change after batsman got out
     private void changeBatsman(){
-        // Get the new bowler id from UI dialog
         Log.d("NewBatsman: " + LogType.TEST, "Calling a new batsman activity");
         Intent newBatsmanIntent = new Intent(getApplicationContext(), NewBatsmanActivity.class);
         ArrayList<Player> battingListAvailable = new ArrayList<Player>();
         for(Player p: playersListTeam1){
-            if((p.getPlayerId() != activeBatsmen[0].getBatsmanPlayerId()) && (p.getPlayerId() != activeBatsmen[1].getBatsmanPlayerId())){
-                battingListAvailable.add(p);
-            }
+            battingListAvailable.add(p);
         }
         newBatsmanIntent.putExtra(PLAYER_LIST_BATSMEN, battingListAvailable);
+        newBatsmanIntent.putExtra(PLAYER_ID_BATSMAN_1, String.valueOf(activeBatsmen[0].getBatsmanPlayerId()));
+        newBatsmanIntent.putExtra(PLAYER_ID_BATSMAN_2, String.valueOf(activeBatsmen[1].getBatsmanPlayerId()));
         startActivityForResult(newBatsmanIntent, 2);
     }
     public void viewScorecard(View v){
         Intent intent = new Intent(this, ScorecardActivity.class);
         intent.putExtra(BATTING_STATISTICS, batsmenStatsMap);
+        intent.putExtra(PLAYER_ID_BATSMAN_1, String.valueOf(activeBatsmen[0].getBatsmanPlayerId()));
+        intent.putExtra(PLAYER_ID_BATSMAN_2, String.valueOf(activeBatsmen[1].getBatsmanPlayerId()));
         intent.putExtra(BOWLING_STATISTICS, bowlingStatsMap);
 
         startActivity(intent);

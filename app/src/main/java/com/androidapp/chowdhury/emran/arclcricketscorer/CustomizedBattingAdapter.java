@@ -15,11 +15,13 @@ public class CustomizedBattingAdapter extends ArrayAdapter<BattingStatistics>{
 
     Activity currentContext;
     ArrayList<BattingStatistics> battingStats;
+    ArrayList<Integer> activeBatsmenPlayerIds;
 
-    public CustomizedBattingAdapter(Context context, ArrayList<BattingStatistics> batStats){
+    public CustomizedBattingAdapter(Context context, ArrayList<BattingStatistics> batStats, ArrayList<Integer> activeBatsmenPlayerId){
         super(context, R.layout.batsman_item_score, batStats);
         this.currentContext = (Activity) context;
         this.battingStats = batStats;
+        this.activeBatsmenPlayerIds = activeBatsmenPlayerId;
     }
 
     @Override
@@ -37,7 +39,10 @@ public class CustomizedBattingAdapter extends ArrayAdapter<BattingStatistics>{
 
             BattingStatistics bs = battingStats.get(position);
             String batsmanFullName = bs.getBatsmanName();
-            txtBatsmanName.setText(batsmanFullName.length() > BATSMAN_NAME_LEN ? batsmanFullName.substring(0, BATSMAN_NAME_LEN) : batsmanFullName);
+            String batsmanPartialName = batsmanFullName.length() > BATSMAN_NAME_LEN ? batsmanFullName.substring(0, BATSMAN_NAME_LEN) : batsmanFullName;
+            if(activeBatsmenPlayerIds.contains(bs.getBatsmanPlayerId()))
+                batsmanPartialName = batsmanPartialName + "*";
+            txtBatsmanName.setText(batsmanPartialName);
             txtBatsmanRun.setText(formatInt2D(bs.getRunsScored()));
             txtBatsmanBall.setText(formatInt2D(bs.getBallsFaced()));
             txtBatsmanFour.setText(formatInt2D(bs.getNumOf4s()));

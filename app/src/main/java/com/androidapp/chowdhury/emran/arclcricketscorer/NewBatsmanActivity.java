@@ -15,16 +15,30 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class NewBatsmanActivity extends AppCompatActivity {
 
     private static String PLAYER_LIST_BATSMEN = "PlayerListAvailableBatsmen";
+    private static String OUT_TYPE_STR = "OutTypeStr";
+    private static String NEW_BATSMAN_ID = "NewBatsmanId";
+    private static String PLAYER_ID_BATSMAN_1 = "Batsman1";
+    private static String PLAYER_ID_BATSMAN_2 = "Batsman2";
+    private static String PLAYER_ID_BATSMAN_OUT = "BatsmanRunOutId";
 
+    private Spinner spOutType;
+    private Spinner spCurrentBatsman;
     private Spinner spNewBatsman;
     private Button btnNewBatsman;
     private int playerIdNewBatsman;
+    private ArrayAdapter<String> outTypeAdapter;
+    private ArrayAdapter<String> currentBatsmanAdapter;
     private ArrayAdapter<String> batsmanAdapter;
+    private ArrayList outTypeList = new ArrayList(Arrays.asList(new String[]{"Bowled", "Caught", "RunOut"}));
+    private ArrayList<Player> currentBatsmanList = null;
+    private ArrayList<String> currentBasmenName = null;
     private ArrayList<Player> playerListBatting = null;
 
     @Override
@@ -32,20 +46,46 @@ public class NewBatsmanActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_batsman);
 
+        String firstBatsmanPlayerId = null, secondBatsmanPlayerId = null;
+
         Bundle bundle = getIntent().getExtras();
         if(bundle != null){
             playerListBatting = (ArrayList<Player>) bundle.getSerializable(PLAYER_LIST_BATSMEN);
+            firstBatsmanPlayerId = bundle.getString(PLAYER_ID_BATSMAN_1);
+            secondBatsmanPlayerId = bundle.getString(PLAYER_ID_BATSMAN_2);
+
         }
         else{
             Log.d("NewBatsman: " + LogType.ERROR, "Bundle is null from match detail activity");
         }
+        spOutType = (Spinner) findViewById(R.id.spOutType);
+        spCurrentBatsman = (Spinner) findViewById(R.id.spSelectOutBatsman);
+
+        outTypeAdapter = new ArrayAdapter<>(getBaseContext(), android.R.layout.simple_spinner_item, outTypeList);
+        outTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spOutType.setAdapter(outTypeAdapter);
+
+        currentBatsmanList = new ArrayList<>();
+        currentBasmenName = new ArrayList<>();
+
         spNewBatsman = (Spinner) findViewById(R.id.spNewBatsman);
         btnNewBatsman = (Button) findViewById(R.id.btnNewBatsman);
 
         final ArrayList<String> playerNamesBatsmen = new ArrayList<>();
         for(Player p : playerListBatting){
-            playerNamesBatsmen.add(p.getPlayerName());
+            if((p.getPlayerId() != Integer.parseInt(firstBatsmanPlayerId)) && (p.getPlayerId() != Integer.parseInt(secondBatsmanPlayerId))){
+                playerNamesBatsmen.add(p.getPlayerName());
+            }
+            else{
+                currentBatsmanList.add(p);
+                currentBasmenName.add(p.getPlayerName());
+            }
         }
+
+        currentBatsmanAdapter = new ArrayAdapter<>(getBaseContext(), android.R.layout.simple_spinner_item, currentBasmenName);
+        currentBatsmanAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spCurrentBatsman.setAdapter(currentBatsmanAdapter);
+
         batsmanAdapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_item, playerNamesBatsmen){
             @Override
             public View getDropDownView(int position, View convertView, ViewGroup parent){
@@ -74,10 +114,15 @@ public class NewBatsmanActivity extends AppCompatActivity {
                 Intent returnBatsmanIntent = new Intent();
                 Player batsman = playerListBatting.get(spNewBatsman.getSelectedItemPosition());
                 playerIdNewBatsman = batsman.getPlayerId();
-                returnBatsmanIntent.putExtra("newBatsmanId", String.valueOf(playerIdNewBatsman));
-                returnBatsmanIntent.putExtra("wasRunOut", "false");
+                returnBatsmanIntent.putExtra(NEW_BATSMAN_ID, String.valueOf(playerIdNewBatsman));
+
+                String outTypeStr = (String)outTypeList.get(spOutType.getSelectedItemPosition());
+                returnBatsmanIntent.putExtra(OUT_TYPE_STR, outTypeStr);
+                String playerIdOfRunOut = String.valueOf(currentBatsmanList.get(spCurrentBatsman.getSelectedItemPosition()).getPlayerId());
+                returnBatsmanIntent.putExtra(PLAYER_ID_BATSMAN_OUT, playerIdOfRunOut);
+
                 setResult(Activity.RESULT_OK, returnBatsmanIntent);
-                Log.d("NewBatsman: " + LogType.TEST, batsman.getPlayerName() +"Batsman is selected as new batsman whose id is: " + playerIdNewBatsman);
+                Log.d("NewBatsman: " + LogType.TEST, batsman.getPlayerName() +" is selected as new batsman whose id is: " + playerIdNewBatsman);
                 finish();
             }
         });
