@@ -536,9 +536,12 @@ public class MatchDetail extends AppCompatActivity {
                 battingListAvailable.add(p);
             }
         }
+        int strikerIndex = getStrikerBatsmanIndexInArray();
+        int strikerPlayerId = activeBatsmen[strikerIndex].getBatsmanPlayerId();
+        int nonStrikerPlayerId = activeBatsmen[1 - strikerIndex].getBatsmanPlayerId();
         newBatsmanIntent.putExtra(PLAYER_LIST_BATSMEN, battingListAvailable);
-        newBatsmanIntent.putExtra(PLAYER_ID_BATSMAN_1, String.valueOf(activeBatsmen[0].getBatsmanPlayerId()));
-        newBatsmanIntent.putExtra(PLAYER_ID_BATSMAN_2, String.valueOf(activeBatsmen[1].getBatsmanPlayerId()));
+        newBatsmanIntent.putExtra(PLAYER_ID_BATSMAN_1, String.valueOf(strikerPlayerId));
+        newBatsmanIntent.putExtra(PLAYER_ID_BATSMAN_2, String.valueOf(nonStrikerPlayerId));
         newBatsmanIntent.putExtra(PLAYER_LIST_FULL, playerHashMap);
         startActivityForResult(newBatsmanIntent, NEW_BATSMAN_ACTIVITY_REQ_CODE);
     }

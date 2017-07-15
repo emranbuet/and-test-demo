@@ -67,7 +67,9 @@ public class NewBatsmanActivity extends AppCompatActivity {
 
         currentBatsmenName = new ArrayList<>();
         for(Player p : currentBatsmanList){
-            currentBatsmenName.add(p.getPlayerName());
+            String strBatsmanFullName = p.getPlayerName();
+            String strBatsmanNamePartial = (strBatsmanFullName.length() > NAME_LEN) ? strBatsmanFullName.substring(0, NAME_LEN) : strBatsmanFullName;
+            currentBatsmenName.add(strBatsmanNamePartial);
         }
 
         spNewBatsman = (Spinner) findViewById(R.id.spNewBatsman);
@@ -75,7 +77,9 @@ public class NewBatsmanActivity extends AppCompatActivity {
 
         final ArrayList<String> playerNamesBatsmen = new ArrayList<>();
         for(Player p : playerListBatting){
-            playerNamesBatsmen.add(p.getPlayerName());
+            String strBatsmanFullName = p.getPlayerName();
+            //String strBatsmanNamePartial = (strBatsmanFullName.length() > NAME_LEN) ? strBatsmanFullName.substring(0, NAME_LEN) : strBatsmanFullName;
+            playerNamesBatsmen.add(strBatsmanFullName);
         }
 
         currentBatsmanAdapter = new ArrayAdapter<>(getBaseContext(), android.R.layout.simple_spinner_item, currentBatsmenName);
@@ -122,5 +126,10 @@ public class NewBatsmanActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        return;
     }
 }
