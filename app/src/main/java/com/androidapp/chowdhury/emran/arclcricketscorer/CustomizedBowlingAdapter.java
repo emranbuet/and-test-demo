@@ -9,9 +9,9 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import static com.androidapp.chowdhury.emran.arclcricketscorer.ScoringUtility.*;
 
 public class CustomizedBowlingAdapter extends ArrayAdapter<BowlingStatistics>{
-    private static int BOWLER_NAME_LEN = 12;
 
     Activity bowlerContext;
     ArrayList<BowlingStatistics> bowlingStats;
@@ -38,7 +38,7 @@ public class CustomizedBowlingAdapter extends ArrayAdapter<BowlingStatistics>{
 
             BowlingStatistics bls = bowlingStats.get(position);
             String bowlerFullName = bls.getBowlerName();
-            txtBowlerName.setText(bowlerFullName.length() > BOWLER_NAME_LEN ? bowlerFullName.substring(0, BOWLER_NAME_LEN) : bowlerFullName);
+            txtBowlerName.setText(bowlerFullName.length() > NAME_LEN ? bowlerFullName.substring(0, NAME_LEN) : bowlerFullName);
             txtBowlerOver.setText(String.valueOf(bls.getOversBowled()));
             txtBowlerRun.setText(formatInt2D(bls.getRunsConceded()));
             txtBowlerWicket.setText(formatInt2D(bls.getNumberOfWickets()));

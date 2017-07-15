@@ -14,19 +14,14 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
+import static com.androidapp.chowdhury.emran.arclcricketscorer.ScoringUtility.*;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 public class NewBatsmanActivity extends AppCompatActivity {
-
-    private static String PLAYER_LIST_BATSMEN = "PlayerListAvailableBatsmen";
-    private static String OUT_TYPE_STR = "OutTypeStr";
-    private static String NEW_BATSMAN_ID = "NewBatsmanId";
-    private static String PLAYER_ID_BATSMAN_1 = "Batsman1";
-    private static String PLAYER_ID_BATSMAN_2 = "Batsman2";
-    private static String PLAYER_ID_BATSMAN_OUT = "BatsmanRunOutId";
 
     private Spinner spOutType;
     private Spinner spCurrentBatsman;
@@ -38,8 +33,9 @@ public class NewBatsmanActivity extends AppCompatActivity {
     private ArrayAdapter<String> batsmanAdapter;
     private ArrayList outTypeList = new ArrayList(Arrays.asList(new String[]{"Bowled", "Caught", "RunOut"}));
     private ArrayList<Player> currentBatsmanList = null;
-    private ArrayList<String> currentBasmenName = null;
+    private ArrayList<String> currentBatsmenName = null;
     private ArrayList<Player> playerListBatting = null;
+    private HashMap<Integer, Player> playerHashMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +49,7 @@ public class NewBatsmanActivity extends AppCompatActivity {
             playerListBatting = (ArrayList<Player>) bundle.getSerializable(PLAYER_LIST_BATSMEN);
             firstBatsmanPlayerId = bundle.getString(PLAYER_ID_BATSMAN_1);
             secondBatsmanPlayerId = bundle.getString(PLAYER_ID_BATSMAN_2);
-
+            playerHashMap = (HashMap<Integer, Player>) bundle.getSerializable(PLAYER_LIST_FULL);
         }
         else{
             Log.d("NewBatsman: " + LogType.ERROR, "Bundle is null from match detail activity");
@@ -66,23 +62,23 @@ public class NewBatsmanActivity extends AppCompatActivity {
         spOutType.setAdapter(outTypeAdapter);
 
         currentBatsmanList = new ArrayList<>();
-        currentBasmenName = new ArrayList<>();
+        currentBatsmanList.add(playerHashMap.get(Integer.parseInt(firstBatsmanPlayerId)));
+        currentBatsmanList.add(playerHashMap.get(Integer.parseInt(secondBatsmanPlayerId)));
+
+        currentBatsmenName = new ArrayList<>();
+        for(Player p : currentBatsmanList){
+            currentBatsmenName.add(p.getPlayerName());
+        }
 
         spNewBatsman = (Spinner) findViewById(R.id.spNewBatsman);
         btnNewBatsman = (Button) findViewById(R.id.btnNewBatsman);
 
         final ArrayList<String> playerNamesBatsmen = new ArrayList<>();
         for(Player p : playerListBatting){
-            if((p.getPlayerId() != Integer.parseInt(firstBatsmanPlayerId)) && (p.getPlayerId() != Integer.parseInt(secondBatsmanPlayerId))){
-                playerNamesBatsmen.add(p.getPlayerName());
-            }
-            else{
-                currentBatsmanList.add(p);
-                currentBasmenName.add(p.getPlayerName());
-            }
+            playerNamesBatsmen.add(p.getPlayerName());
         }
 
-        currentBatsmanAdapter = new ArrayAdapter<>(getBaseContext(), android.R.layout.simple_spinner_item, currentBasmenName);
+        currentBatsmanAdapter = new ArrayAdapter<>(getBaseContext(), android.R.layout.simple_spinner_item, currentBatsmenName);
         currentBatsmanAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spCurrentBatsman.setAdapter(currentBatsmanAdapter);
 

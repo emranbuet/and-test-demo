@@ -17,30 +17,9 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import static com.androidapp.chowdhury.emran.arclcricketscorer.ScoringUtility.*;
+
 public class MatchDetail extends AppCompatActivity {
-
-    public static String PLAYER_LIST_FIRST = "PlayerListOne";
-    public static String PLAYER_LIST_SECOND = "PlayerListTwo";
-    public static String PLAYER_LIST_BOWLERS = "PlayerListAvailableBowlers";
-    private static String PLAYER_LIST_BATSMEN = "PlayerListAvailableBatsmen";
-
-    public static String TEAM_NAME_1 = "TEAM_NAME_1";
-    public static String TEAM_NAME_2 = "TEAM_NAME_2";
-    public static String TOTAL_OVER = "TOTAL_OVER";
-    public static String PLAYER_LIST_FULL = "PLAYER_LIST_FULL";
-
-    public static String PLAYER_LIST_STATUS = "PLAYER_STATUS";
-    public static String PLAYER_ID_BATSMAN_1 = "Batsman1";
-    public static String PLAYER_ID_BATSMAN_2 = "Batsman2";
-    public static String PLAYER_ID_BOWLER = "Bowler";
-
-    public static String BATTING_STATISTICS = "BATTING_STATISTICS";
-    public static String BOWLING_STATISTICS = "BOWLING_STATISTICS";
-    private static String OUT_TYPE_STR = "OutTypeStr";
-    private static String NEW_BATSMAN_ID = "NewBatsmanId";
-    private static String PLAYER_ID_BATSMAN_OUT = "BatsmanRunOutId";
-
-    public static int NAME_LEN = 12;
 
     private ArrayList<Player> playersListTeam1, playersListTeam2;
     private HashMap<Integer, Player> playerHashMap;
@@ -120,7 +99,6 @@ public class MatchDetail extends AppCompatActivity {
 
         Bundle bundle = getIntent().getExtras();
         if(bundle != null){
-            //playerListAll= bundle.getString("PlayerListAll");
             strTeam1 = bundle.getString(TEAM_NAME_1);
             strTeam2 = bundle.getString(TEAM_NAME_2);
             strTotOver = bundle.getString(TOTAL_OVER);
@@ -445,11 +423,12 @@ public class MatchDetail extends AppCompatActivity {
             }
         }
         newBowlerIntent.putExtra(PLAYER_LIST_BOWLERS, bowlerListAvailable);
-        startActivityForResult(newBowlerIntent, 1);
+        newBowlerIntent.putExtra(PLAYER_LIST_FULL, playerHashMap);
+        startActivityForResult(newBowlerIntent, NEW_BOWLER_ACTIVITY_REQ_CODE);
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 1) {
+        if (requestCode == NEW_BOWLER_ACTIVITY_REQ_CODE) {
             if(resultCode == Activity.RESULT_OK){
                 String bowlerIdStr = data.getStringExtra("newBowlerId");
                 int newBowlerPlayerId = Integer.parseInt(bowlerIdStr);
@@ -473,7 +452,7 @@ public class MatchDetail extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "You need to select next bowler to continue", Toast.LENGTH_SHORT).show();
             }
         }
-        else if (requestCode == 2) {
+        else if (requestCode == NEW_BATSMAN_ACTIVITY_REQ_CODE) {
             if(resultCode == Activity.RESULT_OK){
                 String batsmanIdIdStr = data.getStringExtra(NEW_BATSMAN_ID);
                 int newBatsmanPlayerId = Integer.parseInt(batsmanIdIdStr);
@@ -484,25 +463,27 @@ public class MatchDetail extends AppCompatActivity {
                 }
                 String outTypeStr = data.getStringExtra(OUT_TYPE_STR);
                 Log.d("OUT_TYPE: " + LogType.TEST, " Batsman was:" + outTypeStr);
+                boolean isStrikerGotOut = true;
+                int strikerIndex = getStrikerBatsmanIndexInArray();
+                int strikerPlayerId = activeBatsmen[strikerIndex].getBatsmanPlayerId();
+                String batsmanFullName = playerHashMap.get(newBatsmanPlayerId).getPlayerName();
+                String strBatsmanNamePartial = (batsmanFullName.length() > NAME_LEN) ? batsmanFullName.substring(0, NAME_LEN) : batsmanFullName;
+                if(!batsmenStatsMap.containsKey(newBatsmanPlayerId)){
+                    BattingStatistics batStatNew = new BattingStatistics(newBatsmanPlayerId, playerHashMap.get(newBatsmanPlayerId).getPlayerName());
+                    batsmenStatsMap.put(newBatsmanPlayerId, batStatNew);
+                }
+                BattingStatistics bsNew = batsmenStatsMap.get(newBatsmanPlayerId);
                 if(outTypeStr.equals("RunOut")){
                     //TODO: Get the batsman id who was got out
                     String batsmanIdOfOut = data.getStringExtra(PLAYER_ID_BATSMAN_OUT);
                     Log.d("Batsman Out: " + LogType.TEST, " Batsman was run out: " + playerHashMap.get(Integer.parseInt(batsmanIdOfOut)).getPlayerName());
+                    isStrikerGotOut = (strikerPlayerId == Integer.parseInt(batsmanIdOfOut))? true : false;
                 }
-                else{
+                if(isStrikerGotOut){
                     // Striker was out in the previous ball
-                    int strikerIndex = getStrikerBatsmanIndexInArray();
-                    int strikerPlayerId = activeBatsmen[strikerIndex].getBatsmanPlayerId();
                     boolean strikerDisplayedFirst = activeBatsmen[strikerIndex].isDisplayedFirst();
-                    String batsmanFullName = playerHashMap.get(newBatsmanPlayerId).getPlayerName();
-                    String strBatsmanNamePartial = (batsmanFullName.length() > NAME_LEN) ? batsmanFullName.substring(0, NAME_LEN) : batsmanFullName;
-                    if(!batsmenStatsMap.containsKey(newBatsmanPlayerId)){
-                        BattingStatistics batStatNew = new BattingStatistics(newBatsmanPlayerId, playerHashMap.get(newBatsmanPlayerId).getPlayerName());
-                        batsmenStatsMap.put(newBatsmanPlayerId, batStatNew);
-                    }
                     CurrentBatsmanInfo btInfoNew = new CurrentBatsmanInfo(newBatsmanPlayerId, true, strikerDisplayedFirst);
                     activeBatsmen[strikerIndex] = btInfoNew;
-                    BattingStatistics bsNew = batsmenStatsMap.get(newBatsmanPlayerId);
                     if(activeBatsmen[strikerIndex].isDisplayedFirst()){
                         tvNameBt1.setText(strBatsmanNamePartial);
                         tvRunBt1.setText(Integer.toString(bsNew.getRunsScored()));
@@ -518,7 +499,27 @@ public class MatchDetail extends AppCompatActivity {
                         tvSixBt2.setText(Integer.toString(bsNew.getNumOf6s()));
                     }
                 }
-                Log.d("NewBatsman: " + LogType.TEST, " Current Batsman name:" + playerHashMap.get(newBatsmanPlayerId).getPlayerName());
+                else{
+                    // Non-striker got run-out in this case while taking run
+                    boolean NonStrikerDisplayedFirst = activeBatsmen[1 - strikerIndex].isDisplayedFirst();
+                    CurrentBatsmanInfo btInfoNew = new CurrentBatsmanInfo(newBatsmanPlayerId, true, NonStrikerDisplayedFirst);
+                    activeBatsmen[1 - strikerIndex] = btInfoNew;
+                    if(activeBatsmen[1 - strikerIndex].isDisplayedFirst()){
+                        tvNameBt1.setText(strBatsmanNamePartial);
+                        tvRunBt1.setText(Integer.toString(bsNew.getRunsScored()));
+                        tvBallBt1.setText(Integer.toString(bsNew.getBallsFaced()));
+                        tvFourBt1.setText(Integer.toString(bsNew.getNumOf4s()));
+                        tvSixBt1.setText(Integer.toString(bsNew.getNumOf6s()));
+                    }
+                    else{
+                        tvNameBt2.setText(strBatsmanNamePartial);
+                        tvRunBt2.setText(Integer.toString(bsNew.getRunsScored()));
+                        tvBallBt2.setText(Integer.toString(bsNew.getBallsFaced()));
+                        tvFourBt2.setText(Integer.toString(bsNew.getNumOf4s()));
+                        tvSixBt2.setText(Integer.toString(bsNew.getNumOf6s()));
+                    }
+                }
+                Log.d("NewBatsman: " + LogType.TEST, " New Batsman name:" + playerHashMap.get(newBatsmanPlayerId).getPlayerName());
             }
             if (resultCode == Activity.RESULT_CANCELED) {
                 Toast.makeText(getApplicationContext(), "You need to select next batsman to continue", Toast.LENGTH_SHORT).show();
@@ -527,16 +528,19 @@ public class MatchDetail extends AppCompatActivity {
     }
     // Change after batsman got out
     private void changeBatsman(){
-        Log.d("NewBatsman: " + LogType.TEST, "Calling a new batsman activity");
+        Log.d("NewBatsman: " + LogType.TEST, " Calling a new batsman activity");
         Intent newBatsmanIntent = new Intent(getApplicationContext(), NewBatsmanActivity.class);
         ArrayList<Player> battingListAvailable = new ArrayList<Player>();
         for(Player p: playersListTeam1){
-            battingListAvailable.add(p);
+            if((p.getPlayerId() != activeBatsmen[0].getBatsmanPlayerId()) && (p.getPlayerId() != activeBatsmen[1].getBatsmanPlayerId())){
+                battingListAvailable.add(p);
+            }
         }
         newBatsmanIntent.putExtra(PLAYER_LIST_BATSMEN, battingListAvailable);
         newBatsmanIntent.putExtra(PLAYER_ID_BATSMAN_1, String.valueOf(activeBatsmen[0].getBatsmanPlayerId()));
         newBatsmanIntent.putExtra(PLAYER_ID_BATSMAN_2, String.valueOf(activeBatsmen[1].getBatsmanPlayerId()));
-        startActivityForResult(newBatsmanIntent, 2);
+        newBatsmanIntent.putExtra(PLAYER_LIST_FULL, playerHashMap);
+        startActivityForResult(newBatsmanIntent, NEW_BATSMAN_ACTIVITY_REQ_CODE);
     }
     public void viewScorecard(View v){
         Intent intent = new Intent(this, ScorecardActivity.class);

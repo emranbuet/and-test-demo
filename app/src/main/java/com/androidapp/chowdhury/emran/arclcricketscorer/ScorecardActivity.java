@@ -7,14 +7,10 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import static com.androidapp.chowdhury.emran.arclcricketscorer.ScoringUtility.*;
 
 public class ScorecardActivity extends AppCompatActivity {
 
-    public static String BATTING_STATISTICS = "BATTING_STATISTICS";
-    public static String BOWLING_STATISTICS = "BOWLING_STATISTICS";
-    private static String PLAYER_ID_BATSMAN_1 = "Batsman1";
-    private static String PLAYER_ID_BATSMAN_2 = "Batsman2";
 
     ListView lvBattingStatistics;
     ListView lvBowlingStatistics;

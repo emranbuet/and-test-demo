@@ -18,16 +18,16 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class NewBowlerActivity extends AppCompatActivity {
+import static com.androidapp.chowdhury.emran.arclcricketscorer.ScoringUtility.*;
 
-    private static String PLAYER_LIST_BOWLERS = "PlayerListAvailableBowlers";
-    private static String PLAYER_LIST_FULL = "PLAYER_LIST_FULL";
+public class NewBowlerActivity extends AppCompatActivity {
 
     private Spinner spNewBowler;
     private Button btnNewBowler;
     private int playerIdNewBowler;
     private ArrayAdapter<String> bowlerAdapter;
     private ArrayList<Player> playerListFielding = null;
+    private HashMap<Integer, Player> playerHashMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +37,7 @@ public class NewBowlerActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         if(bundle != null){
             playerListFielding = (ArrayList<Player>) bundle.getSerializable(PLAYER_LIST_BOWLERS);
+            playerHashMap = (HashMap<Integer, Player>) bundle.getSerializable(PLAYER_LIST_FULL);
         }
         else{
             Log.d("NewBowler: " + LogType.ERROR, "Bundle is null from match detail activity");

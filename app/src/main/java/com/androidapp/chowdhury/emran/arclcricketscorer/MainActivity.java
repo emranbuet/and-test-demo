@@ -7,13 +7,9 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+import static com.androidapp.chowdhury.emran.arclcricketscorer.ScoringUtility.*;
 
 public class MainActivity extends AppCompatActivity {
-
-    public static int MAX_TEAM_NAME_LENGTH = 20;
-    public static String TEAM_NAME_1 = "TEAM_NAME_1";
-    public static String TEAM_NAME_2 = "TEAM_NAME_2";
-    public static String TOTAL_OVER = "TOTAL_OVER";
 
     // View input data
     private EditText etTeam1, etTeam2, etTotOver;

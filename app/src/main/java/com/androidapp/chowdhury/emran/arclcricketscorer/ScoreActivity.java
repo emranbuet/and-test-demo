@@ -25,14 +25,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.StringTokenizer;
+import static com.androidapp.chowdhury.emran.arclcricketscorer.ScoringUtility.*;
 
 
 public class ScoreActivity extends AppCompatActivity {
-    public static String TEAM_NAME_1 = "TEAM_NAME_1";
-    public static String TEAM_NAME_2 = "TEAM_NAME_2";
-    public static String TOTAL_OVER = "TOTAL_OVER";
-    public static String PLAYER_LIST_FULL = "PLAYER_LIST_FULL";
-    public static String PLAYER_LIST_STATUS = "PLAYER_STATUS";
 
     private String strTeam1, strTeam2, strContent, strDetail, preStrDetail, preStrContent;
     //private int runA, runB, runR, preRunA, preRunB, preRunR;
@@ -52,13 +48,6 @@ public class ScoreActivity extends AppCompatActivity {
     //ArrayList<String> playerArrayList = new ArrayList<>(Arrays.asList(playerList));
     //List<String> playerArrayList;
 
-    // url string for calling arcl web api
-    public static String apiURL = "http://arclweb.azurewebsites.net/api/";
-    public static String PLAYER_LIST_FIRST = "PlayerListOne";
-    public static String PLAYER_LIST_SECOND = "PlayerListTwo";
-    public static String PLAYER_ID_BATSMAN_1 = "Batsman1";
-    public static String PLAYER_ID_BATSMAN_2 = "Batsman2";
-    public static String PLAYER_ID_BOWLER = "Bowler";
     protected ArrayList<Player> playersListTeam1, playersListTeam2;
     protected HashMap<Integer, Player> playersMap;
     ArrayAdapter<String> adapter, adapter2;
