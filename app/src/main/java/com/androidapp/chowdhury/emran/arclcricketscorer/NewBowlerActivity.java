@@ -77,7 +77,7 @@ public class NewBowlerActivity extends AppCompatActivity {
                 Intent returnBowlerIdIntent = new Intent();
                 Player bowler = playerListFielding.get(spNewBowler.getSelectedItemPosition());
                 playerIdNewBowler = bowler.getPlayerId();
-                returnBowlerIdIntent.putExtra("newBowlerId", String.valueOf(playerIdNewBowler));
+                returnBowlerIdIntent.putExtra("newBowlerId", itoa(playerIdNewBowler));
                 setResult(Activity.RESULT_OK, returnBowlerIdIntent);
                 Log.d("NewBowler: " + LogType.TEST, bowler.getPlayerName() +"Bowler is selected as bowler whose id is: " + playerIdNewBowler);
                 finish();

@@ -29,4 +29,12 @@ public class ScoringUtility {
 
     // url string for calling arcl web api
     public static String apiURL = "http://arclweb.azurewebsites.net/api/";
+
+    public static int atoi (String s){
+        return Integer.parseInt(s);
+    }
+
+    public static String itoa(int val){
+        return Integer.toString(val);
+    }
 }

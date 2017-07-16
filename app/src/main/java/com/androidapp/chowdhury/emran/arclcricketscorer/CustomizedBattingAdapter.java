@@ -10,6 +10,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import static com.androidapp.chowdhury.emran.arclcricketscorer.ScoringUtility.itoa;
+
 public class CustomizedBattingAdapter extends ArrayAdapter<BattingStatistics>{
     private static int BATSMAN_NAME_LEN = 12;
 
@@ -55,7 +57,7 @@ public class CustomizedBattingAdapter extends ArrayAdapter<BattingStatistics>{
     }
 
     private String formatInt2D(int value){
-        String strValue = String.valueOf(value);
+        String strValue = itoa(value);
         return (strValue.length() > 1) ? strValue: ("0" + strValue);
     }
 }

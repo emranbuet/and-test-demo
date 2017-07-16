@@ -39,7 +39,7 @@ public class CustomizedBowlingAdapter extends ArrayAdapter<BowlingStatistics>{
             BowlingStatistics bls = bowlingStats.get(position);
             String bowlerFullName = bls.getBowlerName();
             txtBowlerName.setText(bowlerFullName.length() > NAME_LEN ? bowlerFullName.substring(0, NAME_LEN) : bowlerFullName);
-            txtBowlerOver.setText(String.valueOf(bls.getOversBowled()));
+            txtBowlerOver.setText(itoa(bls.getOversBowled()));
             txtBowlerRun.setText(formatInt2D(bls.getRunsConceded()));
             txtBowlerWicket.setText(formatInt2D(bls.getNumberOfWickets()));
             txtBowlerWide.setText(formatInt2D(bls.getWidesCount()));
@@ -52,7 +52,7 @@ public class CustomizedBowlingAdapter extends ArrayAdapter<BowlingStatistics>{
     }
 
     private String formatInt2D(int value){
-        String strValue = String.valueOf(value);
+        String strValue = itoa(value);
         return (strValue.length() > 1) ? strValue: ("0" + strValue);
     }
 }

@@ -72,14 +72,14 @@ public class ScoreActivity extends AppCompatActivity {
             strTeam1 = "No name found for 1";
             strTeam2 = "No name found for 2";
         }
-        //Toast.makeText(getApplicationContext(), "Total overs: " + String.valueOf(totOver), Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(), "Total overs: " + itoa(totOver), Toast.LENGTH_SHORT).show();
         StringBuilder sba = new StringBuilder();
         sba.append(strTeam1);
         sba.append(" and ");
         sba.append(strTeam2);
 
         sba.append(" are playing ");
-        sba.append(String.valueOf(totOver));
+        sba.append(itoa(totOver));
         sba.append(" overs match");
 
         TextView myTv = (TextView) findViewById(R.id.tvHello);
@@ -123,7 +123,7 @@ public class ScoreActivity extends AppCompatActivity {
             }
             intent.putExtra(TEAM_NAME_1, strTeam1);
             intent.putExtra(TEAM_NAME_2, strTeam2);
-            intent.putExtra(TOTAL_OVER, String.valueOf(totOver));
+            intent.putExtra(TOTAL_OVER, itoa(totOver));
 
             Player p1 = null, p2 = null, player = null;
             playersMap = new HashMap<>();
@@ -151,14 +151,14 @@ public class ScoreActivity extends AppCompatActivity {
             playerIdBt2 = playersListTeam1.get(spinnerBt2.getSelectedItemPosition()).getPlayerId();
             playerIdBl = playersListTeam2.get(spinnerBl.getSelectedItemPosition()).getPlayerId();
 
-            Log.d("Batsman 1", playersListTeam1.get(spinnerBt1.getSelectedItemPosition()).getPlayerName() + " -> " + String.valueOf(playerIdBl));
-            Log.d("Batsman 2", playersListTeam1.get(spinnerBt2.getSelectedItemPosition()).getPlayerName() + " -> " + String.valueOf(playerIdBt2));
-            Log.d("Bowler", playersListTeam2.get(spinnerBl.getSelectedItemPosition()).getPlayerName() + " -> " + String.valueOf(playerIdBl));
+            Log.d("Batsman 1", playersListTeam1.get(spinnerBt1.getSelectedItemPosition()).getPlayerName() + " -> " + itoa(playerIdBl));
+            Log.d("Batsman 2", playersListTeam1.get(spinnerBt2.getSelectedItemPosition()).getPlayerName() + " -> " + itoa(playerIdBt2));
+            Log.d("Bowler", playersListTeam2.get(spinnerBl.getSelectedItemPosition()).getPlayerName() + " -> " + itoa(playerIdBl));
 
 
-            intent.putExtra(PLAYER_ID_BATSMAN_1, String.valueOf(playerIdBt1));
-            intent.putExtra(PLAYER_ID_BATSMAN_2, String.valueOf(playerIdBt2));
-            intent.putExtra(PLAYER_ID_BOWLER, String.valueOf(playerIdBl));
+            intent.putExtra(PLAYER_ID_BATSMAN_1, itoa(playerIdBt1));
+            intent.putExtra(PLAYER_ID_BATSMAN_2, itoa(playerIdBt2));
+            intent.putExtra(PLAYER_ID_BOWLER, itoa(playerIdBl));
 
             startActivity(intent);
         }

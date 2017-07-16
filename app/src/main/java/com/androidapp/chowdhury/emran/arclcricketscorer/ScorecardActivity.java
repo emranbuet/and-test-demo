@@ -37,8 +37,8 @@ public class ScorecardActivity extends AppCompatActivity {
             secondBatsmanPlayerId = bundle.getString(PLAYER_ID_BATSMAN_2);
 
             ArrayList<Integer> activeBatsmenIds = new ArrayList<>();
-            activeBatsmenIds.add(Integer.parseInt(firstBatsmanPlayerId));
-            activeBatsmenIds.add(Integer.parseInt(secondBatsmanPlayerId));
+            activeBatsmenIds.add(atoi(firstBatsmanPlayerId));
+            activeBatsmenIds.add(atoi(secondBatsmanPlayerId));
             ArrayList<BattingStatistics> battingStatisticsList = new ArrayList<BattingStatistics> (batsmenStatsMap.values());
             if(battingStatisticsList != null && battingStatisticsList.size() > 0){
                 battingAdapter = new CustomizedBattingAdapter(this, battingStatisticsList, activeBatsmenIds);

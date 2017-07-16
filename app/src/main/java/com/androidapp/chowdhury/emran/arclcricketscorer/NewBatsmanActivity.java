@@ -62,8 +62,8 @@ public class NewBatsmanActivity extends AppCompatActivity {
         spOutType.setAdapter(outTypeAdapter);
 
         currentBatsmanList = new ArrayList<>();
-        currentBatsmanList.add(playerHashMap.get(Integer.parseInt(firstBatsmanPlayerId)));
-        currentBatsmanList.add(playerHashMap.get(Integer.parseInt(secondBatsmanPlayerId)));
+        currentBatsmanList.add(playerHashMap.get(atoi(firstBatsmanPlayerId)));
+        currentBatsmanList.add(playerHashMap.get(atoi(secondBatsmanPlayerId)));
 
         currentBatsmenName = new ArrayList<>();
         for(Player p : currentBatsmanList){
@@ -114,11 +114,11 @@ public class NewBatsmanActivity extends AppCompatActivity {
                 Intent returnBatsmanIntent = new Intent();
                 Player batsman = playerListBatting.get(spNewBatsman.getSelectedItemPosition());
                 playerIdNewBatsman = batsman.getPlayerId();
-                returnBatsmanIntent.putExtra(NEW_BATSMAN_ID, String.valueOf(playerIdNewBatsman));
+                returnBatsmanIntent.putExtra(NEW_BATSMAN_ID, itoa(playerIdNewBatsman));
 
                 String outTypeStr = (String)outTypeList.get(spOutType.getSelectedItemPosition());
                 returnBatsmanIntent.putExtra(OUT_TYPE_STR, outTypeStr);
-                String playerIdOfRunOut = String.valueOf(currentBatsmanList.get(spCurrentBatsman.getSelectedItemPosition()).getPlayerId());
+                String playerIdOfRunOut = itoa(currentBatsmanList.get(spCurrentBatsman.getSelectedItemPosition()).getPlayerId());
                 returnBatsmanIntent.putExtra(PLAYER_ID_BATSMAN_OUT, playerIdOfRunOut);
 
                 setResult(Activity.RESULT_OK, returnBatsmanIntent);

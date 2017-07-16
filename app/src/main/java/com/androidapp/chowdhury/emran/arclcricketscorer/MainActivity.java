@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
         strTeam1 = etTeam1.getText().toString();
         strTeam2 = etTeam2.getText().toString();
         strTotOver = etTotOver.getText().toString();
-        totalOvers = (TextUtils.isEmpty(strTotOver)) ? 16 : Integer.parseInt(strTotOver);
+        totalOvers = (TextUtils.isEmpty(strTotOver)) ? 16 : atoi(strTotOver);
 
         if(TextUtils.isEmpty(strTeam1))
             Toast.makeText(getApplicationContext(), "Enter Name of First team", Toast.LENGTH_SHORT).show();
@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
                 strTeam2 = strTeam2.substring(0, MAX_TEAM_NAME_LENGTH);
             }
             intent.putExtra(TEAM_NAME_2, strTeam2);
-            //Toast.makeText(getApplicationContext(), "Total overs: " + String.valueOf(totalOvers), Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getApplicationContext(), "Total overs: " + itoa(totalOvers), Toast.LENGTH_SHORT).show();
             intent.putExtra(TOTAL_OVER, totalOvers);
 
             startActivity(intent);
