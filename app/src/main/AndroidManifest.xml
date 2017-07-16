@@ -23,7 +23,8 @@
         <activity android:name=".MatchDetail" />
         <activity android:name=".NewBowlerActivity" />
         <activity android:name=".ScorecardActivity" />
-        <activity android:name=".NewBatsmanActivity"></activity>
+        <activity android:name=".NewBatsmanActivity" />
+        <activity android:name=".StartSecondInnings"></activity>
     </application>
 
 </manifest>

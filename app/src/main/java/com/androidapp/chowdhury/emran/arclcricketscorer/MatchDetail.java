@@ -1,6 +1,8 @@
 package com.androidapp.chowdhury.emran.arclcricketscorer;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -27,6 +29,7 @@ public class MatchDetail extends AppCompatActivity {
     private String strTeam1, strTeam2, strTotOver, strContent, strDetail, preStrDetail, preStrContent;
     private int playerIdBt1, playerIdBt2, playerIdBowler;
     private boolean overCompleted = false, swapMayNeed = false;
+    private static int numOfWicketByBowler = 0;
     //private int totOver;
 
     // Batsmen, bowler statistics and UI mapping of batsmen, strikers
@@ -430,7 +433,7 @@ public class MatchDetail extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == NEW_BOWLER_ACTIVITY_REQ_CODE) {
             if(resultCode == Activity.RESULT_OK){
-                String bowlerIdStr = data.getStringExtra("newBowlerId");
+                String bowlerIdStr = data.getStringExtra(NEW_BOWLER_ID);
                 int newBowlerPlayerId = atoi(bowlerIdStr);
                 BowlingStatistics newBowlerStat = null;
                 if(!bowlingStatsMap.containsKey(newBowlerPlayerId)) {
@@ -454,6 +457,7 @@ public class MatchDetail extends AppCompatActivity {
         }
         else if (requestCode == NEW_BATSMAN_ACTIVITY_REQ_CODE) {
             if(resultCode == Activity.RESULT_OK){
+                numOfWicketByBowler = 1;
                 String batsmanIdIdStr = data.getStringExtra(NEW_BATSMAN_ID);
                 int newBatsmanPlayerId = atoi(batsmanIdIdStr);
                 BattingStatistics newBatsmanStat = null;
@@ -475,6 +479,7 @@ public class MatchDetail extends AppCompatActivity {
                 BattingStatistics bsNew = batsmenStatsMap.get(newBatsmanPlayerId);
                 if(outTypeStr.equals("RunOut")){
                     //TODO: Get the batsman id who was got out
+                    numOfWicketByBowler = 0;
                     String batsmanIdOfOut = data.getStringExtra(PLAYER_ID_BATSMAN_OUT);
                     Log.d("Batsman Out: " + LogType.TEST, " Batsman was run out: " + playerHashMap.get(atoi(batsmanIdOfOut)).getPlayerName());
                     isStrikerGotOut = (strikerPlayerId == atoi(batsmanIdOfOut))? true : false;
@@ -523,6 +528,86 @@ public class MatchDetail extends AppCompatActivity {
             }
             if (resultCode == Activity.RESULT_CANCELED) {
                 Toast.makeText(getApplicationContext(), "You need to select next batsman to continue", Toast.LENGTH_SHORT).show();
+            }
+        }
+        else if(requestCode == START_SECOND_INNINGS_REQ_CODE){
+            // TODO: after returning from start second innings activity works
+            String strPlayerIdBt1 = data.getStringExtra(PLAYER_ID_BATSMAN_1);
+            String strPlayerIdBt2 = data.getStringExtra(PLAYER_ID_BATSMAN_2);
+            String strPlayerIdBowler = data.getStringExtra(PLAYER_ID_BOWLER);
+            if(strPlayerIdBt1 != null) {
+                playerIdBt1 = atoi(strPlayerIdBt1);
+                String strPlayerNameBt1 = playerHashMap.get(playerIdBt1).getPlayerName();
+                String strBatsmanPartial1 = (strPlayerNameBt1.length() > NAME_LEN) ? strPlayerNameBt1.substring(0, NAME_LEN) : strPlayerNameBt1;
+                // Add first batsman's initial statistics in the map
+                if(!batsmenStatsMap.containsKey(playerIdBt1)){
+                    BattingStatistics batStat1 = new BattingStatistics(playerIdBt1, playerHashMap.get(playerIdBt1).getPlayerName());
+                    batsmenStatsMap.put(playerIdBt1, batStat1);
+                }
+                CurrentBatsmanInfo btInfo1 = new CurrentBatsmanInfo(playerIdBt1, true, true);
+                activeBatsmen[0] = btInfo1;
+                // Set the first batsman info in UI with green color
+                tvNameBt1.setText(strBatsmanPartial1);
+                tvNameBt1.setTextColor(Color.BLACK);
+                tvNameBt1.setTypeface(null, Typeface.BOLD);
+                llBt1.setBackgroundColor(Color.parseColor("#00cccc"));
+                BattingStatistics bs = batsmenStatsMap.get(playerIdBt1);
+                tvRunBt1.setText(itoa(bs.getRunsScored()));
+                tvBallBt1.setText(itoa(bs.getBallsFaced()));
+                tvFourBt1.setText(itoa(bs.getNumOf4s()));
+                tvSixBt1.setText(itoa(bs.getNumOf6s()));
+            }
+            else{
+                Log.d("MatchDetail: " + LogType.ERROR, "First Batsman name is null");
+            }
+            if(strPlayerIdBt2 != null) {
+                playerIdBt2 = atoi(strPlayerIdBt2);
+                String strPlayerNameBt2 = playerHashMap.get(playerIdBt2).getPlayerName();
+                String strBatsmanPartial2 = (strPlayerNameBt2.length() > NAME_LEN) ? strPlayerNameBt2.substring(0, NAME_LEN) : strPlayerNameBt2;
+                // Add second batsman's initial statistics in the map
+                if(!batsmenStatsMap.containsKey(playerIdBt2)){
+                    BattingStatistics batStat2 = new BattingStatistics(playerIdBt2, playerHashMap.get(playerIdBt2).getPlayerName());
+                    batsmenStatsMap.put(playerIdBt2, batStat2);
+                }
+                CurrentBatsmanInfo btInfo2 = new CurrentBatsmanInfo(playerIdBt2, false, false);
+                activeBatsmen[1] = btInfo2;
+                // Set the second batsman info in UI
+                tvNameBt2.setText(strBatsmanPartial2);
+                tvNameBt2.setTextColor(Color.BLACK);
+                tvNameBt2.setTypeface(null, Typeface.NORMAL);
+                llBt2.setBackgroundColor(Color.parseColor("#e5e5e5"));
+                BattingStatistics bs = batsmenStatsMap.get(playerIdBt2);
+                tvRunBt2.setText(itoa(bs.getRunsScored()));
+                tvBallBt2.setText(itoa(bs.getBallsFaced()));
+                tvFourBt2.setText(itoa(bs.getNumOf4s()));
+                tvSixBt2.setText(itoa(bs.getNumOf6s()));
+            }
+            else{
+                Log.d("MatchDetail: " + LogType.ERROR, "Second Batsman name is null");
+            }
+            if(strPlayerIdBowler != null) {
+                playerIdBowler = atoi(strPlayerIdBowler);
+                String strPlayerNameBowler = playerHashMap.get(playerIdBowler).getPlayerName();
+                String strBowlerPartial = (strPlayerNameBowler.length() > NAME_LEN) ? strPlayerNameBowler.substring(0, NAME_LEN) : strPlayerNameBowler;
+                // Add the bowler's initial statistics in the map
+                if(!bowlingStatsMap.containsKey(playerIdBowler)){
+                    BowlingStatistics bowlerStat = new BowlingStatistics(playerIdBowler, playerHashMap.get(playerIdBowler).getPlayerName());
+                    bowlingStatsMap.put(playerIdBowler, bowlerStat);
+                }
+                currentBowlerStat = bowlingStatsMap.get(playerIdBowler);
+                // Set the bowler info in UI with green color
+                tvNameBowler.setText(strBowlerPartial);
+                tvNameBowler.setTextColor(Color.BLACK);
+                tvNameBowler.setTypeface(null, Typeface.BOLD);
+                llBowler.setBackgroundColor(Color.parseColor("#00cccc"));
+                tvOverBowler.setText(Double.toString(currentBowlerStat.getOversBowled()));
+                tvRunBowler.setText(itoa(currentBowlerStat.getRunsConceded()));
+                tvWicketBowler.setText(itoa(currentBowlerStat.getNumberOfWickets()));
+                tvWideBowler.setText(itoa(currentBowlerStat.getWidesCount()));
+                tvNoBowler.setText(itoa(currentBowlerStat.getNoBallCount()));
+            }
+            else{
+                Log.d("MatchDetail: " + LogType.ERROR, "Bowler name is null");
             }
         }
     }
@@ -700,6 +785,7 @@ public class MatchDetail extends AppCompatActivity {
                                     run++;
                                     runA++;
                                     //TODO: Add feature for getting new batsman
+                                    changeBatsman();
                                     updateBowlingStat(run, 0, false, true, 0);
                                     strDetail += "  ";
                                     strDetail += strContent;
@@ -724,6 +810,7 @@ public class MatchDetail extends AppCompatActivity {
                                     run++;
                                     runA+=run;
                                     //TODO: Add feature for getting new batsman
+                                    changeBatsman();
                                     updateBowlingStat(run, 0, true, false, 0);
                                     strDetail += "  ";
                                     strDetail += strContent;
@@ -756,6 +843,7 @@ public class MatchDetail extends AppCompatActivity {
                                         strDetail += "  ";
                                         strDetail += strContent;
                                     }
+                                    changeBatsman();
                                     break;
                                 default:
                                     //run = atoi(strContent.substring(2));
@@ -784,6 +872,7 @@ public class MatchDetail extends AppCompatActivity {
                                         strDetail += "  ";
                                         strDetail += strContent;
                                     }
+                                    changeBatsman();
                                     break;
                             }
                         } else {
@@ -800,7 +889,8 @@ public class MatchDetail extends AppCompatActivity {
                             }
                             //TODO: Add feature for getting new batsman for only wicket fallen
                             changeBatsman();
-                            updateBowlingStat(0, 1, false, false, 0);
+                            // numOfWicketByBowler is updated in changeBatsman function by considering the out type
+                            updateBowlingStat(0, numOfWicketByBowler, false, false, 0);
                         }
                         wickA++;
 //                        if (firstBatting)
@@ -1066,32 +1156,37 @@ public class MatchDetail extends AppCompatActivity {
     }
 
     public void inningsComplete(View v){
+        getConfirmation();
+    }
 
+    private void updateUIForSecondInnings(){
         if(totOver < overA) {
             overR = overA;
             totOver = overA;
             tvOverR.setText(Double.toString(overR));
         }
         if(firstBatting)
-            inningsCompleteChange(v);
+            inningsCompleteChange();
         firstBatting = false;
     }
-    private void inningsCompleteChange(View v){
+    private void inningsCompleteChange(){
         tvTeam1.setTypeface(null, Typeface.NORMAL);
         tvTeam1.setTextColor(Color.parseColor("#ff000000"));
-        /*tvRunA.setTextColor(Color.parseColor("#ff000000"));
-        tvTextBy.setTextColor(Color.parseColor("#ff000000"));
-        tvWickA.setTextColor(Color.parseColor("#ff000000"));
-        tvTextIn.setTextColor(Color.parseColor("#ff000000"));
-        tvOverA.setTextColor(Color.parseColor("#ff000000"));
-        tvTextOver.setTextColor(Color.parseColor("#ff000000"));*/
-
-        //llFirst.setBackgroundColor(Color.TRANSPARENT);
-
         tvStatus.setText(strTeam2 + " is Batting");
+        String strTeamPartial1 = (strTeam2.length() > NAME_LEN) ? strTeam2.substring(0, NAME_LEN) : strTeam2;
+        tvTeam1.setText(strTeamPartial1);
+        tvRunA.setText("0");
+        tvWickA.setText("0");
+        tvOverA.setText("0.0");
+        runA = 0;
+        overA = 0;
+        wickA = 0;
+        ballsA = 0;
+
         preStrDetail = strDetail;
         strDetail = "";
         tvRunDetail.setText(strDetail);
+        startSecondInnings();
         //tvTeam2.setTextColor(Color.parseColor("#ff3e54ff"));
         //tvTeam2.setTypeface(null, Typeface.BOLD);
 
@@ -1104,37 +1199,64 @@ public class MatchDetail extends AppCompatActivity {
 
         //llSecond.setBackgroundColor(Color.parseColor("#ffe5e4e2"));
     }
-//    public void matchSave(View v){
-//        Toast.makeText(getApplicationContext(), "Match Can not be saved now", Toast.LENGTH_SHORT).show();
-//    }
-//    public void newMatch(View v){
-//        confirmation();
-//    }
-//    public void confirmation(){
-//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//        builder.setTitle("Warning...");
-//        builder.setMessage("Are you sure? All score will be lost!");
-//        //builder.setIcon(R.drawable.ic_launcher);
-//        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-//            public void onClick(DialogInterface dialog, int id) {
-//                dialog.dismiss();
-//                gotoNewMatch();
-//            }
-//        });
-//        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-//            public void onClick(DialogInterface dialog, int id) {
-//                dialog.dismiss();
-//            }
-//        });
-//        AlertDialog alert = builder.create();
-//        alert.show();
-//    }
+
+    private void startSecondInnings(){
+        // TODO: Save the current batting and bowling information and get the new batsmen, bowler name to start new innings
+        // save first innings data here
+
+        // Get the new batsmen, bowler list by calling start second innings activity
+        ArrayList<Player> tempPlayerList = playersListTeam1;
+        playersListTeam1 = playersListTeam2;
+        playersListTeam2 = tempPlayerList;
+        Log.d("Start2ndInning: " + LogType.TEST, "Calling start 2nd innings activity");
+        Intent changeInningsIntent = new Intent(getApplicationContext(), StartSecondInnings.class);
+        changeInningsIntent.putExtra(PLAYER_LIST_FIRST, playersListTeam1);
+        changeInningsIntent.putExtra(PLAYER_LIST_SECOND, playersListTeam2);
+        changeInningsIntent.putExtra(PLAYER_LIST_FULL, playerHashMap);
+        batsmenStatsMap.clear();
+        bowlingStatsMap.clear();
+        preBatsmenStatsMap.clear();
+        preBowlingStatsMap.clear();
+        batsmenStatsMap = new HashMap<>();
+        bowlingStatsMap = new HashMap<>();
+        preBatsmenStatsMap = new HashMap<>();
+        preBowlingStatsMap = new HashMap<>();
+        startActivityForResult(changeInningsIntent, START_SECOND_INNINGS_REQ_CODE);
+    }
+
+    public void getConfirmation(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Warning...");
+        //builder.setMessage("Are you sure? All score will be lost!");
+        builder.setMessage("First innings completed?");
+        //builder.setIcon(R.drawable.ic_launcher);
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.dismiss();
+                updateUIForSecondInnings();
+            }
+        });
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.dismiss();
+            }
+        });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
     public void gotoNewMatch(){
         //super.onBackPressed();
         //Intent i = new Intent(this, New_Match.class);
         //finish();
         //startActivity(i);
     }
+
+    //    public void matchSave(View v){
+//        Toast.makeText(getApplicationContext(), "Match Can not be saved now", Toast.LENGTH_SHORT).show();
+//    }
+//    public void newMatch(View v){
+//        confirmation();
+//    }
 
     @Override
     public void onBackPressed() {

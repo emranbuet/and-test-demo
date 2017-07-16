@@ -19,6 +19,7 @@ public class ScoringUtility {
     public static String BOWLING_STATISTICS = "BOWLING_STATISTICS";
     public static String OUT_TYPE_STR = "OutTypeStr";
     public static String NEW_BATSMAN_ID = "NewBatsmanId";
+    public static String NEW_BOWLER_ID = "newBowlerId";
     public static String PLAYER_ID_BATSMAN_OUT = "BatsmanRunOutId";
 
     public static int MAX_TEAM_NAME_LENGTH = 20;
@@ -26,6 +27,7 @@ public class ScoringUtility {
 
     public static int NEW_BOWLER_ACTIVITY_REQ_CODE = 1;
     public static int NEW_BATSMAN_ACTIVITY_REQ_CODE = 2;
+    public static int START_SECOND_INNINGS_REQ_CODE = 3;
 
     // url string for calling arcl web api
     public static String apiURL = "http://arclweb.azurewebsites.net/api/";
