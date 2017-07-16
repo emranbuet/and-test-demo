@@ -37,4 +37,8 @@ public class ScoringUtility {
     public static String itoa(int val){
         return Integer.toString(val);
     }
+
+    public static String dtoa(Double val){
+        return String.valueOf(val);
+    }
 }

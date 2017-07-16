@@ -79,7 +79,7 @@ public class ScoreActivity extends AppCompatActivity {
         sba.append(strTeam2);
 
         sba.append(" are playing ");
-        sba.append(itoa(totOver));
+        sba.append(dtoa(totOver));
         sba.append(" overs match");
 
         TextView myTv = (TextView) findViewById(R.id.tvHello);
@@ -123,7 +123,7 @@ public class ScoreActivity extends AppCompatActivity {
             }
             intent.putExtra(TEAM_NAME_1, strTeam1);
             intent.putExtra(TEAM_NAME_2, strTeam2);
-            intent.putExtra(TOTAL_OVER, itoa(totOver));
+            intent.putExtra(TOTAL_OVER, dtoa(totOver));
 
             Player p1 = null, p2 = null, player = null;
             playersMap = new HashMap<>();
