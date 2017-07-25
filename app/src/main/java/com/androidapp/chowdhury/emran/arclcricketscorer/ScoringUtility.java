@@ -1,6 +1,10 @@
 package com.androidapp.chowdhury.emran.arclcricketscorer;
 
 public class ScoringUtility {
+    public static int MATCH_ID = 999;
+    public static int TEAM_ID_1 = 111;
+    public static int TEAM_ID_2 = 555;
+
     public static String PLAYER_LIST_FULL = "PLAYER_LIST_FULL";
     public static String PLAYER_LIST_FIRST = "PlayerListOne";
     public static String PLAYER_LIST_SECOND = "PlayerListTwo";

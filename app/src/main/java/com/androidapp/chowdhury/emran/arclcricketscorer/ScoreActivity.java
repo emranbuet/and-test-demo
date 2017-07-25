@@ -264,7 +264,7 @@ public class ScoreActivity extends AppCompatActivity {
             }
             String formattedTeamName = sb.toString();
             //String urlForPlayers = apiURL + "RegisteredPlayers?teamName=" + teamName+"&seasonid=41";
-            String urlForPlayers = apiURL + "RegisteredPlayers?teamName=" + formattedTeamName+"&seasonid=41";
+            String urlForPlayers = apiURL + "RegisteredPlayers?teamName=" + formattedTeamName+"&seasonid=42";
             Log.d(LogType.INFO, "Formatted team name is: " + formattedTeamName);
             if(sb == null)
                 sb = new StringBuilder();
