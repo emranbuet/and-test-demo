@@ -939,6 +939,7 @@ public class MatchDetail extends AppCompatActivity {
                             needToChangeBatsman = true;
                             //changeBatsman();
                             // numOfWicketByBowler is updated in changeBatsman function by considering the out type
+                            //TODO: Since changeBatsman is moved, following line is not getting the correct wickets for bowler
                             updateBowlingStat(0, numOfWicketByBowler, false, false, 0);
                         }
                         wickA++;
