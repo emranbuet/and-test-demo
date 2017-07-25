@@ -36,18 +36,27 @@
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
-                android:layout_marginRight="15dp"
+                android:layout_marginRight="10dp"
                 android:fontFamily="monospace"
                 android:text="Batsman"
                 android:textColor="#000000"
                 android:typeface="normal" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="35dp"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="30dp"
+                android:layout_marginRight="5dp"
                 android:fontFamily="monospace"
-                android:text="Run"
+                android:text="Out"
+                android:textColor="#000000"
+                android:typeface="normal" />
+
+            <TextView
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="20dp"
+                android:fontFamily="monospace"
+                android:text="Bowler"
                 android:textColor="#000000"
                 android:typeface="normal" />
 
@@ -56,7 +65,16 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="30dp"
                 android:fontFamily="monospace"
-                android:text="Ball"
+                android:text=" R"
+                android:textColor="#000000"
+                android:typeface="normal" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="25dp"
+                android:fontFamily="monospace"
+                android:text=" B"
                 android:textColor="#000000"
                 android:typeface="normal" />
 
@@ -64,9 +82,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="30dp"
+                android:layout_marginRight="20dp"
                 android:fontFamily="monospace"
-                android:text="Four"
+                android:text=" 4"
                 android:textColor="#000000"
                 android:typeface="normal" />
 
@@ -74,7 +92,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="monospace"
-                android:text="Six"
+                android:text=" 6"
                 android:textColor="#000000"
                 android:typeface="normal" />
 

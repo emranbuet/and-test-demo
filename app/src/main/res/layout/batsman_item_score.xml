@@ -16,35 +16,51 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="25dp"
+            android:layout_marginRight="15dp"
             android:fontFamily="sans-serif-condensed"
             android:text="Batsman Name:" />
+
+        <TextView
+            android:id="@+id/stVOutTypeBt"
+            android:layout_width="35dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:fontFamily="sans-serif-condensed"
+            android:text="no" />
+
+        <TextView
+            android:id="@+id/stVByBowlerBt"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="20dp"
+            android:fontFamily="sans-serif-condensed"
+            android:text="Bowler " />
 
         <TextView
             android:id="@+id/stVRunBt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="40dp"
+            android:layout_marginRight="30dp"
             android:fontFamily="sans-serif-condensed"
-            android:text="0"
+            android:text="00"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/stVBallBt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="45dp"
+            android:layout_marginRight="30dp"
             android:fontFamily="sans-serif-condensed"
-            android:text="0"
+            android:text="00"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/stVFourBt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="45dp"
+            android:layout_marginRight="22dp"
             android:fontFamily="sans-serif-condensed"
-            android:text="0"
+            android:text="00"
             android:textStyle="bold" />
 
 
@@ -53,7 +69,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-condensed"
-            android:text="0"
+            android:text="00"
             android:textStyle="bold" />
 
     </LinearLayout>
