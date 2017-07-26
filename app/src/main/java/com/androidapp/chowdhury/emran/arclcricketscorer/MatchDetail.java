@@ -559,7 +559,7 @@ public class MatchDetail extends AppCompatActivity {
                     }
                 }
                 Log.d("NewBatsman: " + LogType.TEST, " New Batsman name:" + playerHashMap.get(newBatsmanPlayerId).getPlayerName());
-                needToChangeBatsman = false;
+                //needToChangeBatsman = false;
             }
             if (resultCode == Activity.RESULT_CANCELED) {
                 Toast.makeText(getApplicationContext(), "You need to select next batsman to continue", Toast.LENGTH_SHORT).show();
@@ -725,7 +725,9 @@ public class MatchDetail extends AppCompatActivity {
                         ball = 0;
                         overOnly++;
                         strDetail = "";
-                        overCompleted = true;
+                        //overCompleted = true;
+                        Toast.makeText(getApplicationContext(), "Over Completed!", Toast.LENGTH_SHORT).show();
+                        changeCurrentBowler();
                     }
                 }
             } else {
@@ -798,7 +800,9 @@ public class MatchDetail extends AppCompatActivity {
                             overOnly++;
                             ball = 0;
                             strDetail = "";
-                            overCompleted = true;
+                            //overCompleted = true;
+                            Toast.makeText(getApplicationContext(), "Over Completed!", Toast.LENGTH_SHORT).show();
+                            changeCurrentBowler();
                         } else {
                             ball++;
                             strDetail += "  ";
@@ -829,8 +833,8 @@ public class MatchDetail extends AppCompatActivity {
                                     run++;
                                     runA++;
                                     //TODO: Add feature for getting new batsman
-                                    needToChangeBatsman = true;
-                                    //changeBatsman();
+                                    //needToChangeBatsman = true;
+                                    changeBatsman();
                                     updateBowlingStat(run, 0, false, true, 0);
                                     strDetail += "  ";
                                     strDetail += strContent;
@@ -855,8 +859,8 @@ public class MatchDetail extends AppCompatActivity {
                                     run++;
                                     runA+=run;
                                     //TODO: Add feature for getting new batsman
-                                    needToChangeBatsman = true;
-                                    //changeBatsman();
+                                    //needToChangeBatsman = true;
+                                    changeBatsman();
                                     updateBowlingStat(run, 0, true, false, 0);
                                     strDetail += "  ";
                                     strDetail += strContent;
@@ -883,14 +887,16 @@ public class MatchDetail extends AppCompatActivity {
                                         overOnly++;
                                         ball = 0;
                                         strDetail = "";
-                                        overCompleted = true;
+                                        //overCompleted = true;
+                                        Toast.makeText(getApplicationContext(), "Over Completed!", Toast.LENGTH_SHORT).show();
+                                        changeCurrentBowler();
                                     } else {
                                         ball++;
                                         strDetail += "  ";
                                         strDetail += strContent;
                                     }
-                                    needToChangeBatsman  = true;
-                                    //changeBatsman();
+                                    //needToChangeBatsman  = true;
+                                    changeBatsman();
                                     break;
                                 default:
                                     //run = atoi(strContent.substring(2));
@@ -913,14 +919,16 @@ public class MatchDetail extends AppCompatActivity {
                                         overOnly++;
                                         ball = 0;
                                         strDetail = "";
-                                        overCompleted = true;
+                                        //overCompleted = true;
+                                        Toast.makeText(getApplicationContext(), "Over Completed!", Toast.LENGTH_SHORT).show();
+                                        changeCurrentBowler();
                                     } else {
                                         ball++;
                                         strDetail += "  ";
                                         strDetail += strContent;
                                     }
-                                    needToChangeBatsman = true;
-                                    //changeBatsman();
+                                    //needToChangeBatsman = true;
+                                    changeBatsman();
                                     break;
                             }
                         } else {
@@ -928,7 +936,9 @@ public class MatchDetail extends AppCompatActivity {
                                 overOnly++;
                                 ball = 0;
                                 strDetail = "";
-                                overCompleted = true;
+                                //overCompleted = true;
+                                Toast.makeText(getApplicationContext(), "Over Completed!", Toast.LENGTH_SHORT).show();
+                                changeCurrentBowler();
                             } else {
                                 ball++;
                                 strDetail += "  ";
@@ -936,8 +946,8 @@ public class MatchDetail extends AppCompatActivity {
                                 strDetail += strContent;
                             }
                             //TODO: Add feature for getting new batsman for only wicket fallen
-                            needToChangeBatsman = true;
-                            //changeBatsman();
+                            //needToChangeBatsman = true;
+                            changeBatsman();
                             // numOfWicketByBowler is updated in changeBatsman function by considering the out type
                             //TODO: Since changeBatsman is moved, following line is not getting the correct wickets for bowler
                             updateBowlingStat(0, numOfWicketByBowler, false, false, 0);
@@ -1041,14 +1051,14 @@ public class MatchDetail extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "Click Swap Batsman if requires due to run-out", Toast.LENGTH_LONG).show();
                 swapMayNeed = false;
             }
-            if(overCompleted){
-                Toast.makeText(getApplicationContext(), "Over Completed!", Toast.LENGTH_SHORT).show();
-                changeCurrentBowler();
-                overCompleted = false;
-            }
-            if(needToChangeBatsman){
-                changeBatsman();
-            }
+//            if(overCompleted){
+//                Toast.makeText(getApplicationContext(), "Over Completed!", Toast.LENGTH_SHORT).show();
+//                changeCurrentBowler();
+//                overCompleted = false;
+//            }
+//            if(needToChangeBatsman){
+//                changeBatsman();
+//            }
         }
         else{
             Toast.makeText(getApplicationContext(), "Enter 0 for dot ball", Toast.LENGTH_SHORT).show();
