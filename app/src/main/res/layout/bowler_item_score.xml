@@ -24,7 +24,7 @@
             android:id="@+id/stVOverBowler"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="35dp"
+            android:layout_marginRight="32dp"
             android:fontFamily="sans-serif-condensed"
             android:text="0.0"
             android:textStyle="bold" />
@@ -33,7 +33,7 @@
             android:id="@+id/stVRunBowler"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="45dp"
+            android:layout_marginRight="30dp"
             android:fontFamily="sans-serif-condensed"
             android:text="00"
             android:textStyle="bold" />
@@ -42,7 +42,7 @@
             android:id="@+id/stVWicketBowler"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="40dp"
+            android:layout_marginRight="28dp"
             android:fontFamily="sans-serif-condensed"
             android:text="00"
             android:textStyle="bold" />
@@ -52,7 +52,7 @@
             android:id="@+id/stVWideBowler"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="35dp"
+            android:layout_marginRight="20dp"
             android:fontFamily="sans-serif-condensed"
             android:text="00"
             android:textStyle="bold" />
