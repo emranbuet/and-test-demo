@@ -48,6 +48,11 @@ public class MatchDetail extends AppCompatActivity {
     BowlingStatistics currentBowlerStat;
 
     // Related to scoring
+    String strOver = "0";
+    int overOnly = 0;
+    int ball = 0;
+    boolean sameActivity = true;
+    boolean IsLastBall = false;
     private int runA, runR, preRunA, preRunR;
     private double overA, overR, totOver, preOverA, preOverR;
     private int ballsA, ballsB, preBallsA, preBallsB;
@@ -432,6 +437,7 @@ public class MatchDetail extends AppCompatActivity {
     }
     // Change after each over
     private void changeCurrentBowler(){
+        sameActivity = false;
         bowlingStatsMap.put(currentBowlerStat.getBowlerPlayerId(), currentBowlerStat);
         // Get the new bowler id from UI dialog
         Log.d("NewBowler: " + LogType.TEST, "Calling a new bowler activity");
@@ -656,6 +662,7 @@ public class MatchDetail extends AppCompatActivity {
     }
     // Change after batsman got out
     private void changeBatsman(){
+        sameActivity = false;
         battingPosition++;
         Log.d("NewBatsman: " + LogType.TEST, " Calling a new batsman activity");
         Intent newBatsmanIntent = new Intent(getApplicationContext(), NewBatsmanActivity.class);
@@ -685,6 +692,7 @@ public class MatchDetail extends AppCompatActivity {
     }
     public void hitOK(View v){  //write the code after each ball, update total r
         strDetail = tvRunDetail.getText().toString();
+        sameActivity = true;
         if(strContent.length() > 0) {
             preStrContent = strContent;
             preStrDetail = strDetail;
@@ -705,8 +713,8 @@ public class MatchDetail extends AppCompatActivity {
             int run = 0;
             // Since only batting team overs are calculated, we should get the over information from overA irrespective to batting first/second
             int fullOver10 = (int) (overA * 10);
-            int overOnly = fullOver10 / 10;
-            int ball = fullOver10 % 10;
+            overOnly = fullOver10 / 10;
+            ball = fullOver10 % 10;
             // Run scored: 0, 1, 2, 3, 4, 6 -> strike need to be changed for 1 & 3 runs
             if (strContent.length() == 1) {
                 if (TextUtils.isDigitsOnly(strContent)) {
@@ -951,6 +959,7 @@ public class MatchDetail extends AppCompatActivity {
                             // numOfWicketByBowler is updated in changeBatsman function by considering the out type
                             //TODO: Since changeBatsman is moved, following line is not getting the correct wickets for bowler
                             updateBowlingStat(0, numOfWicketByBowler, false, false, 0);
+                            Log.d("Wicket fallen: " + LogType.TEST, "NumberOfWicket: " + numOfWicketByBowler + ", Bowler name: " + currentBowlerStat.getBowlerName());
                         }
                         wickA++;
 //                        if (firstBatting)
@@ -961,7 +970,9 @@ public class MatchDetail extends AppCompatActivity {
                         break;
                 }
             }
-            String strOver = overOnly + "." + ball;
+            if(sameActivity)
+                updateScreen(v);
+            /*strOver = overOnly + "." + ball;
             // Only Batting team information are only in UI, so update those
             // Dont update the total run here since it has to be updated along with batsmen runs
             // TODO: Check runA actually updated in above switch code
@@ -971,28 +982,8 @@ public class MatchDetail extends AppCompatActivity {
             tvWickA.setText(itoa(wickA));
             tvOverA.setText(strOver);
             runR = runA + 1; // runA needs to be updated above
-            tvRunR.setText(itoa(runR));
-            // Update the personal batting scores based on FirstUILabelPositionBatsmanIndex
-            int index = getFirstUILabelBatsmanIndexInArray();
-            int playerIdFirst = activeBatsmen[index].getBatsmanPlayerId();
-            BattingStatistics bs1 = batsmenStatsMap.get(playerIdFirst);
-            tvRunBt1.setText(itoa(bs1.getRunsScored()));
-            tvBallBt1.setText(itoa(bs1.getBallsFaced()));
-            tvFourBt1.setText(itoa(bs1.getNumOf4s()));
-            tvSixBt1.setText(itoa(bs1.getNumOf6s()));
+            tvRunR.setText(itoa(runR));*/
 
-            int playerIdSecond = activeBatsmen[1 - index].getBatsmanPlayerId();
-            BattingStatistics bs2 = batsmenStatsMap.get(playerIdSecond);
-            tvRunBt2.setText(itoa(bs2.getRunsScored()));
-            tvBallBt2.setText(itoa(bs2.getBallsFaced()));
-            tvFourBt2.setText(itoa(bs2.getNumOf4s()));
-            tvSixBt2.setText(itoa(bs2.getNumOf6s()));
-
-            tvOverBowler.setText(Double.toString(currentBowlerStat.getOversBowled()));
-            tvRunBowler.setText(itoa(currentBowlerStat.getRunsConceded()));
-            tvWicketBowler.setText(itoa(currentBowlerStat.getNumberOfWickets()));
-            tvWideBowler.setText(itoa(currentBowlerStat.getWidesCount()));
-            tvNoBowler.setText(itoa(currentBowlerStat.getNoBallCount()));
             /*if (firstBatting) {
                 runA += run;
                 overA = overOnly + (ball / 10.0);
@@ -1045,12 +1036,12 @@ public class MatchDetail extends AppCompatActivity {
                     tvOverR.setText(Double.toString(remOver));
                 }
             }*/
-            tvRunDetail.setText(strDetail);
+            /*tvRunDetail.setText(strDetail);
             btnContent.setText("");
             if(swapMayNeed){
                 Toast.makeText(getApplicationContext(), "Click Swap Batsman if requires due to run-out", Toast.LENGTH_LONG).show();
                 swapMayNeed = false;
-            }
+            }*/
 //            if(overCompleted){
 //                Toast.makeText(getApplicationContext(), "Over Completed!", Toast.LENGTH_SHORT).show();
 //                changeCurrentBowler();
@@ -1064,6 +1055,46 @@ public class MatchDetail extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Enter 0 for dot ball", Toast.LENGTH_SHORT).show();
         }
     }
+
+    public void updateScreen(View v){
+        strOver = overOnly + "." + ball;
+        overA = overOnly + (ball / 10.0);
+        tvRunA.setText(itoa(runA));
+        tvWickA.setText(itoa(wickA));
+        tvOverA.setText(strOver);
+        runR = runA + 1; // runA needs to be updated above
+        tvRunR.setText(itoa(runR));
+
+        // Update the personal batting scores based on FirstUILabelPositionBatsmanIndex
+        int index = getFirstUILabelBatsmanIndexInArray();
+        int playerIdFirst = activeBatsmen[index].getBatsmanPlayerId();
+        BattingStatistics bs1 = batsmenStatsMap.get(playerIdFirst);
+        tvRunBt1.setText(itoa(bs1.getRunsScored()));
+        tvBallBt1.setText(itoa(bs1.getBallsFaced()));
+        tvFourBt1.setText(itoa(bs1.getNumOf4s()));
+        tvSixBt1.setText(itoa(bs1.getNumOf6s()));
+
+        int playerIdSecond = activeBatsmen[1 - index].getBatsmanPlayerId();
+        BattingStatistics bs2 = batsmenStatsMap.get(playerIdSecond);
+        tvRunBt2.setText(itoa(bs2.getRunsScored()));
+        tvBallBt2.setText(itoa(bs2.getBallsFaced()));
+        tvFourBt2.setText(itoa(bs2.getNumOf4s()));
+        tvSixBt2.setText(itoa(bs2.getNumOf6s()));
+
+        tvOverBowler.setText(Double.toString(currentBowlerStat.getOversBowled()));
+        tvRunBowler.setText(itoa(currentBowlerStat.getRunsConceded()));
+        tvWicketBowler.setText(itoa(currentBowlerStat.getNumberOfWickets()));
+        tvWideBowler.setText(itoa(currentBowlerStat.getWidesCount()));
+        tvNoBowler.setText(itoa(currentBowlerStat.getNoBallCount()));
+
+        tvRunDetail.setText(strDetail);
+        btnContent.setText("");
+        if(swapMayNeed){
+            Toast.makeText(getApplicationContext(), "Click Swap Batsman if requires due to run-out", Toast.LENGTH_LONG).show();
+            swapMayNeed = false;
+        }
+    }
+
     public void clearContent(View v){
         btnContent.setText("");
     }
