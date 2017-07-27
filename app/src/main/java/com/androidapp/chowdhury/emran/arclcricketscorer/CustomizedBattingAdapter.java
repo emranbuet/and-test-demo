@@ -9,21 +9,30 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import static com.androidapp.chowdhury.emran.arclcricketscorer.ScoringUtility.itoa;
 
 public class CustomizedBattingAdapter extends ArrayAdapter<BattingStatistics>{
     private static int BATSMAN_NAME_LEN = 12;
+    private static int BOWLER_NAME_LEN = 5;
 
     Activity currentContext;
     ArrayList<BattingStatistics> battingStats;
     ArrayList<Integer> activeBatsmenPlayerIds;
+    HashMap<OutType, String> shortOutTypeStr;
 
     public CustomizedBattingAdapter(Context context, ArrayList<BattingStatistics> batStats, ArrayList<Integer> activeBatsmenPlayerId){
         super(context, R.layout.batsman_item_score, batStats);
         this.currentContext = (Activity) context;
         this.battingStats = batStats;
         this.activeBatsmenPlayerIds = activeBatsmenPlayerId;
+        this.shortOutTypeStr = new HashMap<>();
+        shortOutTypeStr.put(OutType.Bowled, "BL");
+        shortOutTypeStr.put(OutType.Caught, "CT");
+        shortOutTypeStr.put(OutType.RunOut, "RO");
+        shortOutTypeStr.put(OutType.Stumped, "ST");
+        shortOutTypeStr.put(OutType.Other, "OR");
     }
 
     @Override
@@ -34,6 +43,8 @@ public class CustomizedBattingAdapter extends ArrayAdapter<BattingStatistics>{
             v = inflater.inflate(R.layout.batsman_item_score, null);
 
             TextView txtBatsmanName = (TextView) v.findViewById(R.id.stVNameBt);
+            TextView txtOutType = (TextView) v.findViewById(R.id.stVOutTypeBt);
+            TextView txtBowlerName = (TextView) v.findViewById(R.id.stVByBowlerBt);
             TextView txtBatsmanRun = (TextView) v.findViewById(R.id.stVRunBt);
             TextView txtBatsmanBall = (TextView) v.findViewById(R.id.stVBallBt);
             TextView txtBatsmanFour = (TextView) v.findViewById(R.id.stVFourBt);
@@ -42,9 +53,17 @@ public class CustomizedBattingAdapter extends ArrayAdapter<BattingStatistics>{
             BattingStatistics bs = battingStats.get(position);
             String batsmanFullName = bs.getBatsmanName();
             String batsmanPartialName = batsmanFullName.length() > BATSMAN_NAME_LEN ? batsmanFullName.substring(0, BATSMAN_NAME_LEN) : batsmanFullName;
+            String bowlerFullName = "Dummy Bowler";
+            String bowlerPartialName = " --- ";
             if(activeBatsmenPlayerIds.contains(bs.getBatsmanPlayerId()))
                 batsmanPartialName = batsmanPartialName + "*";
+            else{
+                bowlerPartialName = bowlerFullName.length() > BOWLER_NAME_LEN ? bowlerFullName.substring(0, BOWLER_NAME_LEN) : bowlerFullName;
+            }
             txtBatsmanName.setText(batsmanPartialName);
+            String strOutType = shortOutTypeStr.get(bs.getHowOut()) == null ? " - " : shortOutTypeStr.get(bs.getHowOut());
+            txtOutType.setText(strOutType);
+            txtBowlerName.setText(bowlerPartialName);
             txtBatsmanRun.setText(formatInt2D(bs.getRunsScored()));
             txtBatsmanBall.setText(formatInt2D(bs.getBallsFaced()));
             txtBatsmanFour.setText(formatInt2D(bs.getNumOf4s()));

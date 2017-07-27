@@ -31,7 +31,7 @@ public class NewBatsmanActivity extends AppCompatActivity {
     private ArrayAdapter<String> outTypeAdapter;
     private ArrayAdapter<String> currentBatsmanAdapter;
     private ArrayAdapter<String> batsmanAdapter;
-    private ArrayList outTypeList = new ArrayList(Arrays.asList(new String[]{"Bowled", "Caught", "RunOut"}));
+    private ArrayList outTypeList = new ArrayList(Arrays.asList(new String[]{"Bowled", "Caught", "RunOut", "Stumped", "Other"}));
     private ArrayList<Player> currentBatsmanList = null;
     private ArrayList<String> currentBatsmenName = null;
     private ArrayList<Player> playerListBatting = null;
