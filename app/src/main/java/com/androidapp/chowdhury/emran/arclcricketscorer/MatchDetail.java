@@ -608,6 +608,7 @@ public class MatchDetail extends AppCompatActivity {
         startActivity(intent);
     }
     public void hitOK(View v){  //write the code after each ball, update total r
+        strContent = btnContent.getText().toString();
         strDetail = tvRunDetail.getText().toString();
         runConcededByBowler = 0;
         runConcededByTeam = 0;
