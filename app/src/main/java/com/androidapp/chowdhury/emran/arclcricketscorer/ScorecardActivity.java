@@ -25,6 +25,7 @@ public class ScorecardActivity extends AppCompatActivity {
         HashMap<Integer, BattingStatistics> batsmenStatsMap;
         HashMap<Integer, BowlingStatistics> bowlingStatsMap;
         String firstBatsmanPlayerId, secondBatsmanPlayerId;
+        HashMap<Integer, Player> playerHashMap;
 
         lvBattingStatistics = (ListView) findViewById(R.id.lvBatsman);
         lvBowlingStatistics = (ListView) findViewById(R.id.lvBowler);
@@ -35,13 +36,14 @@ public class ScorecardActivity extends AppCompatActivity {
             bowlingStatsMap = (HashMap<Integer, BowlingStatistics>) bundle.getSerializable(BOWLING_STATISTICS);
             firstBatsmanPlayerId = bundle.getString(PLAYER_ID_BATSMAN_1);
             secondBatsmanPlayerId = bundle.getString(PLAYER_ID_BATSMAN_2);
+            playerHashMap = (HashMap<Integer, Player>) bundle.getSerializable(PLAYER_LIST_FULL);
 
             ArrayList<Integer> activeBatsmenIds = new ArrayList<>();
             activeBatsmenIds.add(atoi(firstBatsmanPlayerId));
             activeBatsmenIds.add(atoi(secondBatsmanPlayerId));
             ArrayList<BattingStatistics> battingStatisticsList = new ArrayList<BattingStatistics> (batsmenStatsMap.values());
             if(battingStatisticsList != null && battingStatisticsList.size() > 0){
-                battingAdapter = new CustomizedBattingAdapter(this, battingStatisticsList, activeBatsmenIds);
+                battingAdapter = new CustomizedBattingAdapter(this, battingStatisticsList, activeBatsmenIds, playerHashMap);
                 lvBattingStatistics.setAdapter(battingAdapter);
             }
 

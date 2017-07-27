@@ -331,7 +331,7 @@ public class MatchDetail extends AppCompatActivity {
         currentBowlerStat.setRunsConceded(currentBowlerStat.getRunsConceded() + runConcededByBowler);
         currentBowlerStat.setNumberOfWickets(currentBowlerStat.getNumberOfWickets() + numOfWicket);
         if(isWide){
-            currentBowlerStat.setWidesCount(currentBowlerStat.getWidesCount() + 1);
+            currentBowlerStat.setWidesCount(currentBowlerStat.getWidesCount() + runConcededByBowler);
         }
         if(isNo){
             currentBowlerStat.setNoBallCount(currentBowlerStat.getNoBallCount() + 1);
@@ -604,7 +604,7 @@ public class MatchDetail extends AppCompatActivity {
         intent.putExtra(PLAYER_ID_BATSMAN_1, itoa(activeBatsmen[0].getBatsmanPlayerId()));
         intent.putExtra(PLAYER_ID_BATSMAN_2, itoa(activeBatsmen[1].getBatsmanPlayerId()));
         intent.putExtra(BOWLING_STATISTICS, bowlingStatsMap);
-
+        intent.putExtra(PLAYER_LIST_FULL, playerHashMap);
         startActivity(intent);
     }
     public void hitOK(View v){  //write the code after each ball, update total r
@@ -881,12 +881,15 @@ public class MatchDetail extends AppCompatActivity {
                         break;
                 }
             }
-            if(isLastBall){
-                Toast.makeText(getApplicationContext(), "Over Completed!", Toast.LENGTH_SHORT).show();
-                changeCurrentBowler();
-            }
-            else if(sameActivity) {
-                updateScreen();
+            if(sameActivity) {
+                if (isLastBall) {
+                    Toast.makeText(getApplicationContext(), "Over Completed!", Toast.LENGTH_SHORT).show();
+                    sameActivity = false;
+                    changeCurrentBowler();
+                }
+                else{
+                    updateScreen();
+                }
             }
         }
         else{
