@@ -5,6 +5,8 @@ public class ScoringUtility {
     public static int TEAM_ID_1 = 111;
     public static int TEAM_ID_2 = 555;
 
+    public static boolean IS_FIRST_INNINGS = true;
+
     public static String PLAYER_LIST_FULL = "PLAYER_LIST_FULL";
     public static String PLAYER_LIST_FIRST = "PlayerListOne";
     public static String PLAYER_LIST_SECOND = "PlayerListTwo";
@@ -14,6 +16,7 @@ public class ScoringUtility {
     public static String TEAM_NAME_1 = "TEAM_NAME_1";
     public static String TEAM_NAME_2 = "TEAM_NAME_2";
     public static String TOTAL_OVER = "TOTAL_OVER";
+    public static String TARGET_RUNS = "TARGET_RUNS";
 
     public static String PLAYER_ID_BATSMAN_1 = "Batsman1";
     public static String PLAYER_ID_BATSMAN_2 = "Batsman2";

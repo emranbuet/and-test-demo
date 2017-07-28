@@ -57,7 +57,7 @@ public class MatchDetail extends AppCompatActivity {
     private static boolean isLastBall = false;
     private static boolean isWide = false;
     private static boolean isNo = false;
-    private int runA, runR, preRunA, preRunR;
+    private int runA, runR, preRunA, preRunR, targetRuns;
     private double overA, overR, totOver, preOverA, preOverR;
     private int ballsA, ballsB, preBallsA, preBallsB;
     private int wickA, preWickA;
@@ -130,6 +130,10 @@ public class MatchDetail extends AppCompatActivity {
             playerIdBt1 = atoi(bundle.getString(PLAYER_ID_BATSMAN_1));
             playerIdBt2 = atoi(bundle.getString(PLAYER_ID_BATSMAN_2));
             playerIdBowler = atoi(bundle.getString(PLAYER_ID_BOWLER));
+            if(!IS_FIRST_INNINGS) {
+                targetRuns = atoi(bundle.getString(TARGET_RUNS));
+                runR = targetRuns;
+            }
         }
         else{
             Log.d("MatchDetail: " + LogType.ERROR, "Bundle is null from previous activity");
@@ -240,6 +244,13 @@ public class MatchDetail extends AppCompatActivity {
         }
         else{
             Log.d("MatchDetail: " + LogType.ERROR, "Bowler name is null");
+        }
+        if(IS_FIRST_INNINGS)
+            llRequired.setVisibility(View.INVISIBLE);
+        else{
+            tvRunR.setText(itoa(runR));
+            overR = totOver;
+            tvOverR.setText(dtoa(overR));
         }
     }
     private void setInitial(){
@@ -476,7 +487,11 @@ public class MatchDetail extends AppCompatActivity {
                 updateBowlingStat(runConcededByBowler, numOfWicketByBowler, isWide, isNo, runConcededByTeam);
                 Log.d("NewBatsman: " + LogType.TEST, " New Batsman name:" + playerHashMap.get(newBatsmanPlayerId).getPlayerName());
                 if(isLastBall){
-                    changeCurrentBowler();
+                    if(overA == (totOver - 1)){
+                        Toast.makeText(getApplicationContext(), strTeam1 + "'s Batting Finished. Press Innings Finished to start 2nd Innings!", Toast.LENGTH_LONG).show();
+                    }
+                    else
+                        changeCurrentBowler();
                 }
                 else{
                     updateScreen();
@@ -883,9 +898,14 @@ public class MatchDetail extends AppCompatActivity {
             }
             if(sameActivity) {
                 if (isLastBall) {
-                    Toast.makeText(getApplicationContext(), "Over Completed!", Toast.LENGTH_SHORT).show();
-                    sameActivity = false;
-                    changeCurrentBowler();
+                    if(overA == totOver){
+                        Toast.makeText(getApplicationContext(), strTeam1 + "'s Batting Finished. Press Innings Finished to start 2nd Innings!", Toast.LENGTH_LONG).show();
+                    }
+                    else {
+                        Toast.makeText(getApplicationContext(), "Over Completed!", Toast.LENGTH_SHORT).show();
+                        sameActivity = false;
+                        changeCurrentBowler();
+                    }
                 }
                 else{
                     updateScreen();
@@ -903,8 +923,17 @@ public class MatchDetail extends AppCompatActivity {
         tvRunA.setText(itoa(runA));
         tvWickA.setText(itoa(wickA));
         tvOverA.setText(strOver);
-        runR = runA + 1; // runA needs to be updated above
+        runR = targetRuns - runA; // runA needs to be updated above
+        if(ball == 0){
+            overR = totOver - overOnly;
+        }
+        else{
+            int remOverOnly = (int)totOver - overOnly - 1;
+            int ballOnly = 6 - ball;
+            overR = remOverOnly + (ballOnly/10.0);
+        }
         tvRunR.setText(itoa(runR));
+        tvOverR.setText(dtoa(overR));
 
         // Update the personal batting scores based on FirstUILabelPositionBatsmanIndex
         int index = getFirstUILabelBatsmanIndexInArray();
@@ -930,6 +959,28 @@ public class MatchDetail extends AppCompatActivity {
 
         tvRunDetail.setText(strDetail);
         btnContent.setText("");
+        if(!IS_FIRST_INNINGS){
+            if(runA >= targetRuns){
+                tvRunR.setText(Integer.toString(0));
+                tvStatus.setText(strTeam2 + " won");
+                Toast.makeText(getApplicationContext(), strTeam2 + " won the match", Toast.LENGTH_LONG).show();
+            }
+            else if(overA == totOver){
+                if(runA < (targetRuns - 1)){
+                    tvStatus.setText(strTeam1 + " won");
+                    Toast.makeText(getApplicationContext(), strTeam1 + " won the match by " + (targetRuns - runA - 1)+" runs", Toast.LENGTH_LONG).show();
+                }
+                else if(runA == (targetRuns - 1)){
+                    tvStatus.setText("Match Tie");
+                    Toast.makeText(getApplicationContext(), "Match Tie", Toast.LENGTH_LONG).show();
+                }
+            }
+        }
+        else{
+            if(overA == totOver){
+                Toast.makeText(getApplicationContext(), strTeam1 + "'s Batting Finished. Press Innings Finished to start 2nd Innings!", Toast.LENGTH_LONG).show();
+            }
+        }
         if(swapMayNeed){
             Toast.makeText(getApplicationContext(), "Click Swap Batsman if requires due to run-out", Toast.LENGTH_LONG).show();
             swapMayNeed = false;
@@ -1126,6 +1177,12 @@ public class MatchDetail extends AppCompatActivity {
         tvTeam1.setTypeface(null, Typeface.NORMAL);
         tvTeam1.setTextColor(Color.parseColor("#ff000000"));
         tvStatus.setText(strTeam2 + " is Batting");
+        llRequired.setVisibility(View.VISIBLE);
+        targetRuns = runA + 1;
+        runR = targetRuns;
+        tvRunR.setText(itoa(runR));
+        overR = totOver;
+        tvOverR.setText(dtoa(overR));
         String strTeamPartial1 = (strTeam2.length() > NAME_LEN) ? strTeam2.substring(0, NAME_LEN) : strTeam2;
         tvTeam1.setText(strTeamPartial1);
         tvRunA.setText("0");

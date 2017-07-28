@@ -12,8 +12,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:orientation="vertical"
-        android:layout_marginTop="25dp"
-        android:layout_marginBottom="25dp">
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp">
 
         <TextView
             android:id="@+id/tvLogIn"
@@ -30,8 +30,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="25dp"
-        android:layout_marginBottom="25dp">
+        android:layout_marginTop="10dp">
 
         <TextView
             android:id="@+id/tvTeamName"
@@ -50,8 +49,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="50dp"
-        android:layout_marginBottom="25dp">
+        android:layout_marginTop="20dp">
 
         <TextView
             android:id="@+id/tvTeamName2"
@@ -70,8 +68,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="25dp"
-        android:layout_marginBottom="25dp">
+        android:layout_marginTop="5dp">
 
         <TextView
             android:id="@+id/lblOver"
@@ -85,6 +82,30 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:inputType="number"
+            android:hint="16"
+            android:ems="10"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="45dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp">
+
+        <TextView
+            android:id="@+id/lblTarget"
+            android:layout_width="135dp"
+            android:layout_height="wrap_content"
+            android:text="Target in 2nd innings:"/>
+
+
+        <EditText
+            android:id="@+id/etTargetRun"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:hint="Optional for 1st innings"
             android:ems="10"/>
 
     </LinearLayout>
@@ -113,8 +134,33 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginBottom="25dp"
         android:layout_marginTop="15dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnStartFirstInnings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="startNewMatch"
+            android:layout_marginRight="25dp"
+            android:text="1st Innings only"
+            android:textAllCaps="false"/>
+
+        <Button
+            android:id="@+id/btnStartSecondInnings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="startSecondInningsOnly"
+            android:text="2nd Innings only"
+            android:textAllCaps="false"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="50dp"
         android:orientation="horizontal">
 
         <Button
@@ -123,7 +169,7 @@
             android:layout_height="wrap_content"
             android:onClick="startNewMatch"
             android:layout_gravity="center_vertical"
-            android:text="Start Match"
+            android:text="Start full match"
             android:textAllCaps="false"/>
 
     </LinearLayout>

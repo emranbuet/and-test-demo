@@ -32,6 +32,7 @@ public class ScoreActivity extends AppCompatActivity {
 
     private String strTeam1, strTeam2, strContent, strDetail, preStrDetail, preStrContent;
     //private int runA, runB, runR, preRunA, preRunB, preRunR;
+    private int runR = 0;
     private double overA, overB, overR, totOver, preOverA, preOverB, preOverR;
 
     private Spinner spinnerBt1, spinnerBt2, spinnerBl;
@@ -67,6 +68,9 @@ public class ScoreActivity extends AppCompatActivity {
             strTeam1 = extras.getString(TEAM_NAME_1);
             strTeam2 = extras.getString(TEAM_NAME_2);
             totOver = extras.getInt(TOTAL_OVER);
+            if(!IS_FIRST_INNINGS){
+                runR = extras.getInt(TARGET_RUNS);
+            }
         }
         else{
             strTeam1 = "No name found for 1";
@@ -124,6 +128,7 @@ public class ScoreActivity extends AppCompatActivity {
             intent.putExtra(TEAM_NAME_1, strTeam1);
             intent.putExtra(TEAM_NAME_2, strTeam2);
             intent.putExtra(TOTAL_OVER, dtoa(totOver));
+            intent.putExtra(TARGET_RUNS, itoa(runR));
 
             Player p1 = null, p2 = null, player = null;
             playersMap = new HashMap<>();
