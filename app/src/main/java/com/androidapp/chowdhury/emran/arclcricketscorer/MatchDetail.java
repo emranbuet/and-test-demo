@@ -30,12 +30,10 @@ public class MatchDetail extends AppCompatActivity {
 
     private ArrayList<Player> playersListTeam1, playersListTeam2;
     private HashMap<Integer, Player> playerHashMap;
-    private String playerListAll = null;
     private String strTeam1, strTeam2, strTotOver, strContent, strDetail, preStrDetail, preStrContent;
     private int playerIdBt1, playerIdBt2, playerIdBowler;
-    private boolean overCompleted = false, swapMayNeed = false;
+    private static boolean swapMayNeed = false;
     //private int totOver;
-    private boolean needToChangeBatsman = false;
 
     // Batsmen, bowler statistics and UI mapping of batsmen, strikers
     List<Player> batsmenList;
@@ -256,7 +254,6 @@ public class MatchDetail extends AppCompatActivity {
         tvOverA.setTextColor(Color.parseColor("#ff000000"));
         tvTextOver.setTextColor(Color.parseColor("#ff000000"));
 
-        overCompleted = false;
         swapMayNeed = false;
     }
     // Check the activeBatsmen info to return the first UI label of batsman's index in activeBatsmen Array
@@ -421,6 +418,7 @@ public class MatchDetail extends AppCompatActivity {
                 if(outTypeStr.equals("RunOut")){
                     //TODO: Get the batsman id who was got out
                     numOfWicketByBowler = 0;
+                    swapMayNeed = true;
                     String batsmanIdOfOut = data.getStringExtra(PLAYER_ID_BATSMAN_OUT);
                     Log.d("Batsman Out: " + LogType.TEST, " Batsman was run out: " + playerHashMap.get(atoi(batsmanIdOfOut)).getPlayerName());
                     isStrikerGotOut = (strikerPlayerId == atoi(batsmanIdOfOut))? true : false;
@@ -458,7 +456,7 @@ public class MatchDetail extends AppCompatActivity {
                     bs2.setHowOut(outTypeHashMap.get(outTypeStr));
                     batsmenStatsMap.put(outBatsmanPlayerId, bs2);
                     boolean NonStrikerDisplayedFirst = activeBatsmen[1 - strikerIndex].isDisplayedFirst();
-                    CurrentBatsmanInfo btInfoNew = new CurrentBatsmanInfo(newBatsmanPlayerId, true, NonStrikerDisplayedFirst);
+                    CurrentBatsmanInfo btInfoNew = new CurrentBatsmanInfo(newBatsmanPlayerId, false, NonStrikerDisplayedFirst);
                     activeBatsmen[1 - strikerIndex] = btInfoNew;
                     if(activeBatsmen[1 - strikerIndex].isDisplayedFirst()){
                         tvNameBt1.setText(strBatsmanNamePartial);
@@ -616,6 +614,7 @@ public class MatchDetail extends AppCompatActivity {
         isLastBall = false;
         isWide = false;
         isNo = false;
+        swapMayNeed = false;
         if(strContent.length() > 0) {
             preStrContent = strContent;
             preStrDetail = strDetail;
