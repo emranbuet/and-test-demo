@@ -30,7 +30,7 @@ public class MatchDetail extends AppCompatActivity {
 
     private ArrayList<Player> playersListTeam1, playersListTeam2;
     private HashMap<Integer, Player> playerHashMap;
-    private String strTeam1, strTeam2, strTotOver, strContent, strDetail, preStrDetail, preStrContent;
+    private String strTeam1, strTeam2, strTotOver, strContent, strDetail, preStrDetail, preStrContent, strFirstBattingTeam;
     private int playerIdBt1, playerIdBt2, playerIdBowler;
     private static boolean swapMayNeed = false;
     //private int totOver;
@@ -61,7 +61,6 @@ public class MatchDetail extends AppCompatActivity {
     private double overA, overR, totOver, preOverA, preOverR;
     private int ballsA, ballsB, preBallsA, preBallsB;
     private int wickA, preWickA;
-    private boolean firstBatting = true;
     private Button btnContent;
     private TextView tvTeam1, tvRunA, tvWickA, tvOverA, tvRunR, tvOverR, tvRunDetail, tvStatus;
     private TextView tvNameBt1,  tvRunBt1, tvBallBt1, tvFourBt1, tvSixBt1;
@@ -165,6 +164,8 @@ public class MatchDetail extends AppCompatActivity {
             teamOne = new Team(strTeam1, TEAM_ID_1);
             tvStatus.setText(strTeam1 + " is Batting");
             strTeamPartial1 = (strTeam1.length() > NAME_LEN) ? strTeam1.substring(0, NAME_LEN) : strTeam1;
+            if(IS_FIRST_INNINGS)
+                strFirstBattingTeam = strTeam1;
             tvTeam1.setText(strTeamPartial1);
         }
         else{
@@ -180,6 +181,8 @@ public class MatchDetail extends AppCompatActivity {
         if(strTeam2 != null) {
             teamTwo = new Team(strTeam2, TEAM_ID_2);
             //strTeamPartial2 = (strTeam2.length() > NAME_LEN) ? strTeam2.substring(0, NAME_LEN) : strTeam2;
+            if(!IS_FIRST_INNINGS)
+                strFirstBattingTeam = strTeam2;
         }
         else{
             Log.d("MatchDetail: " + LogType.ERROR, "Second Team name is null");
@@ -898,8 +901,8 @@ public class MatchDetail extends AppCompatActivity {
             }
             if(sameActivity) {
                 if (isLastBall) {
-                    if(overA == totOver){
-                        Toast.makeText(getApplicationContext(), strTeam1 + "'s Batting Finished. Press Innings Finished to start 2nd Innings!", Toast.LENGTH_LONG).show();
+                    if(overA == (totOver - 1)){
+                        updateScreen();
                     }
                     else {
                         Toast.makeText(getApplicationContext(), "Over Completed!", Toast.LENGTH_SHORT).show();
@@ -962,13 +965,13 @@ public class MatchDetail extends AppCompatActivity {
         if(!IS_FIRST_INNINGS){
             if(runA >= targetRuns){
                 tvRunR.setText(Integer.toString(0));
-                tvStatus.setText(strTeam2 + " won");
-                Toast.makeText(getApplicationContext(), strTeam2 + " won the match", Toast.LENGTH_LONG).show();
+                tvStatus.setText(strTeam1 + " won");
+                Toast.makeText(getApplicationContext(), strTeam1 + " won the match", Toast.LENGTH_LONG).show();
             }
             else if(overA == totOver){
                 if(runA < (targetRuns - 1)){
-                    tvStatus.setText(strTeam1 + " won");
-                    Toast.makeText(getApplicationContext(), strTeam1 + " won the match by " + (targetRuns - runA - 1)+" runs", Toast.LENGTH_LONG).show();
+                    tvStatus.setText(strFirstBattingTeam + " won");
+                    Toast.makeText(getApplicationContext(), strFirstBattingTeam + " won the match by " + (targetRuns - runA - 1)+" runs", Toast.LENGTH_LONG).show();
                 }
                 else if(runA == (targetRuns - 1)){
                     tvStatus.setText("Match Tie");
@@ -1140,9 +1143,9 @@ public class MatchDetail extends AppCompatActivity {
             totOver = overA;
             tvOverR.setText(Double.toString(overR));
         }
-        if(firstBatting)
+        if(IS_FIRST_INNINGS)
             inningsCompleteChange();
-        firstBatting = false;
+        IS_FIRST_INNINGS = false;
     }
     private void inningsCompleteChange(){
         // TODO: Save the current batting and bowling information and get the new batsmen, bowler name to start new innings
@@ -1178,6 +1181,7 @@ public class MatchDetail extends AppCompatActivity {
         tvTeam1.setTextColor(Color.parseColor("#ff000000"));
         tvStatus.setText(strTeam2 + " is Batting");
         llRequired.setVisibility(View.VISIBLE);
+        strTeam1 = strTeam2;
         targetRuns = runA + 1;
         runR = targetRuns;
         tvRunR.setText(itoa(runR));
