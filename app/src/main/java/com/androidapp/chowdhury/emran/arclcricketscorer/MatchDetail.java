@@ -289,6 +289,22 @@ public class MatchDetail extends AppCompatActivity {
     private int getStrikerBatsmanIndexInArray(){
         return ((activeBatsmen[0].isStriker())? 0 : 1);
     }
+    // Following function will update the correct striker in UI if undo occurs
+    private void setStrikerBatsmenUI(){
+        int strikerIndex = getStrikerBatsmanIndexInArray();
+        if(activeBatsmen[strikerIndex].isDisplayedFirst()){
+            tvNameBt2.setTypeface(null, Typeface.NORMAL);
+            llBt2.setBackgroundColor(Color.parseColor("#e5e5e5"));
+            tvNameBt1.setTypeface(null, Typeface.BOLD);
+            llBt1.setBackgroundColor(Color.parseColor("#00cccc"));
+        }
+        else{
+            tvNameBt1.setTypeface(null, Typeface.NORMAL);
+            llBt1.setBackgroundColor(Color.parseColor("#e5e5e5"));
+            tvNameBt2.setTypeface(null, Typeface.BOLD);
+            llBt2.setBackgroundColor(Color.parseColor("#00cccc"));
+        }
+    }
     private void swapBatsmen(){
         int strikerIndex = getStrikerBatsmanIndexInArray();
         activeBatsmen[strikerIndex].setStriker(false);
@@ -411,6 +427,7 @@ public class MatchDetail extends AppCompatActivity {
                 tvWicketBowler.setText(itoa(currentBowlerStat.getNumberOfWickets()));
                 tvWideBowler.setText(itoa(currentBowlerStat.getWidesCount()));
                 tvNoBowler.setText(itoa(currentBowlerStat.getNoBallCount()));
+                swapBatsmen();
                 updateScreen();
             }
             if (resultCode == Activity.RESULT_CANCELED) {
@@ -1118,10 +1135,8 @@ public class MatchDetail extends AppCompatActivity {
         strContent = preStrContent;
         strDetail = preStrDetail;
         runA = preRunA;
-        //runB = preRunB;
         runR = preRunR;
         overA = preOverA;
-        //overB = preOverB;
         overR = preOverR;
         wickA = preWickA;
         tvRunA.setText(itoa(runA));
@@ -1132,17 +1147,13 @@ public class MatchDetail extends AppCompatActivity {
         tvRunDetail.setText(strDetail);
 
         //update personal information
+        copyCurrentBatsmanInfo(preActiveBatsmen, activeBatsmen);
         for(int i = 0; i < 2; i++){
             int batsmanId = activeBatsmen[i].getBatsmanPlayerId();
-            //batsmenStatsMap.put(batsmanId, preBatsmenStatsMap.get(batsmanId));
             copyBatsmanStatistics(preBatsmenStatsMap, batsmenStatsMap, batsmanId);
         }
         int bowlerId = currentBowlerStat.getBowlerPlayerId();
-        //bowlingStatsMap.put(bowlerId, preBowlingStatsMap.get(bowlerId));
         copyBowlingStatistics(preBowlingStatsMap, bowlingStatsMap, bowlerId);
-        copyCurrentBatsmanInfo(preActiveBatsmen, activeBatsmen);
-        //activeBatsmen[0] = preActiveBatsmen[0];
-        //activeBatsmen[1] = preActiveBatsmen[1];
 
         int index = getFirstUILabelBatsmanIndexInArray();
         int playerIdFirst = activeBatsmen[index].getBatsmanPlayerId();
@@ -1164,6 +1175,7 @@ public class MatchDetail extends AppCompatActivity {
         tvWicketBowler.setText(itoa(currentBowlerStat.getNumberOfWickets()));
         tvWideBowler.setText(itoa(currentBowlerStat.getWidesCount()));
         tvNoBowler.setText(itoa(currentBowlerStat.getNoBallCount()));
+        setStrikerBatsmenUI();
     }
 
     private void copyCurrentBatsmanInfo(CurrentBatsmanInfo[] origin, CurrentBatsmanInfo[] dest){
@@ -1188,7 +1200,7 @@ public class MatchDetail extends AppCompatActivity {
         dest.put(batsmanId, bsDest);
     }
 
-//    private void copyCurrentBowlerInfo(BowlingStatistics origin, BowlingStatistics dest){
+    private void copyCurrentBowlerInfo(BowlingStatistics origin, BowlingStatistics dest){
 //        private int bowlerPlayerId;
 //        private String bowlerName;
 //        private double oversBowled; // Number after decimal point represents the ball
@@ -1198,7 +1210,7 @@ public class MatchDetail extends AppCompatActivity {
 //        private int noBallCount;
 //        private int numberOfWickets;
 //        dest.set
-//    }
+    }
 
     private void copyBowlingStatistics(HashMap<Integer, BowlingStatistics> origin, HashMap<Integer, BowlingStatistics> dest, int bowlerId){
         BowlingStatistics blsOrigin = origin.get(bowlerId);
