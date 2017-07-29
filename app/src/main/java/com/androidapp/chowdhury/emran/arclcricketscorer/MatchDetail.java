@@ -43,7 +43,7 @@ public class MatchDetail extends AppCompatActivity {
     HashMap<Integer, BattingStatistics> preBatsmenStatsMap, batsmenStatsMap;
     HashMap<Integer, BowlingStatistics> preBowlingStatsMap, bowlingStatsMap;
     CurrentBatsmanInfo[] preActiveBatsmen, activeBatsmen;
-    BowlingStatistics currentBowlerStat;
+    BowlingStatistics currentBowlerStat, preCurrentBowlerStat;
 
     // Related to scoring
     private static String strOver = "0";
@@ -196,10 +196,14 @@ public class MatchDetail extends AppCompatActivity {
             battingOrder.put(battingPosition, thisBatsman);
             if(!batsmenStatsMap.containsKey(playerIdBt1)){
                 BattingStatistics batStat1 = new BattingStatistics(playerIdBt1, thisBatsman.getPlayerName());
+                BattingStatistics batStat1Copy = new BattingStatistics(playerIdBt1, thisBatsman.getPlayerName());
                 batsmenStatsMap.put(playerIdBt1, batStat1);
+                preBatsmenStatsMap.put(playerIdBt1, batStat1Copy);
             }
             CurrentBatsmanInfo btInfo1 = new CurrentBatsmanInfo(playerIdBt1, true, true);
+            CurrentBatsmanInfo btInfo1Copy = new CurrentBatsmanInfo(playerIdBt1, true, true);
             activeBatsmen[0] = btInfo1;
+            preActiveBatsmen[0] = btInfo1Copy;
             // Set the first batsman info in UI with green color
             tvNameBt1.setText(strBatsmanPartial1);
             tvNameBt1.setTextColor(Color.BLACK);
@@ -218,10 +222,14 @@ public class MatchDetail extends AppCompatActivity {
             battingOrder.put(battingPosition, secondBatsman);
             if(!batsmenStatsMap.containsKey(playerIdBt2)){
                 BattingStatistics batStat2 = new BattingStatistics(playerIdBt2, secondBatsman.getPlayerName());
+                BattingStatistics batStat2Copy = new BattingStatistics(playerIdBt2, secondBatsman.getPlayerName());
                 batsmenStatsMap.put(playerIdBt2, batStat2);
+                preBatsmenStatsMap.put(playerIdBt2, batStat2Copy);
             }
             CurrentBatsmanInfo btInfo2 = new CurrentBatsmanInfo(playerIdBt2, false, false);
+            CurrentBatsmanInfo btInfo2Copy = new CurrentBatsmanInfo(playerIdBt2, false, false);
             activeBatsmen[1] = btInfo2;
+            preActiveBatsmen[1] = btInfo2Copy;
             // Set the second batsman info in UI
             tvNameBt2.setText(strBatsmanPartial2);
             tvNameBt2.setTextColor(Color.BLACK);
@@ -236,9 +244,12 @@ public class MatchDetail extends AppCompatActivity {
             // Add the bowler's initial statistics in the map
             if(!bowlingStatsMap.containsKey(playerIdBowler)){
                 BowlingStatistics bowlerStat = new BowlingStatistics(playerIdBowler, playerHashMap.get(playerIdBowler).getPlayerName());
+                BowlingStatistics bowlerStatCopy = new BowlingStatistics(playerIdBowler, playerHashMap.get(playerIdBowler).getPlayerName());
                 bowlingStatsMap.put(playerIdBowler, bowlerStat);
+                preBowlingStatsMap.put(playerIdBowler, bowlerStatCopy);
             }
             currentBowlerStat = bowlingStatsMap.get(playerIdBowler);
+            preCurrentBowlerStat = preBowlingStatsMap.get(playerIdBowler);
             // Set the bowler info in UI with green color
             tvNameBowler.setText(strBowlerPartial);
             tvNameBowler.setTextColor(Color.BLACK);
@@ -383,10 +394,12 @@ public class MatchDetail extends AppCompatActivity {
             if(resultCode == Activity.RESULT_OK){
                 String bowlerIdStr = data.getStringExtra(NEW_BOWLER_ID);
                 int newBowlerPlayerId = atoi(bowlerIdStr);
-                BowlingStatistics newBowlerStat = null;
+                BowlingStatistics newBowlerStat, newBowlerStatCopy;
                 if(!bowlingStatsMap.containsKey(newBowlerPlayerId)) {
                     newBowlerStat = new BowlingStatistics(newBowlerPlayerId, playerHashMap.get(newBowlerPlayerId).getPlayerName());
+                    newBowlerStatCopy = new BowlingStatistics(newBowlerPlayerId, playerHashMap.get(newBowlerPlayerId).getPlayerName());
                     bowlingStatsMap.put(newBowlerPlayerId, newBowlerStat);
+                    preBowlingStatsMap.put(newBowlerPlayerId, newBowlerStatCopy);
                 }
                 currentBowlerStat = bowlingStatsMap.get(newBowlerPlayerId);
                 Log.d("NewBowler: " + LogType.TEST, "Current Bowler name:" + playerHashMap.get(currentBowlerStat.getBowlerPlayerId()).getPlayerName());
@@ -409,13 +422,15 @@ public class MatchDetail extends AppCompatActivity {
                 numOfWicketByBowler = 1;
                 String batsmanIdIdStr = data.getStringExtra(NEW_BATSMAN_ID);
                 int newBatsmanPlayerId = atoi(batsmanIdIdStr);
-                BattingStatistics newBatsmanStat = null;
+                BattingStatistics newBatsmanStat, newBatsmanStatCopy;
                 Player newBatsmanPlayer = playerHashMap.get(newBatsmanPlayerId);
                 batsmenList.add(newBatsmanPlayer);
                 battingOrder.put(battingPosition, newBatsmanPlayer);
                 if(!batsmenStatsMap.containsKey(newBatsmanPlayerId)) {
                     newBatsmanStat = new BattingStatistics(newBatsmanPlayerId, newBatsmanPlayer.getPlayerName());
+                    newBatsmanStatCopy = new BattingStatistics(newBatsmanPlayerId, newBatsmanPlayer.getPlayerName());
                     batsmenStatsMap.put(newBatsmanPlayerId, newBatsmanStat);
+                    preBatsmenStatsMap.put(newBatsmanPlayerId, newBatsmanStatCopy);
                 }
                 String outTypeStr = data.getStringExtra(OUT_TYPE_STR);
                 Log.d("OUT_TYPE: " + LogType.TEST, " Batsman was:" + outTypeStr);
@@ -426,7 +441,9 @@ public class MatchDetail extends AppCompatActivity {
                 String strBatsmanNamePartial = (batsmanFullName.length() > NAME_LEN) ? batsmanFullName.substring(0, NAME_LEN) : batsmanFullName;
                 if(!batsmenStatsMap.containsKey(newBatsmanPlayerId)){
                     BattingStatistics batStatNew = new BattingStatistics(newBatsmanPlayerId, playerHashMap.get(newBatsmanPlayerId).getPlayerName());
+                    BattingStatistics batStatNewCopy = new BattingStatistics(newBatsmanPlayerId, playerHashMap.get(newBatsmanPlayerId).getPlayerName());
                     batsmenStatsMap.put(newBatsmanPlayerId, batStatNew);
+                    preBatsmenStatsMap.put(newBatsmanPlayerId, batStatNewCopy);
                 }
                 BattingStatistics bsNew = batsmenStatsMap.get(newBatsmanPlayerId);
                 if(outTypeStr.equals("RunOut")){
@@ -446,7 +463,9 @@ public class MatchDetail extends AppCompatActivity {
                     batsmenStatsMap.put(outBatsmanPlayerId, bs);
                     boolean strikerDisplayedFirst = activeBatsmen[strikerIndex].isDisplayedFirst();
                     CurrentBatsmanInfo btInfoNew = new CurrentBatsmanInfo(newBatsmanPlayerId, true, strikerDisplayedFirst);
+                    //CurrentBatsmanInfo btInfoNewCopy = new CurrentBatsmanInfo(newBatsmanPlayerId, true, strikerDisplayedFirst);
                     activeBatsmen[strikerIndex] = btInfoNew;
+                    //preActiveBatsmen[strikerIndex] = btInfoNewCopy;
                     if(activeBatsmen[strikerIndex].isDisplayedFirst()){
                         tvNameBt1.setText(strBatsmanNamePartial);
                         tvRunBt1.setText(itoa(bsNew.getRunsScored()));
@@ -471,7 +490,9 @@ public class MatchDetail extends AppCompatActivity {
                     batsmenStatsMap.put(outBatsmanPlayerId, bs2);
                     boolean NonStrikerDisplayedFirst = activeBatsmen[1 - strikerIndex].isDisplayedFirst();
                     CurrentBatsmanInfo btInfoNew = new CurrentBatsmanInfo(newBatsmanPlayerId, false, NonStrikerDisplayedFirst);
+                    //CurrentBatsmanInfo btInfoNewCopy = new CurrentBatsmanInfo(newBatsmanPlayerId, false, NonStrikerDisplayedFirst);
                     activeBatsmen[1 - strikerIndex] = btInfoNew;
+                    //preActiveBatsmen[1 - strikerIndex] = btInfoNewCopy;
                     if(activeBatsmen[1 - strikerIndex].isDisplayedFirst()){
                         tvNameBt1.setText(strBatsmanNamePartial);
                         tvRunBt1.setText(itoa(bsNew.getRunsScored()));
@@ -520,10 +541,14 @@ public class MatchDetail extends AppCompatActivity {
                 battingOrder.put(battingPosition, thisBatsman);
                 if(!batsmenStatsMap.containsKey(playerIdBt1)){
                     BattingStatistics batStat1 = new BattingStatistics(playerIdBt1, thisBatsman.getPlayerName());
+                    BattingStatistics batStat1Copy = new BattingStatistics(playerIdBt1, thisBatsman.getPlayerName());
                     batsmenStatsMap.put(playerIdBt1, batStat1);
+                    preBatsmenStatsMap.put(playerIdBt1, batStat1Copy);
                 }
                 CurrentBatsmanInfo btInfo1 = new CurrentBatsmanInfo(playerIdBt1, true, true);
+                CurrentBatsmanInfo btInfo1Copy = new CurrentBatsmanInfo(playerIdBt1, true, true);
                 activeBatsmen[0] = btInfo1;
+                preActiveBatsmen[0] = btInfo1Copy;
                 // Set the first batsman info in UI with green color
                 tvNameBt1.setText(strBatsmanPartial1);
                 tvNameBt1.setTextColor(Color.BLACK);
@@ -549,10 +574,14 @@ public class MatchDetail extends AppCompatActivity {
                 battingOrder.put(battingPosition, secondBatsman);
                 if(!batsmenStatsMap.containsKey(playerIdBt2)){
                     BattingStatistics batStat2 = new BattingStatistics(playerIdBt2, secondBatsman.getPlayerName());
+                    BattingStatistics batStat2Copy = new BattingStatistics(playerIdBt2, secondBatsman.getPlayerName());
                     batsmenStatsMap.put(playerIdBt2, batStat2);
+                    preBatsmenStatsMap.put(playerIdBt2, batStat2Copy);
                 }
                 CurrentBatsmanInfo btInfo2 = new CurrentBatsmanInfo(playerIdBt2, false, false);
+                CurrentBatsmanInfo btInfo2Copy = new CurrentBatsmanInfo(playerIdBt2, false, false);
                 activeBatsmen[1] = btInfo2;
+                preActiveBatsmen[1] = btInfo2Copy;
                 // Set the second batsman info in UI
                 tvNameBt2.setText(strBatsmanPartial2);
                 tvNameBt2.setTextColor(Color.BLACK);
@@ -574,7 +603,9 @@ public class MatchDetail extends AppCompatActivity {
                 // Add the bowler's initial statistics in the map
                 if(!bowlingStatsMap.containsKey(playerIdBowler)){
                     BowlingStatistics bowlerStat = new BowlingStatistics(playerIdBowler, playerHashMap.get(playerIdBowler).getPlayerName());
+                    BowlingStatistics bowlerStatCopy = new BowlingStatistics(playerIdBowler, playerHashMap.get(playerIdBowler).getPlayerName());
                     bowlingStatsMap.put(playerIdBowler, bowlerStat);
+                    preBowlingStatsMap.put(playerIdBowler, bowlerStatCopy);
                 }
                 currentBowlerStat = bowlingStatsMap.get(playerIdBowler);
                 // Set the bowler info in UI with green color
@@ -644,12 +675,11 @@ public class MatchDetail extends AppCompatActivity {
             // store the current info for undo later
             for(int i = 0; i < 2; i++){
                 int batsmanId = activeBatsmen[i].getBatsmanPlayerId();
-                preBatsmenStatsMap.put(batsmanId, batsmenStatsMap.get(batsmanId));
+                copyBatsmanStatistics(batsmenStatsMap, preBatsmenStatsMap, batsmanId);
             }
             int bowlerId = currentBowlerStat.getBowlerPlayerId();
-            preBowlingStatsMap.put(bowlerId, bowlingStatsMap.get(bowlerId));
-            preActiveBatsmen[0] = activeBatsmen[0];
-            preActiveBatsmen[1] = activeBatsmen[1];
+            copyBowlingStatistics(bowlingStatsMap, preBowlingStatsMap, bowlerId);
+            copyCurrentBatsmanInfo(activeBatsmen, preActiveBatsmen);
             run = 0;
             // Since only batting team overs are calculated, we should get the over information from overA irrespective to batting first/second
             int fullOver10 = (int) (overA * 10);
@@ -1104,12 +1134,15 @@ public class MatchDetail extends AppCompatActivity {
         //update personal information
         for(int i = 0; i < 2; i++){
             int batsmanId = activeBatsmen[i].getBatsmanPlayerId();
-            batsmenStatsMap.put(batsmanId, preBatsmenStatsMap.get(batsmanId));
+            //batsmenStatsMap.put(batsmanId, preBatsmenStatsMap.get(batsmanId));
+            copyBatsmanStatistics(preBatsmenStatsMap, batsmenStatsMap, batsmanId);
         }
         int bowlerId = currentBowlerStat.getBowlerPlayerId();
-        bowlingStatsMap.put(bowlerId, preBowlingStatsMap.get(bowlerId));
-        activeBatsmen[0] = preActiveBatsmen[0];
-        activeBatsmen[1] = preActiveBatsmen[1];
+        //bowlingStatsMap.put(bowlerId, preBowlingStatsMap.get(bowlerId));
+        copyBowlingStatistics(preBowlingStatsMap, bowlingStatsMap, bowlerId);
+        copyCurrentBatsmanInfo(preActiveBatsmen, activeBatsmen);
+        //activeBatsmen[0] = preActiveBatsmen[0];
+        //activeBatsmen[1] = preActiveBatsmen[1];
 
         int index = getFirstUILabelBatsmanIndexInArray();
         int playerIdFirst = activeBatsmen[index].getBatsmanPlayerId();
@@ -1131,6 +1164,52 @@ public class MatchDetail extends AppCompatActivity {
         tvWicketBowler.setText(itoa(currentBowlerStat.getNumberOfWickets()));
         tvWideBowler.setText(itoa(currentBowlerStat.getWidesCount()));
         tvNoBowler.setText(itoa(currentBowlerStat.getNoBallCount()));
+    }
+
+    private void copyCurrentBatsmanInfo(CurrentBatsmanInfo[] origin, CurrentBatsmanInfo[] dest){
+        dest[0].setBatsmanPlayerId(origin[0].getBatsmanPlayerId());
+        dest[0].setDisplayedFirst(origin[0].isDisplayedFirst());
+        dest[0].setStriker(origin[0].isStriker());
+        dest[1].setBatsmanPlayerId(origin[1].getBatsmanPlayerId());
+        dest[1].setDisplayedFirst(origin[1].isDisplayedFirst());
+        dest[1].setStriker(origin[1].isStriker());
+    }
+
+    private void copyBatsmanStatistics(HashMap<Integer, BattingStatistics> origin, HashMap<Integer, BattingStatistics> dest, int batsmanId){
+        BattingStatistics bsOrigin = origin.get(batsmanId);
+        BattingStatistics bsDest = dest.get(batsmanId);
+        bsDest.setRunsScored(bsOrigin.getRunsScored());
+        bsDest.setBallsFaced(bsOrigin.getBallsFaced());
+        bsDest.setNumOf4s(bsOrigin.getNumOf4s());
+        bsDest.setNumOf6s(bsOrigin.getNumOf6s());
+        bsDest.setHowOut(bsOrigin.getHowOut());
+        bsDest.setOutByBowlerId(bsOrigin.getOutByBowlerId());
+        bsDest.setCaughtByPlayerId(bsOrigin.getCaughtByPlayerId());
+        dest.put(batsmanId, bsDest);
+    }
+
+//    private void copyCurrentBowlerInfo(BowlingStatistics origin, BowlingStatistics dest){
+//        private int bowlerPlayerId;
+//        private String bowlerName;
+//        private double oversBowled; // Number after decimal point represents the ball
+//        private int runsConceded;
+//        private int maidenOvers;
+//        private int widesCount;
+//        private int noBallCount;
+//        private int numberOfWickets;
+//        dest.set
+//    }
+
+    private void copyBowlingStatistics(HashMap<Integer, BowlingStatistics> origin, HashMap<Integer, BowlingStatistics> dest, int bowlerId){
+        BowlingStatistics blsOrigin = origin.get(bowlerId);
+        BowlingStatistics blsDest = dest.get(bowlerId);
+        blsDest.setOversBowled(blsOrigin.getOversBowled());
+        blsDest.setRunsConceded(blsOrigin.getRunsConceded());
+        blsDest.setMaidenOvers(blsOrigin.getMaidenOvers());
+        blsDest.setWidesCount(blsOrigin.getWidesCount());
+        blsDest.setNoBallCount(blsOrigin.getNoBallCount());
+        blsDest.setNumberOfWickets(blsOrigin.getNumberOfWickets());
+        dest.put(bowlerId, blsDest);
     }
 
     public void inningsComplete(View v){
