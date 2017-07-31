@@ -402,6 +402,12 @@ public class MatchDetail extends AppCompatActivity {
         }
         newBowlerIntent.putExtra(PLAYER_LIST_BOWLERS, bowlerListAvailable);
         newBowlerIntent.putExtra(PLAYER_LIST_FULL, playerHashMap);
+        // Added the following for showing team current status in change bowler activity
+        newBowlerIntent.putExtra(TEAM_NAME_1, strTeam1);
+        newBowlerIntent.putExtra(CURRENT_TOTAL_RUN, itoa(runA));
+        newBowlerIntent.putExtra(CURRENT_TOTAL_WICKET, itoa(wickA));
+        double currentOver = overOnly + (ball / 10.0);
+        newBowlerIntent.putExtra(CURRENT_TOTAL_OVER, dtoa(currentOver));
         startActivityForResult(newBowlerIntent, NEW_BOWLER_ACTIVITY_REQ_CODE);
     }
     @Override

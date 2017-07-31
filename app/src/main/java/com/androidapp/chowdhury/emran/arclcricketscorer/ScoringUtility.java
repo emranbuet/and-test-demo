@@ -21,6 +21,11 @@ public class ScoringUtility {
     public static String PLAYER_ID_BATSMAN_1 = "Batsman1";
     public static String PLAYER_ID_BATSMAN_2 = "Batsman2";
     public static String PLAYER_ID_BOWLER = "Bowler";
+    public static String PLAYER_ID_FIELDER = "Fielder";
+
+    public static String CURRENT_TOTAL_RUN = "CurrentTotalRun";
+    public static String CURRENT_TOTAL_WICKET = "CurrentTotalWicket";
+    public static String CURRENT_TOTAL_OVER = "CurrentTotalOver";
 
     public static String BATTING_STATISTICS = "BATTING_STATISTICS";
     public static String BOWLING_STATISTICS = "BOWLING_STATISTICS";

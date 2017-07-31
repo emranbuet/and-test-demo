@@ -15,6 +15,8 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -24,7 +26,10 @@ public class NewBowlerActivity extends AppCompatActivity {
 
     private Spinner spNewBowler;
     private Button btnNewBowler;
+    private TextView tvTeamName, tvCurrentRun, tvCurrentWicket, tvCurrentOver;
     private int playerIdNewBowler;
+    private String teamNameCurrent, runCurrent, wickCurrent;;
+    private double overCurrent;
     private ArrayAdapter<String> bowlerAdapter;
     private ArrayList<Player> playerListFielding = null;
     private HashMap<Integer, Player> playerHashMap;
@@ -34,16 +39,30 @@ public class NewBowlerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_bowler);
 
+        spNewBowler = (Spinner) findViewById(R.id.spNewBowler);
+        btnNewBowler = (Button) findViewById(R.id.btnNewBowler);
+        tvTeamName = (TextView) findViewById(R.id.tVNameTeamInBowler);
+        tvCurrentRun = (TextView) findViewById(R.id.tVRunAInBowler);
+        tvCurrentWicket = (TextView) findViewById(R.id.tVWicketAInBowler);
+        tvCurrentOver = (TextView) findViewById(R.id.tVOverAInBowler);
+
         Bundle bundle = getIntent().getExtras();
         if(bundle != null){
             playerListFielding = (ArrayList<Player>) bundle.getSerializable(PLAYER_LIST_BOWLERS);
             playerHashMap = (HashMap<Integer, Player>) bundle.getSerializable(PLAYER_LIST_FULL);
+            teamNameCurrent = bundle.getString(TEAM_NAME_1);
+            runCurrent = bundle.getString(CURRENT_TOTAL_RUN);
+            wickCurrent = bundle.getString(CURRENT_TOTAL_WICKET);
+            overCurrent = Double.parseDouble(bundle.getString(CURRENT_TOTAL_OVER));
         }
         else{
             Log.d("NewBowler: " + LogType.ERROR, "Bundle is null from match detail activity");
         }
-        spNewBowler = (Spinner) findViewById(R.id.spNewBowler);
-        btnNewBowler = (Button) findViewById(R.id.btnNewBowler);
+
+        tvTeamName.setText(teamNameCurrent);
+        tvCurrentRun.setText(runCurrent);
+        tvCurrentWicket.setText(wickCurrent);
+        tvCurrentOver.setText(dtoa(overCurrent));
 
         final ArrayList<String> playerNamesBowlers = new ArrayList<>();
         for(Player p : playerListFielding){
@@ -79,7 +98,7 @@ public class NewBowlerActivity extends AppCompatActivity {
                 playerIdNewBowler = bowler.getPlayerId();
                 returnBowlerIdIntent.putExtra(NEW_BOWLER_ID, itoa(playerIdNewBowler));
                 setResult(Activity.RESULT_OK, returnBowlerIdIntent);
-                Log.d("NewBowler: " + LogType.TEST, bowler.getPlayerName() +"Bowler is selected as bowler whose id is: " + playerIdNewBowler);
+                Log.d("NewBowler: " + LogType.TEST, bowler.getPlayerName() +" Bowler is selected as bowler whose id is: " + playerIdNewBowler);
                 finish();
             }
         });
