@@ -15,7 +15,8 @@ import static com.androidapp.chowdhury.emran.arclcricketscorer.ScoringUtility.it
 
 public class CustomizedBattingAdapter extends ArrayAdapter<BattingStatistics>{
     private static int BATSMAN_NAME_LEN = 12;
-    private static int BOWLER_NAME_LEN = 7;
+    private static int BOWLER_NAME_LEN = 6;
+    private static int FIELDER_NAME_LEN = 6;
 
     Activity currentContext;
     ArrayList<BattingStatistics> battingStats;
@@ -46,6 +47,7 @@ public class CustomizedBattingAdapter extends ArrayAdapter<BattingStatistics>{
 
             TextView txtBatsmanName = (TextView) v.findViewById(R.id.stVNameBt);
             TextView txtOutType = (TextView) v.findViewById(R.id.stVOutTypeBt);
+            TextView txtFielderName = (TextView) v.findViewById(R.id.stVByFielderBt);
             TextView txtBowlerName = (TextView) v.findViewById(R.id.stVByBowlerBt);
             TextView txtBatsmanRun = (TextView) v.findViewById(R.id.stVRunBt);
             TextView txtBatsmanBall = (TextView) v.findViewById(R.id.stVBallBt);
@@ -57,6 +59,8 @@ public class CustomizedBattingAdapter extends ArrayAdapter<BattingStatistics>{
             String batsmanPartialName = batsmanFullName.length() > BATSMAN_NAME_LEN ? batsmanFullName.substring(0, BATSMAN_NAME_LEN) : batsmanFullName;
             String bowlerFullName = "";
             String bowlerPartialName = "   ---   ";
+            String fielderFullName = "";
+            String fielderPartialName = "   ---   ";
             if(activeBatsmenPlayerIds.contains(bs.getBatsmanPlayerId())) {
                 batsmanPartialName = batsmanPartialName + "*";
             }
@@ -65,10 +69,16 @@ public class CustomizedBattingAdapter extends ArrayAdapter<BattingStatistics>{
                 Player bowler = playerHashMap.get(outByBowlerId);
                 bowlerFullName = (bowler == null) ? "Tempo" : bowler.getPlayerName();
                 bowlerPartialName = bowlerFullName.length() > BOWLER_NAME_LEN ? bowlerFullName.substring(0, BOWLER_NAME_LEN) : bowlerFullName;
+
+                int outByFielderId = bs.getCaughtByPlayerId();
+                Player fielder = playerHashMap.get(outByFielderId);
+                fielderFullName = (fielder == null) ? "  N/A  " : fielder.getPlayerName();
+                fielderPartialName = fielderFullName.length() > FIELDER_NAME_LEN ? fielderFullName.substring(0, FIELDER_NAME_LEN) : fielderFullName;
             }
             txtBatsmanName.setText(batsmanPartialName);
             String strOutType = shortOutTypeStr.get(bs.getHowOut()) == null ? " - " : shortOutTypeStr.get(bs.getHowOut());
             txtOutType.setText(strOutType);
+            txtFielderName.setText(fielderPartialName);
             txtBowlerName.setText(bowlerPartialName);
             txtBatsmanRun.setText(formatInt2D(bs.getRunsScored()));
             txtBatsmanBall.setText(formatInt2D(bs.getBallsFaced()));

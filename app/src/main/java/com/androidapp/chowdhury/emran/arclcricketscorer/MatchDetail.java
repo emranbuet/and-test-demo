@@ -456,6 +456,7 @@ public class MatchDetail extends AppCompatActivity {
                     preBatsmenStatsMap.put(newBatsmanPlayerId, newBatsmanStatCopy);
                 }
                 String outTypeStr = data.getStringExtra(OUT_TYPE_STR);
+                int playerIdFielder = atoi(data.getStringExtra(PLAYER_ID_FIELDER));
                 Log.d("OUT_TYPE: " + LogType.TEST, " Batsman was:" + outTypeStr);
                 boolean isStrikerGotOut = true;
                 int strikerIndex = getStrikerBatsmanIndexInArray();
@@ -483,6 +484,7 @@ public class MatchDetail extends AppCompatActivity {
                     BattingStatistics bs = batsmenStatsMap.get(outBatsmanPlayerId);
                     bs.setOutByBowlerId(currentBowlerStat.getBowlerPlayerId());
                     bs.setHowOut(outTypeHashMap.get(outTypeStr));
+                    bs.setCaughtByPlayerId(playerIdFielder);
                     batsmenStatsMap.put(outBatsmanPlayerId, bs);
                     boolean strikerDisplayedFirst = activeBatsmen[strikerIndex].isDisplayedFirst();
                     CurrentBatsmanInfo btInfoNew = new CurrentBatsmanInfo(newBatsmanPlayerId, true, strikerDisplayedFirst);
@@ -510,6 +512,7 @@ public class MatchDetail extends AppCompatActivity {
                     BattingStatistics bs2 = batsmenStatsMap.get(outBatsmanPlayerId);
                     bs2.setOutByBowlerId(currentBowlerStat.getBowlerPlayerId());
                     bs2.setHowOut(outTypeHashMap.get(outTypeStr));
+                    bs2.setCaughtByPlayerId(playerIdFielder);
                     batsmenStatsMap.put(outBatsmanPlayerId, bs2);
                     boolean NonStrikerDisplayedFirst = activeBatsmen[1 - strikerIndex].isDisplayedFirst();
                     CurrentBatsmanInfo btInfoNew = new CurrentBatsmanInfo(newBatsmanPlayerId, false, NonStrikerDisplayedFirst);
@@ -659,6 +662,14 @@ public class MatchDetail extends AppCompatActivity {
                 battingListAvailable.add(p);
             }
         }
+        ArrayList<Player> fieldingListAvailable = new ArrayList<Player>();
+        Player noFielder = new Player(NO_FIELDER_PLAYER_NAME, NO_FIELDER_PLAYER_ID);
+        fieldingListAvailable.add(noFielder);
+        for(Player p: playersListTeam2){
+            fieldingListAvailable.add(p);
+        }
+        //Player sub = new Player(SUBSTITUTE_PLAYER_NAME, SUBSTITUTE_PLAYER_ID);
+        //fieldingListAvailable.add(sub);
         int strikerIndex = getStrikerBatsmanIndexInArray();
         int strikerPlayerId = activeBatsmen[strikerIndex].getBatsmanPlayerId();
         int nonStrikerPlayerId = activeBatsmen[1 - strikerIndex].getBatsmanPlayerId();
@@ -666,6 +677,7 @@ public class MatchDetail extends AppCompatActivity {
         newBatsmanIntent.putExtra(PLAYER_ID_BATSMAN_1, itoa(strikerPlayerId));
         newBatsmanIntent.putExtra(PLAYER_ID_BATSMAN_2, itoa(nonStrikerPlayerId));
         newBatsmanIntent.putExtra(PLAYER_LIST_FULL, playerHashMap);
+        newBatsmanIntent.putExtra(PLAYER_LIST_FIELDERS, fieldingListAvailable);
         startActivityForResult(newBatsmanIntent, NEW_BATSMAN_ACTIVITY_REQ_CODE);
     }
     public void viewScorecard(View v){

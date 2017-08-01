@@ -16,17 +16,24 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
             android:fontFamily="sans-serif-condensed"
             android:text="Batsman Name:" />
 
         <TextView
             android:id="@+id/stVOutTypeBt"
-            android:layout_width="35dp"
+            android:layout_width="28dp"
             android:layout_height="wrap_content"
             android:layout_marginRight="5dp"
             android:fontFamily="sans-serif-condensed"
             android:text="no" />
+
+        <TextView
+            android:id="@+id/stVByFielderBt"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:fontFamily="sans-serif-condensed"
+            android:text="Fielder " />
 
         <TextView
             android:id="@+id/stVByBowlerBt"
@@ -40,7 +47,7 @@
             android:id="@+id/stVRunBt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="25dp"
+            android:layout_marginRight="15dp"
             android:fontFamily="sans-serif-condensed"
             android:text="00"
             android:textStyle="bold" />
@@ -49,7 +56,7 @@
             android:id="@+id/stVBallBt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="22dp"
+            android:layout_marginRight="17dp"
             android:fontFamily="sans-serif-condensed"
             android:text="00"
             android:textStyle="bold" />

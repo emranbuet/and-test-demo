@@ -5,12 +5,18 @@ public class ScoringUtility {
     public static int TEAM_ID_1 = 111;
     public static int TEAM_ID_2 = 555;
 
+    public static int SUBSTITUTE_PLAYER_ID = 101;
+    public static String SUBSTITUTE_PLAYER_NAME = "Substitute";
+    public static int NO_FIELDER_PLAYER_ID = 202;
+    public static String NO_FIELDER_PLAYER_NAME = "N/A";
+
     public static boolean IS_FIRST_INNINGS = true;
 
     public static String PLAYER_LIST_FULL = "PLAYER_LIST_FULL";
     public static String PLAYER_LIST_FIRST = "PlayerListOne";
     public static String PLAYER_LIST_SECOND = "PlayerListTwo";
     public static String PLAYER_LIST_BOWLERS = "PlayerListAvailableBowlers";
+    public static String PLAYER_LIST_FIELDERS = "PlayerListAvailableFielders";
     public static String PLAYER_LIST_BATSMEN = "PlayerListAvailableBatsmen";
 
     public static String TEAM_NAME_1 = "TEAM_NAME_1";

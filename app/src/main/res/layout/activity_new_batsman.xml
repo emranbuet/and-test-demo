@@ -6,39 +6,17 @@
     android:orientation="vertical"
     tools:context="com.androidapp.chowdhury.emran.arclcricketscorer.NewBatsmanActivity">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="75dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginBottom="10dp">
-
-        <TextView
-            android:id="@+id/tvSelectHowOut"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Batsman Out type: "
-            android:layout_marginRight="5dp"/>
-
-        <Spinner
-            android:id="@+id/spOutType"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-
-    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
-        android:layout_marginLeft="10dp">
+        android:layout_marginLeft="15dp">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Select the Batsman who is going to pavilion"/>
+            android:text="Change the Batsman if it was run out"/>
 
     </LinearLayout>
 
@@ -58,6 +36,52 @@
 
         <Spinner
             android:id="@+id/spSelectOutBatsman"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="50dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginBottom="10dp">
+
+        <TextView
+            android:id="@+id/tvSelectHowOut"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Batsman Out type: "
+            android:layout_marginRight="5dp"/>
+
+        <Spinner
+            android:id="@+id/spOutType"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginBottom="10dp">
+
+        <TextView
+            android:id="@+id/tvSelectFielder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Select the Fielder: "
+            android:layout_marginRight="5dp"/>
+
+        <Spinner
+            android:id="@+id/spFielder"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1" />

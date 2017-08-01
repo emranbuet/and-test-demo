@@ -3,4 +3,4 @@
     android:id="@+id/spinnerTarget"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:textSize="12pt" />
+    android:textSize="13pt" />
