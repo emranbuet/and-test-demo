@@ -14,6 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
+
 import static com.androidapp.chowdhury.emran.arclcricketscorer.ScoringUtility.*;
 
 import java.lang.reflect.Array;
@@ -48,14 +49,13 @@ public class NewBatsmanActivity extends AppCompatActivity {
         String firstBatsmanPlayerId = null, secondBatsmanPlayerId = null;
 
         Bundle bundle = getIntent().getExtras();
-        if(bundle != null){
+        if (bundle != null) {
             playerListBatting = (ArrayList<Player>) bundle.getSerializable(PLAYER_LIST_BATSMEN);
             firstBatsmanPlayerId = bundle.getString(PLAYER_ID_BATSMAN_1);
             secondBatsmanPlayerId = bundle.getString(PLAYER_ID_BATSMAN_2);
             playerHashMap = (HashMap<Integer, Player>) bundle.getSerializable(PLAYER_LIST_FULL);
             playerListFielding = (ArrayList<Player>) bundle.getSerializable(PLAYER_LIST_FIELDERS);
-        }
-        else{
+        } else {
             Log.d("NewBatsman: " + LogType.ERROR, "Bundle is null from match detail activity");
         }
         spOutType = (Spinner) findViewById(R.id.spOutType);
@@ -71,7 +71,7 @@ public class NewBatsmanActivity extends AppCompatActivity {
         currentBatsmanList.add(playerHashMap.get(atoi(secondBatsmanPlayerId)));
 
         currentBatsmenName = new ArrayList<>();
-        for(Player p : currentBatsmanList){
+        for (Player p : currentBatsmanList) {
             String strBatsmanFullName = p.getPlayerName();
             String strBatsmanNamePartial = (strBatsmanFullName.length() > NAME_LEN) ? strBatsmanFullName.substring(0, NAME_LEN) : strBatsmanFullName;
             currentBatsmenName.add(strBatsmanNamePartial);
@@ -81,14 +81,14 @@ public class NewBatsmanActivity extends AppCompatActivity {
         btnNewBatsman = (Button) findViewById(R.id.btnNewBatsman);
 
         final ArrayList<String> playerNamesBatsmen = new ArrayList<>();
-        for(Player p : playerListBatting){
+        for (Player p : playerListBatting) {
             String strBatsmanFullName = p.getPlayerName();
             //String strBatsmanNamePartial = (strBatsmanFullName.length() > NAME_LEN) ? strBatsmanFullName.substring(0, NAME_LEN) : strBatsmanFullName;
             playerNamesBatsmen.add(strBatsmanFullName);
         }
 
         final ArrayList<String> playerNamesFielders = new ArrayList<>();
-        for(Player p : playerListFielding){
+        for (Player p : playerListFielding) {
             String strFielderFullName = p.getPlayerName();
             playerNamesFielders.add(strFielderFullName);
         }
@@ -97,9 +97,9 @@ public class NewBatsmanActivity extends AppCompatActivity {
         currentBatsmanAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spCurrentBatsman.setAdapter(currentBatsmanAdapter);
 
-        fielderAdapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_item, playerNamesFielders){
+        fielderAdapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_item, playerNamesFielders) {
             @Override
-            public View getDropDownView(int position, View convertView, ViewGroup parent){
+            public View getDropDownView(int position, View convertView, ViewGroup parent) {
                 View v = convertView;
                 if (v == null) {
                     Context mContext = this.getContext();
@@ -115,13 +115,13 @@ public class NewBatsmanActivity extends AppCompatActivity {
             }
         };
         fielderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        if(fielderAdapter != null) {
+        if (fielderAdapter != null) {
             spFielder.setAdapter(fielderAdapter);
         }
 
-        batsmanAdapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_item, playerNamesBatsmen){
+        batsmanAdapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_item, playerNamesBatsmen) {
             @Override
-            public View getDropDownView(int position, View convertView, ViewGroup parent){
+            public View getDropDownView(int position, View convertView, ViewGroup parent) {
                 View v = convertView;
                 if (v == null) {
                     Context mContext = this.getContext();
@@ -137,7 +137,7 @@ public class NewBatsmanActivity extends AppCompatActivity {
             }
         };
         batsmanAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        if(batsmanAdapter != null) {
+        if (batsmanAdapter != null) {
             spNewBatsman.setAdapter(batsmanAdapter);
         }
 
@@ -149,7 +149,7 @@ public class NewBatsmanActivity extends AppCompatActivity {
                 playerIdNewBatsman = batsman.getPlayerId();
                 returnBatsmanIntent.putExtra(NEW_BATSMAN_ID, itoa(playerIdNewBatsman));
 
-                String outTypeStr = (String)outTypeList.get(spOutType.getSelectedItemPosition());
+                String outTypeStr = (String) outTypeList.get(spOutType.getSelectedItemPosition());
                 returnBatsmanIntent.putExtra(OUT_TYPE_STR, outTypeStr);
                 String playerIdOfRunOut = itoa(currentBatsmanList.get(spCurrentBatsman.getSelectedItemPosition()).getPlayerId());
                 returnBatsmanIntent.putExtra(PLAYER_ID_BATSMAN_OUT, playerIdOfRunOut);
@@ -158,7 +158,7 @@ public class NewBatsmanActivity extends AppCompatActivity {
                 returnBatsmanIntent.putExtra(PLAYER_ID_FIELDER, itoa(playerIdFielder));
 
                 setResult(Activity.RESULT_OK, returnBatsmanIntent);
-                Log.d("NewBatsman: " + LogType.TEST, batsman.getPlayerName() +" is selected as new batsman whose id is: " + playerIdNewBatsman);
+                Log.d("NewBatsman: " + LogType.TEST, batsman.getPlayerName() + " is selected as new batsman whose id is: " + playerIdNewBatsman);
                 finish();
             }
         });

@@ -50,15 +50,15 @@ public class ScoringUtility {
     // url string for calling arcl web api
     public static String apiURL = "http://arclweb.azurewebsites.net/api/";
 
-    public static int atoi (String s){
+    public static int atoi(String s) {
         return Integer.parseInt(s);
     }
 
-    public static String itoa(int val){
+    public static String itoa(int val) {
         return Integer.toString(val);
     }
 
-    public static String dtoa(Double val){
+    public static String dtoa(Double val) {
         return String.valueOf(val);
     }
 }

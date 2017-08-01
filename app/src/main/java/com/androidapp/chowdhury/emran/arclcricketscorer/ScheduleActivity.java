@@ -28,7 +28,7 @@ public class ScheduleActivity extends ListActivity {
         //setContentView(R.layout.activity_schedule);
     }
 
-    public void startLogIn(View v){
+    public void startLogIn(View v) {
         Intent intent = new Intent(getApplicationContext(), ScheduleActivity.class);
 
     }

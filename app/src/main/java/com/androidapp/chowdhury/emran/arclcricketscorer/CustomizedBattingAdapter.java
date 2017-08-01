@@ -13,7 +13,7 @@ import java.util.HashMap;
 
 import static com.androidapp.chowdhury.emran.arclcricketscorer.ScoringUtility.itoa;
 
-public class CustomizedBattingAdapter extends ArrayAdapter<BattingStatistics>{
+public class CustomizedBattingAdapter extends ArrayAdapter<BattingStatistics> {
     private static int BATSMAN_NAME_LEN = 12;
     private static int BOWLER_NAME_LEN = 6;
     private static int FIELDER_NAME_LEN = 6;
@@ -24,7 +24,7 @@ public class CustomizedBattingAdapter extends ArrayAdapter<BattingStatistics>{
     HashMap<OutType, String> shortOutTypeStr;
     HashMap<Integer, Player> playerHashMap;
 
-    public CustomizedBattingAdapter(Context context, ArrayList<BattingStatistics> batStats, ArrayList<Integer> activeBatsmenPlayerId, HashMap<Integer, Player> playerHashMap){
+    public CustomizedBattingAdapter(Context context, ArrayList<BattingStatistics> batStats, ArrayList<Integer> activeBatsmenPlayerId, HashMap<Integer, Player> playerHashMap) {
         super(context, R.layout.batsman_item_score, batStats);
         this.currentContext = (Activity) context;
         this.battingStats = batStats;
@@ -39,10 +39,10 @@ public class CustomizedBattingAdapter extends ArrayAdapter<BattingStatistics>{
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent){
+    public View getView(int position, View convertView, ViewGroup parent) {
         View v = null;
-        if(convertView == null){
-            LayoutInflater inflater=currentContext.getLayoutInflater();
+        if (convertView == null) {
+            LayoutInflater inflater = currentContext.getLayoutInflater();
             v = inflater.inflate(R.layout.batsman_item_score, null);
 
             TextView txtBatsmanName = (TextView) v.findViewById(R.id.stVNameBt);
@@ -61,10 +61,9 @@ public class CustomizedBattingAdapter extends ArrayAdapter<BattingStatistics>{
             String bowlerPartialName = "   ---   ";
             String fielderFullName = "";
             String fielderPartialName = "   ---   ";
-            if(activeBatsmenPlayerIds.contains(bs.getBatsmanPlayerId())) {
+            if (activeBatsmenPlayerIds.contains(bs.getBatsmanPlayerId())) {
                 batsmanPartialName = batsmanPartialName + "*";
-            }
-            else{
+            } else {
                 int outByBowlerId = bs.getOutByBowlerId();
                 Player bowler = playerHashMap.get(outByBowlerId);
                 bowlerFullName = (bowler == null) ? "Tempo" : bowler.getPlayerName();
@@ -84,15 +83,14 @@ public class CustomizedBattingAdapter extends ArrayAdapter<BattingStatistics>{
             txtBatsmanBall.setText(formatInt2D(bs.getBallsFaced()));
             txtBatsmanFour.setText(formatInt2D(bs.getNumOf4s()));
             txtBatsmanSix.setText(formatInt2D(bs.getNumOf6s()));
-        }
-        else{
+        } else {
             v = convertView;
         }
         return v;
     }
 
-    private String formatInt2D(int value){
+    private String formatInt2D(int value) {
         String strValue = itoa(value);
-        return (strValue.length() > 1) ? strValue: ("0" + strValue);
+        return (strValue.length() > 1) ? strValue : ("0" + strValue);
     }
 }

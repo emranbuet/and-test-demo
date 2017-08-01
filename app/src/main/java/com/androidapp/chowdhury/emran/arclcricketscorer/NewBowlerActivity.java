@@ -28,7 +28,8 @@ public class NewBowlerActivity extends AppCompatActivity {
     private Button btnNewBowler;
     private TextView tvTeamName, tvCurrentRun, tvCurrentWicket, tvCurrentOver;
     private int playerIdNewBowler;
-    private String teamNameCurrent, runCurrent, wickCurrent;;
+    private String teamNameCurrent, runCurrent, wickCurrent;
+    ;
     private double overCurrent;
     private ArrayAdapter<String> bowlerAdapter;
     private ArrayList<Player> playerListFielding = null;
@@ -47,15 +48,14 @@ public class NewBowlerActivity extends AppCompatActivity {
         tvCurrentOver = (TextView) findViewById(R.id.tVOverAInBowler);
 
         Bundle bundle = getIntent().getExtras();
-        if(bundle != null){
+        if (bundle != null) {
             playerListFielding = (ArrayList<Player>) bundle.getSerializable(PLAYER_LIST_BOWLERS);
             playerHashMap = (HashMap<Integer, Player>) bundle.getSerializable(PLAYER_LIST_FULL);
             teamNameCurrent = bundle.getString(TEAM_NAME_1);
             runCurrent = bundle.getString(CURRENT_TOTAL_RUN);
             wickCurrent = bundle.getString(CURRENT_TOTAL_WICKET);
             overCurrent = Double.parseDouble(bundle.getString(CURRENT_TOTAL_OVER));
-        }
-        else{
+        } else {
             Log.d("NewBowler: " + LogType.ERROR, "Bundle is null from match detail activity");
         }
 
@@ -65,12 +65,12 @@ public class NewBowlerActivity extends AppCompatActivity {
         tvCurrentOver.setText(dtoa(overCurrent));
 
         final ArrayList<String> playerNamesBowlers = new ArrayList<>();
-        for(Player p : playerListFielding){
+        for (Player p : playerListFielding) {
             playerNamesBowlers.add(p.getPlayerName());
         }
-        bowlerAdapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_item, playerNamesBowlers){
+        bowlerAdapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_item, playerNamesBowlers) {
             @Override
-            public View getDropDownView(int position, View convertView, ViewGroup parent){
+            public View getDropDownView(int position, View convertView, ViewGroup parent) {
                 View v = convertView;
                 if (v == null) {
                     Context mContext = this.getContext();
@@ -86,7 +86,7 @@ public class NewBowlerActivity extends AppCompatActivity {
             }
         };
         bowlerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        if(bowlerAdapter != null) {
+        if (bowlerAdapter != null) {
             spNewBowler.setAdapter(bowlerAdapter);
         }
 
@@ -98,7 +98,7 @@ public class NewBowlerActivity extends AppCompatActivity {
                 playerIdNewBowler = bowler.getPlayerId();
                 returnBowlerIdIntent.putExtra(NEW_BOWLER_ID, itoa(playerIdNewBowler));
                 setResult(Activity.RESULT_OK, returnBowlerIdIntent);
-                Log.d("NewBowler: " + LogType.TEST, bowler.getPlayerName() +" Bowler is selected as bowler whose id is: " + playerIdNewBowler);
+                Log.d("NewBowler: " + LogType.TEST, bowler.getPlayerName() + " Bowler is selected as bowler whose id is: " + playerIdNewBowler);
                 finish();
             }
         });

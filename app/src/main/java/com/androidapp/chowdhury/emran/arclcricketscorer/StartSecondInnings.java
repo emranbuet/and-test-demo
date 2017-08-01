@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
 import static com.androidapp.chowdhury.emran.arclcricketscorer.ScoringUtility.*;
 
 public class StartSecondInnings extends AppCompatActivity {
@@ -42,27 +43,25 @@ public class StartSecondInnings extends AppCompatActivity {
         btnStartSecondInnings = (Button) findViewById(R.id.btnStart2ndInnings);
 
         Bundle bundle = getIntent().getExtras();
-        if(bundle != null){
+        if (bundle != null) {
             playerListBatting = (ArrayList<Player>) bundle.getSerializable(PLAYER_LIST_FIRST);
             playerListFielding = (ArrayList<Player>) bundle.getSerializable(PLAYER_LIST_SECOND);
             playerHashMap = (HashMap<Integer, Player>) bundle.getSerializable(PLAYER_LIST_FULL);
-        }
-        else{
+        } else {
             Log.d("Start2ndInning:" + LogType.ERROR, "Bundle is null from match detail activity");
         }
 
         final ArrayList<String> playerNames1 = new ArrayList<>();
-        if(playerListBatting == null || playerListBatting.size() == 0){
+        if (playerListBatting == null || playerListBatting.size() == 0) {
             Log.d("Error", "Player list of Batting team is empty");
-        }
-        else {
+        } else {
             for (Player p : playerListBatting) {
                 playerNames1.add(p.getPlayerName());
             }
         }
-        adapterBatting = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_item, playerNames1){
+        adapterBatting = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_item, playerNames1) {
             @Override
-            public View getDropDownView(int position, View convertView, ViewGroup parent){
+            public View getDropDownView(int position, View convertView, ViewGroup parent) {
                 View v = convertView;
                 if (v == null) {
                     Context mContext = this.getContext();
@@ -78,23 +77,22 @@ public class StartSecondInnings extends AppCompatActivity {
             }
         };
         adapterBatting.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        if(adapterBatting != null) {
+        if (adapterBatting != null) {
             spinner2Bt1.setAdapter(adapterBatting);
             spinner2Bt2.setAdapter(adapterBatting);
         }
 
         final ArrayList<String> playerNames2 = new ArrayList<>();
-        if(playerListFielding == null || playerListFielding.size() == 0){
+        if (playerListFielding == null || playerListFielding.size() == 0) {
             Log.d("Error", "Player list of Fielding team is empty");
-        }
-        else {
+        } else {
             for (Player p : playerListFielding) {
                 playerNames2.add(p.getPlayerName());
             }
         }
-        adapterFielding = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_item, playerNames2){
+        adapterFielding = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_item, playerNames2) {
             @Override
-            public View getDropDownView(int position, View convertView, ViewGroup parent){
+            public View getDropDownView(int position, View convertView, ViewGroup parent) {
                 View v = convertView;
                 if (v == null) {
                     Context mContext = this.getContext();
@@ -110,7 +108,7 @@ public class StartSecondInnings extends AppCompatActivity {
             }
         };
         adapterFielding.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        if(adapterFielding != null) {
+        if (adapterFielding != null) {
             spinner2Bl.setAdapter(adapterFielding);
         }
 
@@ -118,10 +116,9 @@ public class StartSecondInnings extends AppCompatActivity {
         btnStartSecondInnings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(spinner2Bt1.getSelectedItemPosition() == spinner2Bt2.getSelectedItemPosition()){
+                if (spinner2Bt1.getSelectedItemPosition() == spinner2Bt2.getSelectedItemPosition()) {
                     Toast.makeText(getApplicationContext(), "Select different opening batsmen to start", Toast.LENGTH_SHORT).show();
-                }
-                else {
+                } else {
                     Intent return2ndInningsIntent = new Intent();
                     playerIdBt1 = playerListBatting.get(spinner2Bt1.getSelectedItemPosition()).getPlayerId();
                     playerIdBt2 = playerListBatting.get(spinner2Bt2.getSelectedItemPosition()).getPlayerId();

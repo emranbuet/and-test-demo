@@ -7,6 +7,7 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
 import static com.androidapp.chowdhury.emran.arclcricketscorer.ScoringUtility.*;
 
 public class ScorecardActivity extends AppCompatActivity {
@@ -31,7 +32,7 @@ public class ScorecardActivity extends AppCompatActivity {
         lvBowlingStatistics = (ListView) findViewById(R.id.lvBowler);
 
         Bundle bundle = getIntent().getExtras();
-        if(bundle != null){
+        if (bundle != null) {
             batsmenStatsMap = (HashMap<Integer, BattingStatistics>) bundle.getSerializable(BATTING_STATISTICS);
             bowlingStatsMap = (HashMap<Integer, BowlingStatistics>) bundle.getSerializable(BOWLING_STATISTICS);
             firstBatsmanPlayerId = bundle.getString(PLAYER_ID_BATSMAN_1);
@@ -41,19 +42,18 @@ public class ScorecardActivity extends AppCompatActivity {
             ArrayList<Integer> activeBatsmenIds = new ArrayList<>();
             activeBatsmenIds.add(atoi(firstBatsmanPlayerId));
             activeBatsmenIds.add(atoi(secondBatsmanPlayerId));
-            ArrayList<BattingStatistics> battingStatisticsList = new ArrayList<BattingStatistics> (batsmenStatsMap.values());
-            if(battingStatisticsList != null && battingStatisticsList.size() > 0){
+            ArrayList<BattingStatistics> battingStatisticsList = new ArrayList<BattingStatistics>(batsmenStatsMap.values());
+            if (battingStatisticsList != null && battingStatisticsList.size() > 0) {
                 battingAdapter = new CustomizedBattingAdapter(this, battingStatisticsList, activeBatsmenIds, playerHashMap);
                 lvBattingStatistics.setAdapter(battingAdapter);
             }
 
-            ArrayList<BowlingStatistics> bowlingStatisticsList = new ArrayList<BowlingStatistics> (bowlingStatsMap.values());
-            if(bowlingStatisticsList != null && bowlingStatisticsList.size() > 0){
+            ArrayList<BowlingStatistics> bowlingStatisticsList = new ArrayList<BowlingStatistics>(bowlingStatsMap.values());
+            if (bowlingStatisticsList != null && bowlingStatisticsList.size() > 0) {
                 bowlingAdapter = new CustomizedBowlingAdapter(this, bowlingStatisticsList);
                 lvBowlingStatistics.setAdapter(bowlingAdapter);
             }
-        }
-        else{
+        } else {
             Log.d("Scorecard: " + LogType.ERROR, "Bundle is null from match detail activity");
         }
 

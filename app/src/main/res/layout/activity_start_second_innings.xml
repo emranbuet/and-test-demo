@@ -19,7 +19,7 @@
             android:id="@+id/tvHello2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text=""/>
+            android:text="" />
 
     </LinearLayout>
 
@@ -37,14 +37,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Select Batsman 1:"
-            android:layout_marginRight="25dp"/>
+            android:layout_marginRight="25dp" />
 
         <Spinner
             android:id="@+id/sp2Bt1"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:visibility="visible"/>
+            android:visibility="visible" />
 
 
     </LinearLayout>
@@ -63,7 +63,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Select Batsman 2: "
-            android:layout_marginRight="25dp"/>
+            android:layout_marginRight="25dp" />
 
         <Spinner
             android:id="@+id/sp2Bt2"
@@ -86,7 +86,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Select Bowler: "
-            android:layout_marginRight="50dp"/>
+            android:layout_marginRight="50dp" />
 
         <Spinner
             android:id="@+id/sp2Bl"
@@ -110,7 +110,7 @@
             android:layout_height="wrap_content"
             android:text="Start Second Innings"
             android:textAllCaps="false"
-            android:layout_gravity="center_vertical"/>
+            android:layout_gravity="center_vertical" />
 
     </LinearLayout>
 </LinearLayout>

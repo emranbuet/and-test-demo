@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+
 import static com.androidapp.chowdhury.emran.arclcricketscorer.ScoringUtility.*;
 
 public class MainActivity extends AppCompatActivity {
@@ -28,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
         etTarget = (EditText) findViewById(R.id.etTargetRun);
     }
 
-    public void startNewMatch(View view){
+    public void startNewMatch(View view) {
         IS_FIRST_INNINGS = true;
         Intent intent = new Intent(this, ScoreActivity.class);
 
@@ -37,9 +38,9 @@ public class MainActivity extends AppCompatActivity {
         strTotOver = etTotOver.getText().toString();
         totalOvers = (TextUtils.isEmpty(strTotOver)) ? 16 : atoi(strTotOver);
 
-        if(TextUtils.isEmpty(strTeam1))
+        if (TextUtils.isEmpty(strTeam1))
             Toast.makeText(getApplicationContext(), "Enter Name of First team", Toast.LENGTH_SHORT).show();
-        else if(TextUtils.isEmpty(strTeam2))
+        else if (TextUtils.isEmpty(strTeam2))
             Toast.makeText(getApplicationContext(), "Enter Name of Second team", Toast.LENGTH_SHORT).show();
         else {
             if (strTeam1.length() >= MAX_TEAM_NAME_LENGTH) {
@@ -47,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
             }
             intent.putExtra(TEAM_NAME_1, strTeam1);
 
-            if(strTeam2.length() >= MAX_TEAM_NAME_LENGTH){
+            if (strTeam2.length() >= MAX_TEAM_NAME_LENGTH) {
                 strTeam2 = strTeam2.substring(0, MAX_TEAM_NAME_LENGTH);
             }
             intent.putExtra(TEAM_NAME_2, strTeam2);
@@ -63,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
 //        IS_FIRST_INNINGS = true;
 //    }
 
-    public void startSecondInningsOnly(View view){
+    public void startSecondInningsOnly(View view) {
         IS_FIRST_INNINGS = false;
 
         Intent intent = new Intent(this, ScoreActivity.class);
@@ -73,13 +74,13 @@ public class MainActivity extends AppCompatActivity {
         strTotOver = etTotOver.getText().toString();
         totalOvers = (TextUtils.isEmpty(strTotOver)) ? 16 : atoi(strTotOver);
         strTarget = etTarget.getText().toString();
-        targetRuns =  (TextUtils.isEmpty(strTarget)) ? 0 :atoi(strTarget);
+        targetRuns = (TextUtils.isEmpty(strTarget)) ? 0 : atoi(strTarget);
 
-        if(TextUtils.isEmpty(strTeam1))
+        if (TextUtils.isEmpty(strTeam1))
             Toast.makeText(getApplicationContext(), "Enter Name of First team", Toast.LENGTH_SHORT).show();
-        else if(TextUtils.isEmpty(strTeam2))
+        else if (TextUtils.isEmpty(strTeam2))
             Toast.makeText(getApplicationContext(), "Enter Name of Second team", Toast.LENGTH_SHORT).show();
-        else if(TextUtils.isEmpty(strTarget))
+        else if (TextUtils.isEmpty(strTarget))
             Toast.makeText(getApplicationContext(), "Enter Target runs for 2nd innings", Toast.LENGTH_SHORT).show();
         else {
             if (strTeam1.length() >= MAX_TEAM_NAME_LENGTH) {
@@ -87,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
             }
             intent.putExtra(TEAM_NAME_1, strTeam1);
 
-            if(strTeam2.length() >= MAX_TEAM_NAME_LENGTH){
+            if (strTeam2.length() >= MAX_TEAM_NAME_LENGTH) {
                 strTeam2 = strTeam2.substring(0, MAX_TEAM_NAME_LENGTH);
             }
             intent.putExtra(TEAM_NAME_2, strTeam2);

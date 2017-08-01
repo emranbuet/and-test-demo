@@ -16,7 +16,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Change the Batsman if it was run out"/>
+            android:text="Change the Batsman if it was run out" />
 
     </LinearLayout>
 
@@ -32,7 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Select who was out: "
-            android:layout_marginRight="5dp"/>
+            android:layout_marginRight="5dp" />
 
         <Spinner
             android:id="@+id/spSelectOutBatsman"
@@ -55,7 +55,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Batsman Out type: "
-            android:layout_marginRight="5dp"/>
+            android:layout_marginRight="5dp" />
 
         <Spinner
             android:id="@+id/spOutType"
@@ -78,7 +78,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Select the Fielder: "
-            android:layout_marginRight="5dp"/>
+            android:layout_marginRight="5dp" />
 
         <Spinner
             android:id="@+id/spFielder"
@@ -101,7 +101,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Select New Batsman: "
-            android:layout_marginRight="5dp"/>
+            android:layout_marginRight="5dp" />
 
         <Spinner
             android:id="@+id/spNewBatsman"
@@ -125,7 +125,7 @@
             android:layout_height="wrap_content"
             android:text="Ok"
             android:textAllCaps="false"
-            android:layout_gravity="center_vertical"/>
+            android:layout_gravity="center_vertical" />
     </LinearLayout>
 
 </LinearLayout>

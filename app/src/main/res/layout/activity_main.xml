@@ -36,14 +36,14 @@
             android:id="@+id/tvTeamName"
             android:layout_width="110dp"
             android:layout_height="wrap_content"
-            android:text="Batting Team:"/>
+            android:text="Batting Team:" />
 
         <EditText
             android:id="@+id/etTeamName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:singleLine="true"
-            android:ems="10"/>
+            android:ems="10" />
     </LinearLayout>
 
     <LinearLayout
@@ -56,14 +56,14 @@
             android:id="@+id/tvTeamName2"
             android:layout_width="110dp"
             android:layout_height="wrap_content"
-            android:text="Bowling Team:"/>
+            android:text="Bowling Team:" />
 
         <EditText
             android:id="@+id/etTeamName2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:singleLine="true"
-            android:ems="10"/>
+            android:ems="10" />
     </LinearLayout>
 
     <LinearLayout
@@ -76,7 +76,7 @@
             android:id="@+id/lblOver"
             android:layout_width="110dp"
             android:layout_height="wrap_content"
-            android:text="Total Overs:"/>
+            android:text="Total Overs:" />
 
 
         <EditText
@@ -86,7 +86,7 @@
             android:inputType="number"
             android:hint="16"
             android:singleLine="true"
-            android:ems="10"/>
+            android:ems="10" />
 
     </LinearLayout>
 
@@ -100,7 +100,7 @@
             android:id="@+id/lblTarget"
             android:layout_width="135dp"
             android:layout_height="wrap_content"
-            android:text="Target in 2nd innings:"/>
+            android:text="Target in 2nd innings:" />
 
 
         <EditText
@@ -110,7 +110,7 @@
             android:inputType="number"
             android:hint="Optional for 1st innings"
             android:singleLine="true"
-            android:ems="10"/>
+            android:ems="10" />
 
     </LinearLayout>
 
@@ -148,7 +148,7 @@
             android:onClick="startNewMatch"
             android:layout_marginRight="25dp"
             android:text="1st Innings only"
-            android:textAllCaps="false"/>
+            android:textAllCaps="false" />
 
         <Button
             android:id="@+id/btnStartSecondInnings"
@@ -156,7 +156,7 @@
             android:layout_height="wrap_content"
             android:onClick="startSecondInningsOnly"
             android:text="2nd Innings only"
-            android:textAllCaps="false"/>
+            android:textAllCaps="false" />
 
     </LinearLayout>
 
@@ -174,27 +174,27 @@
             android:onClick="startNewMatch"
             android:layout_gravity="center_vertical"
             android:text="Start full match"
-            android:textAllCaps="false"/>
+            android:textAllCaps="false" />
 
     </LinearLayout>
 
-   <!-- <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginBottom="50dp"
-        android:layout_marginTop="50dp"
-        android:orientation="horizontal">
+    <!-- <LinearLayout
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_gravity="center"
+         android:layout_marginBottom="50dp"
+         android:layout_marginTop="50dp"
+         android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/btnLogIn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="startLogIn"
-            android:layout_gravity="center_vertical"
-            android:text="Log In"
-            android:textAllCaps="false"/>
+         <Button
+             android:id="@+id/btnLogIn"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:onClick="startLogIn"
+             android:layout_gravity="center_vertical"
+             android:text="Log In"
+             android:textAllCaps="false"/>
 
-    </LinearLayout>-->
+     </LinearLayout>-->
 
 </LinearLayout>

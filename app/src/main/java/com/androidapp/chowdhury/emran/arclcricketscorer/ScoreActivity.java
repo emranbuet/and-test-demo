@@ -25,6 +25,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.StringTokenizer;
+
 import static com.androidapp.chowdhury.emran.arclcricketscorer.ScoringUtility.*;
 
 
@@ -64,15 +65,14 @@ public class ScoreActivity extends AppCompatActivity {
         spinnerBl = (Spinner) findViewById(R.id.spBl);
 
         Bundle extras = getIntent().getExtras();
-        if(extras != null){
+        if (extras != null) {
             strTeam1 = extras.getString(TEAM_NAME_1);
             strTeam2 = extras.getString(TEAM_NAME_2);
             totOver = extras.getInt(TOTAL_OVER);
-            if(!IS_FIRST_INNINGS){
+            if (!IS_FIRST_INNINGS) {
                 runR = extras.getInt(TARGET_RUNS);
             }
-        }
-        else{
+        } else {
             strTeam1 = "No name found for 1";
             strTeam2 = "No name found for 2";
         }
@@ -93,7 +93,7 @@ public class ScoreActivity extends AppCompatActivity {
         //adapter = new ArrayAdapter<Player>(this, android.R.layout.simple_spinner_item, playersListTeam1);
         //adapter2 = new ArrayAdapter<Player>(this, android.R.layout.simple_spinner_item, playersListTeam2);
 
-        if(apiURL != null){
+        if (apiURL != null) {
             new CallAPI().execute(strTeam1, strTeam2);
         }
 /*
@@ -107,12 +107,11 @@ public class ScoreActivity extends AppCompatActivity {
         spinnerBl.setAdapter(adapter);*/
     }
 
-    public void beginScoring(View view){
+    public void beginScoring(View view) {
 
-        if(spinnerBt1.getSelectedItemPosition() == spinnerBt2.getSelectedItemPosition()){
+        if (spinnerBt1.getSelectedItemPosition() == spinnerBt2.getSelectedItemPosition()) {
             Toast.makeText(getApplicationContext(), "Select different opening batsmen to start", Toast.LENGTH_SHORT).show();
-        }
-        else {
+        } else {
             Intent intent = new Intent(getApplicationContext(), MatchDetail.class);
             //intent.putExtra(PLAYER_LIST_STATUS, result);
             if (strTeam1 != null && Character.isLowerCase(strTeam1.charAt(0))) {
@@ -169,41 +168,40 @@ public class ScoreActivity extends AppCompatActivity {
         }
 
     }
+
     private class CallAPI extends AsyncTask<String, String, String> {
 
-        private StringBuilder sb =  null;
+        private StringBuilder sb = null;
+
         @Override
         protected String doInBackground(String... params) {
-            try{
+            try {
                 getPlayersFromArcl(params[0], true);
                 getPlayersFromArcl(params[1], false);
 
                 return "Success";
-            }
-            catch (IOException e){
+            } catch (IOException e) {
                 return "Connection Error";
-            }
-            catch (Exception e){
+            } catch (Exception e) {
                 return e.toString();
             }
         }
 
         protected void onPostExecute(String result) {
-            if(result == null) {
+            if (result == null) {
                 result = "THERE WAS AN ERROR";
             }
             final ArrayList<String> playerNames1 = new ArrayList<>();
-            if(playersListTeam1 == null || playersListTeam1.size() == 0){
+            if (playersListTeam1 == null || playersListTeam1.size() == 0) {
                 Log.d("Error", "Player list of first team is empty");
-            }
-            else {
+            } else {
                 for (Player p : playersListTeam1) {
                     playerNames1.add(p.getPlayerName());
                 }
             }
-            adapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_item, playerNames1){
+            adapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_item, playerNames1) {
                 @Override
-                public View getDropDownView(int position, View convertView, ViewGroup parent){
+                public View getDropDownView(int position, View convertView, ViewGroup parent) {
                     View v = convertView;
                     if (v == null) {
                         Context mContext = this.getContext();
@@ -219,23 +217,22 @@ public class ScoreActivity extends AppCompatActivity {
                 }
             };
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            if(adapter != null) {
+            if (adapter != null) {
                 spinnerBt1.setAdapter(adapter);
                 spinnerBt2.setAdapter(adapter);
             }
 
             final ArrayList<String> playerNames2 = new ArrayList<>();
-            if(playersListTeam2 == null || playersListTeam2.size() == 0){
+            if (playersListTeam2 == null || playersListTeam2.size() == 0) {
                 Log.d("Error", "Player list of second team is empty");
-            }
-            else {
+            } else {
                 for (Player p : playersListTeam2) {
                     playerNames2.add(p.getPlayerName());
                 }
             }
-            adapter2 = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_item, playerNames2){
+            adapter2 = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_item, playerNames2) {
                 @Override
-                public View getDropDownView(int position, View convertView, ViewGroup parent){
+                public View getDropDownView(int position, View convertView, ViewGroup parent) {
                     View v = convertView;
                     if (v == null) {
                         Context mContext = this.getContext();
@@ -251,40 +248,40 @@ public class ScoreActivity extends AppCompatActivity {
                 }
             };
             adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            if(adapter2 != null) {
+            if (adapter2 != null) {
                 spinnerBl.setAdapter(adapter2);
             }
         }
 
-        private String getPlayersFromArcl(String teamName, boolean isFirstTeam ) throws XmlPullParserException, IOException {
+        private String getPlayersFromArcl(String teamName, boolean isFirstTeam) throws XmlPullParserException, IOException {
             InputStream stream = null;
             StringTokenizer st = new StringTokenizer(teamName);
             StringBuilder sb = new StringBuilder();
             String token = st.nextToken();
             sb.append(token);
-            while(st.hasMoreTokens()){
+            while (st.hasMoreTokens()) {
                 sb.append("%20");
                 token = st.nextToken();
                 sb.append(token);
             }
             String formattedTeamName = sb.toString();
             //String urlForPlayers = apiURL + "RegisteredPlayers?teamName=" + teamName+"&seasonid=41";
-            String urlForPlayers = apiURL + "RegisteredPlayers?teamName=" + formattedTeamName+"&seasonid=42";
+            String urlForPlayers = apiURL + "RegisteredPlayers?teamName=" + formattedTeamName + "&seasonid=42";
             Log.d(LogType.INFO, "Formatted team name is: " + formattedTeamName);
-            if(sb == null)
+            if (sb == null)
                 sb = new StringBuilder();
             sb.append(teamName);
             sb.append(" Player list: ");
-            try{
+            try {
                 stream = downloadUrl(urlForPlayers);
                 JsonReader jsonReader = new JsonReader(new InputStreamReader(stream, "UTF-8"));
-                if(isFirstTeam)
+                if (isFirstTeam)
                     playersListTeam1 = new ArrayList<>();
                 else
                     playersListTeam2 = new ArrayList<>();
                 jsonReader.beginArray();
-                while(jsonReader.hasNext()){
-                    if(isFirstTeam)
+                while (jsonReader.hasNext()) {
+                    if (isFirstTeam)
                         playersListTeam1.add(readPlayerData(jsonReader));
                     else
                         playersListTeam2.add(readPlayerData(jsonReader));
@@ -295,37 +292,34 @@ public class ScoreActivity extends AppCompatActivity {
                 while(stream.read(buffer) > 0){
                     sb.append(new String(buffer));
                 }*/
-            }
-            catch (Exception e){
+            } catch (Exception e) {
                 Log.d("getPlayersFromArcl", e.toString());
-            }
-            finally {
-                if(stream != null)
+            } finally {
+                if (stream != null)
                     stream.close();
             }
             return sb.toString();
         }
 
-        private Player readPlayerData(JsonReader reader) throws IOException{
+        private Player readPlayerData(JsonReader reader) throws IOException {
             String pname = "";
             int pid = -1;
             reader.beginObject();
-            while(reader.hasNext()){
+            while (reader.hasNext()) {
                 String name = reader.nextName();
-                if(name.equals("PlayerName")){
+                if (name.equals("PlayerName")) {
                     pname = reader.nextString();
-                }
-                else if(name.equals("PlayerId")){
+                } else if (name.equals("PlayerId")) {
                     pid = reader.nextInt();
-                }
-                else{
+                } else {
                     reader.skipValue();
                 }
             }
             reader.endObject();
             return new Player(pname, pid);
         }
-        private InputStream downloadUrl(String urlString) throws IOException{
+
+        private InputStream downloadUrl(String urlString) throws IOException {
             URL url = new URL(urlString);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setReadTimeout(10000 /* milliseconds */);

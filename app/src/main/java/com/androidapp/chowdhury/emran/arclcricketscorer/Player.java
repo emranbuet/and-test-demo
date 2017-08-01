@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Player implements Serializable{
+public class Player implements Serializable {
     private String playerName;
     private int playerId;
 
@@ -12,6 +12,7 @@ public class Player implements Serializable{
         this.playerName = playerName;
         this.playerId = playerId;
     }
+
     public String getPlayerName() {
 
         return playerName;
