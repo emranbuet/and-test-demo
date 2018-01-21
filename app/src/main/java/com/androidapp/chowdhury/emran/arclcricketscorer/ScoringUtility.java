@@ -4,6 +4,7 @@ public class ScoringUtility {
     public static int MATCH_ID = 999;
     public static int TEAM_ID_1 = 111;
     public static int TEAM_ID_2 = 555;
+    public static int SEASON_ID = -1;
 
     public static int SUBSTITUTE_PLAYER_ID = 101;
     public static String SUBSTITUTE_PLAYER_NAME = "Substitute";

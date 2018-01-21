@@ -37,6 +37,7 @@ public class ScoreActivity extends AppCompatActivity {
     private double overA, overB, overR, totOver, preOverA, preOverB, preOverR;
 
     private Spinner spinnerBt1, spinnerBt2, spinnerBl;
+    private TextView matchIdTv;
     /*private int ballsA, ballsB, preBallsA, preBallsB;
     private int wickA, wickB, preWickA, preWickB;
     private boolean firstBatting = true;
@@ -87,9 +88,9 @@ public class ScoreActivity extends AppCompatActivity {
         sba.append(" overs match");
 
         TextView myTv = (TextView) findViewById(R.id.tvHello);
+        matchIdTv = (TextView) findViewById(R.id.tvMatchId);
 
         myTv.append(sba.toString());
-
         //adapter = new ArrayAdapter<Player>(this, android.R.layout.simple_spinner_item, playersListTeam1);
         //adapter2 = new ArrayAdapter<Player>(this, android.R.layout.simple_spinner_item, playersListTeam2);
 
@@ -176,8 +177,12 @@ public class ScoreActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... params) {
             try {
-                getPlayersFromArcl(params[0], true);
-                getPlayersFromArcl(params[1], false);
+                MATCH_ID = getMatchIdFromArcl(params[0], params[1]);
+                if(MATCH_ID > 0) {
+                    getPlayersFromArcl(params[0], true);
+                    getPlayersFromArcl(params[1], false);
+                }
+                //TODO: Add appropriate code for match id = 0
 
                 return "Success";
             } catch (IOException e) {
@@ -251,6 +256,68 @@ public class ScoreActivity extends AppCompatActivity {
             if (adapter2 != null) {
                 spinnerBl.setAdapter(adapter2);
             }
+
+
+            StringBuilder sba = new StringBuilder();
+            sba.append("Match id is: ");
+            sba.append(MATCH_ID);
+
+            matchIdTv.append(sba.toString());
+        }
+
+        private int getMatchIdFromArcl(String teamName1, String teamName2)  throws IOException {
+            InputStream stream = null;
+            StringTokenizer st = new StringTokenizer(teamName1);
+            StringBuilder sb = new StringBuilder();
+            String token = st.nextToken();
+            sb.append(token);
+            while (st.hasMoreTokens()) {
+                sb.append("%20");
+                token = st.nextToken();
+                sb.append(token);
+            }
+            String formattedTeamName1 = sb.toString();
+
+            st = new StringTokenizer(teamName2);
+            sb = new StringBuilder();
+            token = st.nextToken();
+            sb.append(token);
+            while (st.hasMoreTokens()) {
+                sb.append("%20");
+                token = st.nextToken();
+                sb.append(token);
+            }
+            String formattedTeamName2 = sb.toString();
+
+            int matchId = -1;
+            String urlForMatchId = apiURL + "match?seasonid=" + SEASON_ID + "&teamname1=" + formattedTeamName1 + "&teamname2=" + formattedTeamName2;
+            // {"TeamName1":"lagaan","TeamName2":"batmen","TeamId1":3412,"TeamId2":3411,"MatchId":0,"MatchDate":null,"MatchTime":null,"Ground":null}
+            try {
+                stream = downloadUrl(urlForMatchId);
+                JsonReader reader = new JsonReader(new InputStreamReader(stream, "UTF-8"));
+                reader.beginObject();
+                while (reader.hasNext()) {
+                    String name = reader.nextName();
+                    if (name.equals("TeamId1")) {
+                        TEAM_ID_1 = reader.nextInt();
+                    } else if (name.equals("TeamId2")) {
+                        TEAM_ID_2 = reader.nextInt();
+                    } else if(name.equals("MatchId")){
+                        matchId = reader.nextInt();
+                    }
+                    else {
+                        reader.skipValue();
+                    }
+                }
+                reader.endObject();
+
+            } catch (Exception e) {
+                Log.d("getPlayersFromArcl", e.toString());
+            } finally {
+                if (stream != null)
+                    stream.close();
+                return matchId;
+            }
         }
 
         private String getPlayersFromArcl(String teamName, boolean isFirstTeam) throws XmlPullParserException, IOException {
@@ -265,8 +332,16 @@ public class ScoreActivity extends AppCompatActivity {
                 sb.append(token);
             }
             String formattedTeamName = sb.toString();
+            String urlForPlayers;
             //String urlForPlayers = apiURL + "RegisteredPlayers?teamName=" + teamName+"&seasonid=41";
-            String urlForPlayers = apiURL + "RegisteredPlayers?teamName=" + formattedTeamName + "&seasonid=42";
+            //String urlForPlayers = apiURL + "RegisteredPlayers?teamName=" + formattedTeamName + "&seasonid=42";
+            if(SEASON_ID > 0) {
+                urlForPlayers = apiURL + "RegisteredPlayers?teamName=" + formattedTeamName + "&seasonid=" + SEASON_ID;
+            }
+            else{
+                // Hard coded season id for seasonId is not available
+                urlForPlayers = apiURL + "RegisteredPlayers?teamName=" + formattedTeamName + "&seasonid=42";
+            }
             Log.d(LogType.INFO, "Formatted team name is: " + formattedTeamName);
             if (sb == null)
                 sb = new StringBuilder();
