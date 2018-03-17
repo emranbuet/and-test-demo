@@ -178,7 +178,8 @@ public class ScoreActivity extends AppCompatActivity {
         protected String doInBackground(String... params) {
             try {
                 MATCH_ID = getMatchIdFromArcl(params[0], params[1]);
-                if(MATCH_ID > 0) {
+                //TODO: Change back to equal to 0 only for getting player list
+                if(MATCH_ID >= 0) {
                     getPlayersFromArcl(params[0], true);
                     getPlayersFromArcl(params[1], false);
                 }
